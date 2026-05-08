@@ -293,6 +293,57 @@
   </div>
 </div>
 
+<!-- Modal Brevet de concept -->
+<div class="modal-overlay" id="modal-brevet" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:660px;">
+    <h2>Nouveau brevet de concept</h2>
+    <p class="info">Dépôt officiel attestant l'antériorité et la propriété intellectuelle d'un concept NOVA. Toute reproduction non autorisée engage la responsabilité du contrevenant.</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="b-titre">Titre du concept</label>
+        <input id="b-titre" type="text" placeholder="ex. Master Clash">
+      </div>
+      <div class="field">
+        <label for="b-categorie">Catégorie</label>
+        <select id="b-categorie">
+          <option value="emission">Émission / format télévisuel</option>
+          <option value="format">Format de compétition</option>
+          <option value="denomination">Dénomination / marque</option>
+          <option value="oeuvre">Œuvre originale</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="b-auteur">Auteur(s) / Déposant(s)</label>
+        <input id="b-auteur" type="text" placeholder="ex. Andrew Beauchamp pour NOVA">
+      </div>
+      <div class="field">
+        <label for="b-date">Date de dépôt</label>
+        <input id="b-date" type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label for="b-description">Description détaillée du concept</label>
+      <textarea id="b-description" placeholder="Décrivez le concept de manière exhaustive : nature, déroulé, mécaniques, particularités…" style="min-height:100px;"></textarea>
+    </div>
+    <div class="field">
+      <label for="b-elements">Éléments protégés (un par ligne)</label>
+      <textarea id="b-elements" placeholder="ex.&#10;Dénomination « Master Clash »&#10;Format en trois manches éliminatoires&#10;Mécanique de duel-questions filmé&#10;Identité visuelle (codes couleurs, ornementation)" style="min-height:90px;"></textarea>
+    </div>
+    <div class="field">
+      <label for="b-clause">Clause spécifique (optionnelle)</label>
+      <textarea id="b-clause" placeholder="ex. Toute exploitation commerciale par un tiers requiert l'accord écrit préalable du Président de NOVA." style="min-height:60px;"></textarea>
+    </div>
+    <div class="modal-error" id="b-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="b-cancel">Annuler</button>
+      <button type="button" class="save" id="b-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Contrat d'engagement bénévole -->
 <div class="modal-overlay" id="modal-eng" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:640px;">
@@ -388,6 +439,11 @@
       else if (d.type === 'facture') summary = `${escapeHtml(d.data?.client || '?')} — ${fmt(d.data?.total || 0)}`;
       else if (d.type === 'convention') summary = `${escapeHtml(d.data?.partenaire || '?')} — ${fmt(d.data?.valeur || 0)}`;
       else if (d.type === 'contrat_engagement') summary = `${escapeHtml(d.data?.nom || '?')} — Bénévole`;
+      else if (d.type === 'brevet') {
+        const sv = d.data?.statutValidation;
+        const tag = sv === 'valide' ? '<span style="color:#4a6b3a;font-weight:600;">✓ Validé</span>' : '<span style="color:#a06b1f;font-weight:600;">⌛ En attente</span>';
+        summary = `${escapeHtml(d.data?.titre || '?')} — ${tag}`;
+      }
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><span class="ref">${escapeHtml(d.reference || '—')}</span></td>
@@ -420,6 +476,7 @@
   const modalFact = document.getElementById('modal-facture');
   const modalConv = document.getElementById('modal-conv');
   const modalEng = document.getElementById('modal-eng');
+  const modalBrevet = document.getElementById('modal-brevet');
 
   async function openModal(type) {
     if (!canWrite) { await alertDialog('Lecture seule pour votre rôle.', { type: 'warning' }); return; }
@@ -453,6 +510,13 @@
       document.getElementById('e-fin').value = '';
       document.getElementById('e-err').textContent = '';
       modalEng.classList.add('active');
+    } else if (type === 'brevet') {
+      ['b-titre','b-description','b-elements','b-clause'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('b-categorie').value = 'emission';
+      document.getElementById('b-auteur').value = `${myProfile.displayName} pour NOVA`;
+      document.getElementById('b-date').valueAsDate = new Date();
+      document.getElementById('b-err').textContent = '';
+      modalBrevet.classList.add('active');
     }
   }
 
@@ -495,6 +559,8 @@
   modalConv.addEventListener('click', e => { if (e.target === modalConv) modalConv.classList.remove('active'); });
   document.getElementById('e-cancel').addEventListener('click', () => modalEng.classList.remove('active'));
   modalEng.addEventListener('click', e => { if (e.target === modalEng) modalEng.classList.remove('active'); });
+  document.getElementById('b-cancel').addEventListener('click', () => modalBrevet.classList.remove('active'));
+  modalBrevet.addEventListener('click', e => { if (e.target === modalBrevet) modalBrevet.classList.remove('active'); });
 
   // ===== SAVE FACTURE =====
   document.getElementById('f-save').addEventListener('click', async () => {
@@ -578,6 +644,38 @@
     try {
       const r = await createDocument(DOC_TYPES.CONTRAT_ENGAGEMENT, data);
       modalEng.classList.remove('active');
+      window.location.href = `document-view.html?id=${r.id}`;
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
+  });
+
+  // ===== SAVE BREVET =====
+  document.getElementById('b-save').addEventListener('click', async () => {
+    const elementsLignes = document.getElementById('b-elements').value
+      .split('\n').map(s => s.trim()).filter(Boolean);
+    const isPresident = myProfile.role === 'president';
+    const data = {
+      titre:        document.getElementById('b-titre').value.trim(),
+      categorie:    document.getElementById('b-categorie').value,
+      auteur:       document.getElementById('b-auteur').value.trim(),
+      dateDepot:    document.getElementById('b-date').valueAsDate?.toISOString() || null,
+      description:  document.getElementById('b-description').value.trim(),
+      elements:     elementsLignes,
+      clause:       document.getElementById('b-clause').value.trim(),
+      statutValidation: isPresident ? 'valide' : 'pending',
+      validePar:    isPresident ? myProfile.displayName : null,
+      dateValidation: isPresident ? new Date().toISOString() : null
+    };
+    const err = document.getElementById('b-err');
+    err.textContent = '';
+    if (!data.titre) { err.textContent = 'Titre du concept requis.'; return; }
+    if (!data.description) { err.textContent = 'Description requise.'; return; }
+    if (elementsLignes.length === 0) { err.textContent = 'Au moins un élément protégé requis.'; return; }
+    const btn = document.getElementById('b-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const r = await createDocument(DOC_TYPES.BREVET, data, { status: isPresident ? 'final' : 'draft' });
+      modalBrevet.classList.remove('active');
       window.location.href = `document-view.html?id=${r.id}`;
     } catch (e) { err.textContent = e.message || 'Erreur.'; }
     finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }

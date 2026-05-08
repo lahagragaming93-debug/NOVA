@@ -73,8 +73,11 @@
 </div>
 
 <script type="module">
-  import { onAuthChange } from './js/auth.js';
-  import { getDocument, numberToWords, formatDateLong, fmt } from './js/documents.js';
+  import { onAuthChange, getUserProfile } from './js/auth.js';
+  import { getDocument, updateDocument, numberToWords, formatDateLong, fmt } from './js/documents.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
+
+  let myProfile = null;
 
   const params = new URLSearchParams(window.location.search);
   const docId = params.get('id');
@@ -370,6 +373,125 @@
     `;
   }
 
+  const CATEGORIE_BREVET_LABELS = {
+    emission:     'Émission / format télévisuel',
+    format:       'Format de compétition',
+    denomination: 'Dénomination / marque',
+    oeuvre:       'Œuvre originale',
+    autre:        'Autre'
+  };
+
+  function renderBrevet(d) {
+    const data = d.data || {};
+    const dateDepot = data.dateDepot ? formatDateLong(new Date(data.dateDepot)) : '—';
+    const dateValidation = data.dateValidation ? formatDateLong(new Date(data.dateValidation)) : null;
+    const isValide = data.statutValidation === 'valide';
+    const elementsList = (data.elements || []).map(e => `<li>${escapeHtml(e)}</li>`).join('') || '<li>—</li>';
+    const categorieLbl = CATEGORIE_BREVET_LABELS[data.categorie] || data.categorie || '—';
+    window.exportFilename = d.reference || 'NOVA-Brevet';
+
+    const banniereStatut = isValide
+      ? `<div style="background:#e3ebdc;border-left:3px solid #4a6b3a;padding:4mm 6mm;margin:6mm 0;font-size:10.5pt;color:#3a4f30;"><strong>✓ Brevet validé</strong> par ${escapeHtml(data.validePar || '—')} le ${dateValidation || '—'}.</div>`
+      : `<div style="background:#f5e9d3;border-left:3px solid #a06b1f;padding:4mm 6mm;margin:6mm 0;font-size:10.5pt;color:#7a5418;"><strong>⌛ En attente de validation</strong> — ce dépôt doit être validé par le Président de NOVA pour être opposable aux tiers.</div>`;
+
+    const peutValider = myProfile && myProfile.role === 'president' && !isValide;
+    const boutonValider = peutValider
+      ? `<div class="no-print" style="text-align:center;margin:4mm 0;"><button id="btn-valider-brevet" style="background:#1f2d4a;color:#fbf9f3;border:none;padding:10px 24px;font-family:'EB Garamond',serif;font-size:14px;letter-spacing:1.5px;font-variant:small-caps;cursor:pointer;border-radius:3px;">✓ Valider ce brevet (Président)</button></div>`
+      : '';
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official"><strong>État de San Andreas</strong><br>Brevet de concept<br>Dépôt de propriété intellectuelle</div>
+        </header>
+        <div class="recu-num">
+          Brevet N°<br><span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+        <div class="doc-title">
+          <h1>Brevet de Concept</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">Dépôt officiel attestant l'antériorité et la propriété intellectuelle</div>
+        </div>
+
+        ${banniereStatut}
+        ${boutonValider}
+
+        <h3 class="article"><span class="num">Article 1.</span> Identification du dépôt</h3>
+        <table class="info-table" style="width:100%;border-collapse:collapse;">
+          <tr><td>Titulaire</td><td><strong>Association NOVA</strong> — Représentée par Andrew BEAUCHAMP, Président</td></tr>
+          <tr><td>Auteur(s) / Déposant(s)</td><td><strong>${escapeHtml(data.auteur || '—')}</strong></td></tr>
+          <tr><td>Titre du concept</td><td><strong style="color:var(--navy);font-size:12pt;">${escapeHtml(data.titre || '—')}</strong></td></tr>
+          <tr><td>Catégorie</td><td>${escapeHtml(categorieLbl)}</td></tr>
+          <tr><td>Date de dépôt</td><td>${dateDepot}</td></tr>
+        </table>
+
+        <h3 class="article"><span class="num">Article 2.</span> Description du concept</h3>
+        <blockquote>${escapeHtml(data.description || '—').replace(/\n/g,'<br>')}</blockquote>
+
+        <h3 class="article"><span class="num">Article 3.</span> Éléments protégés</h3>
+        <p>Sont placés sous protection au titre du présent brevet, sans limitation de durée et avec effet rétroactif à la date de dépôt :</p>
+        <ul>${elementsList}</ul>
+
+        ${data.clause ? `
+        <h3 class="article"><span class="num">Article 4.</span> Clause spécifique</h3>
+        <blockquote>${escapeHtml(data.clause).replace(/\n/g,'<br>')}</blockquote>
+        ` : ''}
+
+        <h3 class="article"><span class="num">Article ${data.clause ? '5' : '4'}.</span> Portée de la protection</h3>
+        <p>Le présent dépôt atteste de l'antériorité du concept à la date du <strong>${dateDepot}</strong> et établit la propriété intellectuelle exclusive de l'Association NOVA sur l'ensemble des éléments énumérés ci-dessus. Toute reproduction, adaptation, exploitation commerciale ou diffusion par un tiers sans autorisation écrite préalable du Président de NOVA constitue une <strong>contrefaçon</strong> et engage la pleine responsabilité civile et pénale du contrevenant.</p>
+
+        <h3 class="article"><span class="num">Article ${data.clause ? '6' : '5'}.</span> Opposabilité</h3>
+        <p>Le présent brevet est <strong>opposable aux tiers</strong> dès sa validation par le Président de NOVA. Il constitue, en cas de litige, un titre de propriété attestant de la création originale du concept par l'Association NOVA, antérieurement à toute revendication tierce.</p>
+
+        <p style="font-size:9.5pt;color:var(--muted);font-style:italic;text-align:justify;margin-top:6mm;">Brevet enregistré — réf. ${escapeHtml(d.reference)} — déposé le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.</p>
+
+        <table class="signatures" style="margin-top:8mm;width:100%;border-collapse:collapse;">
+          <tr><th style="width:40%">Autorité</th><th style="width:30%">Nom</th><th>Signature & Date</th></tr>
+          <tr>
+            <td><strong>Président de NOVA</strong><br><span style="font-size:9pt;color:var(--muted);">Validateur unique du brevet</span></td>
+            <td>Andrew BEAUCHAMP</td>
+            <td class="signature-line">${isValide ? `<span style="font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:11pt;">Validé le ${dateValidation}</span>` : '<span style="font-style:italic;color:var(--muted);">En attente</span>'}</td>
+          </tr>
+        </table>
+
+        ${isValide ? `
+        <div class="official-stamp">
+          <div class="seal">BREVET<br>VALIDÉ<br>NOVA</div>
+        </div>
+        ` : ''}
+
+        <footer class="footer"><span>NOVA — Brevet de concept (propriété intellectuelle)</span><span>Page 1 / 1</span></footer>
+      </section>
+    `;
+
+    if (peutValider) {
+      document.getElementById('btn-valider-brevet').addEventListener('click', async () => {
+        const ok = await confirmDialog(
+          `Vous êtes sur le point de valider officiellement ce brevet en tant que Président de NOVA.\n\nCette validation est définitive et rendra le brevet opposable aux tiers.`,
+          { title: 'Valider ce brevet ?', confirmLabel: 'Valider' }
+        );
+        if (!ok) return;
+        try {
+          const newData = {
+            ...data,
+            statutValidation: 'valide',
+            validePar: myProfile.displayName,
+            dateValidation: new Date().toISOString()
+          };
+          await updateDocument(d.id, { data: newData, status: 'final' });
+          const fresh = await getDocument(d.id);
+          renderBrevet(fresh);
+        } catch (e) {
+          await alertDialog(e.message || 'Erreur lors de la validation.', { type: 'error' });
+        }
+      });
+    }
+  }
+
   function renderError(msg) {
     container.innerHTML = `
       <div class="loading-state" style="color:#8b3a3a;flex-direction:column;gap:14px;">
@@ -383,13 +505,15 @@
     if (!user) { window.location.href = 'login.html'; return; }
     if (!docId) { renderError('Aucun document spécifié.'); return; }
     try {
+      myProfile = await getUserProfile(user.uid);
       const d = await getDocument(docId);
       if (!d) { renderError('Document introuvable.'); return; }
       const renderers = {
         recu_don: renderRecuDon,
         facture: renderFacture,
         convention: renderConvention,
-        contrat_engagement: renderContratEngagement
+        contrat_engagement: renderContratEngagement,
+        brevet: renderBrevet
       };
       const renderer = renderers[d.type];
       if (renderer) {

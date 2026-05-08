@@ -1,0 +1,637 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banque de Questions — MASTER CLASH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/lazy-libs.js" defer></script>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="assets/site.webmanifest">
+<link rel="shortcut icon" href="assets/favicon.ico">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="assets/firebase-init.js"></script>
+<script src="assets/firebase-data.js"></script>
+<script src="assets/firebase-sync.js"></script>
+<script src="assets/firebase-users.js"></script>
+<script src="assets/firebase-messages.js"></script>
+<script src="assets/firebase-participants.js"></script>
+<script src="assets/firebase-contracts.js"></script>
+<script src="assets/firebase-budget.js"></script>
+</head>
+<body data-page="ques">
+<nav class="nav">
+  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <div class="nav-links">
+    <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
+    <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
+    <a href="partenaires.html" title="Partenaires"><span class="nav-icon">🤝</span><span class="nav-text">Partenaires</span></a>
+    <a href="contrats.html" class="locked-link" data-section="contrats" title="Contrats &amp; Bons"><span class="lock-icon">🔒</span><span class="nav-icon">📋</span><span class="nav-text">Contrats</span></a>
+    <a href="questions.html" class="locked-link" data-section="ques" title="Banque de Questions"><span class="lock-icon">🔒</span><span class="nav-icon">❓</span><span class="nav-text">Questions</span></a>
+    <a href="budget.html" class="locked-link" data-section="budget" title="Budget"><span class="lock-icon">🔒</span><span class="nav-icon">💰</span><span class="nav-text">Budget</span></a>
+    <a href="participants.html" id="nav-participants-link" style="display:none" title="Participants"><span class="nav-icon">🎯</span><span class="nav-text">Participants</span></a>
+    <a href="profil.html" id="nav-profil-link" style="display:none" title="Mon profil"><span class="nav-icon">👤</span><span class="nav-text">Profil</span></a>
+    <a href="admin.html" class="locked-link" data-section="admin" title="Administration"><span class="lock-icon">🔒</span><span class="nav-icon">🔧</span><span class="nav-text">Admin</span></a>
+  </div>
+  <div class="nav-user" id="nav-user">
+    <button class="nav-msg-btn" id="nav-msg-btn" onclick="openMessageModal()" style="display:none" title="Contacter l'organisateur">📨</button><div class="nav-notif-wrap" id="nav-notif-wrap" style="display:none"><button class="nav-bell" id="nav-bell" onclick="toggleNotifs(event)">🔔<span class="nav-notif-count" id="nav-notif-count">0</span></button><div class="nav-notif-dropdown" id="nav-notif-dropdown"><div class="nav-notif-head"><strong>Notifications</strong><button class="nav-notif-mark" onclick="markAllNotifsRead()">✓ Tout marquer lu</button></div><div class="nav-notif-list" id="nav-notif-list"></div></div></div><button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
+    <div class="nav-user-box" id="nav-user-box" style="display:none">
+      <img class="nav-avatar" id="nav-avatar" src="" alt="">
+      <div class="nav-user-text">
+        <div class="nav-username" id="nav-username"></div>
+        <div class="nav-userrole" id="nav-userrole"></div>
+      </div>
+      <button class="nav-logout-btn" onclick="doLogout()" title="Déconnexion">⏻</button>
+    </div>
+  </div>
+</nav>
+<!-- ===== SECTION 4 — QUESTIONS ===== -->
+<section id="ques">
+  <h2 class="section-title">Banque de Questions</h2>
+  <div class="section-subtitle">Section 4 — 200 questions au total</div>
+<div class="locked-wrap" data-section="ques">
+<div class="locked-content locked">
+
+  <div class="q-subnav">
+    <div class="q-subnav-inner">
+      <a href="#q-easy">Faciles (78)</a>
+      <a href="#q-med">Moyennes (72)</a>
+      <a href="#q-hard">Difficiles (40)</a>
+      <a href="#q-blind">Blind Tests (10)</a>
+    </div>
+  </div>
+
+  <!-- FACILES -->
+  <h3 id="q-easy" style="color:#00e676">Questions Faciles — 1 point (78 questions)</h3>
+
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F01</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle est la capitale de la France ?</div><ul class="q-choices"><li>A. Lyon</li><li>B. Marseille</li><li class="correct">C. Paris</li><li>D. Nice</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F02</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien font 7 × 8 ?</div><div class="q-answer">56</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F03</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel animal est le roi de la jungle ?</div><ul class="q-choices"><li class="correct">A. Lion</li><li>B. Tigre</li><li>C. Éléphant</li><li>D. Gorille</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F04</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de côtés a un hexagone ?</div><div class="q-answer">6</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F05</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle planète est la plus proche du Soleil ?</div><ul class="q-choices"><li>A. Vénus</li><li class="correct">B. Mercure</li><li>C. Mars</li><li>D. Terre</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F06</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle couleur obtient-on en mélangeant bleu et jaune ?</div><div class="q-answer">Vert</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F07</span><span class="q-cat">Sport</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de joueurs dans une équipe de foot ?</div><ul class="q-choices"><li>A. 9</li><li>B. 10</li><li class="correct">C. 11</li><li>D. 12</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F08</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quelle ville se trouve la Tour Eiffel ?</div><div class="q-answer">Paris</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F09</span><span class="q-cat">Art</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Qui a peint la Joconde ?</div><ul class="q-choices"><li>A. Van Gogh</li><li>B. Picasso</li><li>C. Michel-Ange</li><li class="correct">D. Léonard de Vinci</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F10</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le plus grand océan du monde ?</div><div class="q-answer">Pacifique</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F11</span><span class="q-cat">Géographie</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le pays le plus grand du monde ?</div><ul class="q-choices"><li>A. Canada</li><li>B. USA</li><li>C. Chine</li><li class="correct">D. Russie</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F12</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de secondes dans une minute ?</div><div class="q-answer">60</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F13</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quel film trouve-t-on Simba ?</div><ul class="q-choices"><li>A. Bambi</li><li class="correct">B. Le Roi Lion</li><li>C. Tarzan</li><li>D. Dumbo</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F14</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel super-héros porte une armure rouge et or ?</div><div class="q-answer">Iron Man</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F15</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Qui joue Jack dans Titanic ?</div><ul class="q-choices"><li>A. Brad Pitt</li><li>B. Tom Hanks</li><li class="correct">C. Leonardo DiCaprio</li><li>D. Johnny Depp</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F16</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Comment s'appelle le robot de WALL-E ?</div><div class="q-answer">WALL-E</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F17</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quelle saga trouve-t-on « La Force » ?</div><ul class="q-choices"><li>A. Harry Potter</li><li class="correct">B. Star Wars</li><li>C. LOTR</li><li>D. Matrix</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F18</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le nom du plombier de Nintendo ?</div><div class="q-answer">Mario</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F19</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans Minecraft, quel ennemi vert explose ?</div><ul class="q-choices"><li>A. Zombie</li><li>B. Squelette</li><li class="correct">C. Creeper</li><li>D. Enderman</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F20</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quel jeu incarne-t-on Geralt de Riv ?</div><div class="q-answer">The Witcher</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F21</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de vies au départ dans Super Mario Bros ?</div><ul class="q-choices"><li>A. 2</li><li class="correct">B. 3</li><li>C. 4</li><li>D. 5</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F22</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle console a lancé les manettes DualShock ?</div><div class="q-answer">PlayStation</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F23</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle franchise propose des « Chicken Dinner » ?</div><ul class="q-choices"><li>A. CoD</li><li class="correct">B. PUBG</li><li>C. Rust</li><li>D. Fortnite</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F24</span><span class="q-cat">Sport</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel sport se joue avec une raquette et un volant ?</div><div class="q-answer">Badminton</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F25</span><span class="q-cat">Sport</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de points vaut un panier à 3 points ?</div><ul class="q-choices"><li>A. 1</li><li>B. 2</li><li class="correct">C. 3</li><li>D. 4</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F26</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quelle ville se trouve Big Ben ?</div><div class="q-answer">Londres</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F27</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Qui a sorti « Thriller » ?</div><ul class="q-choices"><li>A. Madonna</li><li>B. Janet Jackson</li><li>C. Whitney Houston</li><li class="correct">D. Michael Jackson</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F28</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de cordes a une guitare standard ?</div><div class="q-answer">6</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F29</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel genre musical est né à NY dans les années 70 ?</div><ul class="q-choices"><li>A. Rock</li><li>B. Jazz</li><li class="correct">C. Hip-hop</li><li>D. Reggae</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F30</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle est la formule chimique de l'eau ?</div><div class="q-answer">H₂O</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F31</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le plus grand os du corps humain ?</div><ul class="q-choices"><li>A. Humérus</li><li>B. Tibia</li><li>C. Radius</li><li class="correct">D. Fémur</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F32</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle planète est surnommée « la planète rouge » ?</div><div class="q-answer">Mars</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F33</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel film met en scène des jouets qui s'animent ?</div><ul class="q-choices"><li>A. Shrek</li><li class="correct">B. Toy Story</li><li>C. Monstres &amp; Cie</li><li>D. Cars</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F34</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de cases compte un échiquier ?</div><div class="q-answer">64</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F35</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans Harry Potter, quelle est la maison de Harry ?</div><ul class="q-choices"><li>A. Serpentard</li><li>B. Poufsouffle</li><li>C. Serdaigle</li><li class="correct">D. Gryffondor</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F36</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel ennemi iconique dit « Je suis ton père » ?</div><div class="q-answer">Dark Vador</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F37</span><span class="q-cat">Sport</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel pays a remporté la Coupe du Monde 2018 ?</div><ul class="q-choices"><li>A. Brésil</li><li>B. Allemagne</li><li class="correct">C. France</li><li>D. Argentine</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F38</span><span class="q-cat">Sport</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de joueurs dans une équipe de basket ?</div><ul class="q-choices"><li>A. 4</li><li class="correct">B. 5</li><li>C. 6</li><li>D. 7</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F39</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel rappeur est surnommé « Slim Shady » ?</div><div class="q-answer">Eminem</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F40</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel acteur joue Thor dans le MCU ?</div><ul class="q-choices"><li>A. Chris Evans</li><li class="correct">B. Chris Hemsworth</li><li>C. Chris Pratt</li><li>D. RDJ</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F41</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est l'animal le plus rapide du monde ?</div><div class="q-answer">Le guépard</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F42</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel jeu est le plus vendu de l'histoire ?</div><ul class="q-choices"><li>A. Tetris</li><li>B. GTA V</li><li class="correct">C. Minecraft</li><li>D. CoD</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F43</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Dans quel jeu trouve-t-on des « Champions » avant chaque partie ?</div><div class="q-answer">League of Legends</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F44</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel personnage crie « Hadouken ! » ?</div><ul class="q-choices"><li class="correct">A. Ryu</li><li>B. Ken</li><li>C. Guile</li><li>D. Blanka</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F45</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le nom de l'épée de Link dans Zelda ?</div><div class="q-answer">Master Sword</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F46</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle franchise est développée par Rockstar Games ?</div><ul class="q-choices"><li>A. AC</li><li class="correct">B. GTA</li><li>C. Far Cry</li><li>D. Watch Dogs</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F47</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">De quelle couleur est Hulk ?</div><div class="q-answer">Vert</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F48</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Qui joue James Bond dans Casino Royale (2006) ?</div><ul class="q-choices"><li>A. Pierce Brosnan</li><li>B. Roger Moore</li><li class="correct">C. Daniel Craig</li><li>D. Sean Connery</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F49</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de zéros dans un million ?</div><div class="q-answer">6</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F50</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel film de Pixar met en scène un poisson clown ?</div><ul class="q-choices"><li>A. Shark Tale</li><li class="correct">B. Nemo</li><li>C. Aquaman</li><li>D. Splash</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F51</span><span class="q-cat">Histoire</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel pays a inventé les Jeux Olympiques ?</div><div class="q-answer">Grèce</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F52</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel pays est connu pour la pizza et les pâtes ?</div><ul class="q-choices"><li>A. France</li><li>B. Grèce</li><li>C. Espagne</li><li class="correct">D. Italie</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F53</span><span class="q-cat">Manga</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le nom du personnage principal de Naruto ?</div><div class="q-answer">Naruto Uzumaki</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F54</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel acteur joue Ethan Hunt dans Mission Impossible ?</div><ul class="q-choices"><li>A. Matt Damon</li><li class="correct">B. Tom Cruise</li><li>C. Will Smith</li><li>D. Stallone</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F55</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est l'animal symbole de la paix ?</div><div class="q-answer">La colombe</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F56</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel rappeur s'appelle Aubrey Drake Graham ?</div><ul class="q-choices"><li>A. Kendrick</li><li class="correct">B. Drake</li><li>C. J. Cole</li><li>D. Travis</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F57</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel instrument jouait Beethoven ?</div><div class="q-answer">Piano</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F58</span><span class="q-cat">Géographie</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Combien de continents sur Terre ?</div><ul class="q-choices"><li>A. 5</li><li>B. 6</li><li class="correct">C. 7</li><li>D. 8</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F59</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle est la vitesse de la lumière (en km/s) ?</div><div class="q-answer">300 000 km/s</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F60</span><span class="q-cat">Littérature</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Qui est l'auteur de Harry Potter ?</div><ul class="q-choices"><li>A. Tolkien</li><li>B. C.S. Lewis</li><li class="correct">C. J.K. Rowling</li><li>D. Roald Dahl</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F61</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le pays le plus froid du monde ?</div><div class="q-answer">Antarctique</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F62</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle franchise de JV propose des « Master Chief » ?</div><ul class="q-choices"><li>A. Destiny</li><li>B. Warframe</li><li class="correct">C. Halo</li><li>D. Anthem</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F63</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel jeu propose de construire et survivre avec des blocs ?</div><div class="q-answer">Minecraft</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F64</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel film raconte l'histoire d'un homme seul sur une île déserte avec un ballon ?</div><ul class="q-choices"><li class="correct">A. Seul au monde</li><li>B. The Beach</li><li>C. Robinson</li><li>D. Survivant</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F65</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel chanteur est connu pour « Thriller » et « Billie Jean » ?</div><div class="q-answer">Michael Jackson</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F66</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle couleur représente le danger sur un feu tricolore ?</div><ul class="q-choices"><li>A. Vert</li><li>B. Orange</li><li class="correct">C. Rouge</li><li>D. Blanc</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F67</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le nom de la franchise Nintendo avec karts et champignons ?</div><div class="q-answer">Mario Kart</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F68</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le sport principal de NBA 2K ?</div><ul class="q-choices"><li>A. Football</li><li>B. Tennis</li><li class="correct">C. Basketball</li><li>D. Baseball</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F69</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel personnage principal incarne-t-on dans les jeux Zelda ?</div><div class="q-answer">Link</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F70</span><span class="q-cat">Géographie</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle est la capitale de l'Australie ?</div><ul class="q-choices"><li>A. Sydney</li><li>B. Melbourne</li><li class="correct">C. Canberra</li><li>D. Brisbane</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F71</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Sur quel continent se trouve l'Égypte ?</div><div class="q-answer">Afrique</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F72</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel groupe est derrière l'album « Abbey Road » ?</div><ul class="q-choices"><li>A. Rolling Stones</li><li class="correct">B. The Beatles</li><li>C. Led Zeppelin</li><li>D. The Who</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F73</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le prénom du célèbre détective à la pipe et au manteau ?</div><div class="q-answer">Sherlock (Holmes)</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F74</span><span class="q-cat">Série</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle série Netflix parle de fabrication de drogue à Los Alamos ?</div><ul class="q-choices"><li>A. Narcos</li><li>B. Ozark</li><li class="correct">C. Breaking Bad</li><li>D. Better Call Saul</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F75</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est l'ennemi principal de Mario ?</div><div class="q-answer">Bowser</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F76</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quelle planète a des anneaux visibles ?</div><ul class="q-choices"><li>A. Jupiter</li><li>B. Neptune</li><li class="correct">C. Saturne</li><li>D. Uranus</li></ul></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F77</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel est le nom du jeu de sport Riot Games avec des agents ?</div><div class="q-answer">Valorant</div></div>
+  <div class="q-card easy"><div class="q-head"><span class="q-num">F78</span><span class="q-cat">Littérature</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-1">1 pt</span></div><div class="q-text">Quel écrivain français a écrit Les Misérables ?</div><ul class="q-choices"><li>A. Voltaire</li><li class="correct">B. Victor Hugo</li><li>C. Balzac</li><li>D. Zola</li></ul></div>
+
+  <!-- MOYENNES -->
+  <h3 id="q-med" style="color:#ffab40">Questions Moyennes — 2 points (72 questions)</h3>
+
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M01</span><span class="q-cat">Histoire</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle année a vu la chute du mur de Berlin ?</div><ul class="q-choices"><li>A. 1987</li><li class="correct">B. 1989</li><li>C. 1991</li><li>D. 1993</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M02</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle est la racine carrée de 196 ?</div><div class="q-answer">14</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M03</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel réalisateur est derrière la trilogie Dark Knight ?</div><ul class="q-choices"><li>A. Tim Burton</li><li>B. Zack Snyder</li><li class="correct">C. Christopher Nolan</li><li>D. Fincher</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M04</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel élément chimique a pour symbole « Fe » ?</div><div class="q-answer">Fer</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M05</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel jeu incarne-t-on un « Vault Dweller » post-nucléaire ?</div><ul class="q-choices"><li>A. Metro</li><li class="correct">B. Fallout</li><li>C. STALKER</li><li>D. Wasteland</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M06</span><span class="q-cat">Histoire</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">En quelle année a eu lieu la Révolution française ?</div><div class="q-answer">1789</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M07</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel acteur joue John Wick ?</div><ul class="q-choices"><li>A. Statham</li><li class="correct">B. Keanu Reeves</li><li>C. The Rock</li><li>D. Tom Hardy</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M08</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le vrai nom de Lady Gaga ?</div><div class="q-answer">Stefani Germanotta</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M09</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel organe produit l'insuline ?</div><ul class="q-choices"><li>A. Foie</li><li>B. Rate</li><li class="correct">C. Pancréas</li><li>D. Rein</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M10</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel jeu incarne-t-on Joel et Ellie dans un monde post-apo ?</div><div class="q-answer">The Last of Us</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M11</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le vrai nom de Stromae ?</div><ul class="q-choices"><li class="correct">A. Paul Van Haver</li><li>B. Pierre Servais</li><li>C. Arnaud Delafont</li><li>D. Louis Bertrand</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M12</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel groupe est derrière Nevermind et In Utero ?</div><div class="q-answer">Nirvana</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M13</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle saga de jeux propose « Kratos » ?</div><ul class="q-choices"><li class="correct">A. God of War</li><li>B. Devil May Cry</li><li>C. Bayonetta</li><li>D. DMC</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M14</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel film a remporté l'Oscar du meilleur film en 2020 ?</div><div class="q-answer">Parasite</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M15</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel film contient un robot nommé TARS ?</div><ul class="q-choices"><li>A. Ex Machina</li><li class="correct">B. Interstellar</li><li>C. Her</li><li>D. AI</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M16</span><span class="q-cat">Série</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quelle ville se situe la série Narcos ?</div><div class="q-answer">Medellín (Colombie)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M17</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu met en scène Arthur Morgan et le gang Van der Linde ?</div><ul class="q-choices"><li>A. GTA V</li><li class="correct">B. RDR2</li><li>C. Outlaws</li><li>D. Desperados</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M18</span><span class="q-cat">Art</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel peintre a coupé son oreille ?</div><div class="q-answer">Van Gogh</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M19</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Qui a réalisé Pulp Fiction ?</div><ul class="q-choices"><li>A. Scorsese</li><li>B. Lynch</li><li class="correct">C. Tarantino</li><li>D. Coens</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M20</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le seul pays traversé par l'équateur et le tropique du Capricorne ?</div><div class="q-answer">Brésil</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M21</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Qui a composé la bande-son de Star Wars ?</div><ul class="q-choices"><li>A. Hans Zimmer</li><li class="correct">B. John Williams</li><li>C. Morricone</li><li>D. Howard Shore</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M22</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est l'os le plus petit du corps humain ?</div><div class="q-answer">L'étrier (oreille)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M23</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle année est sortie la première PlayStation ?</div><ul class="q-choices"><li>A. 1992</li><li>B. 1993</li><li class="correct">C. 1994</li><li>D. 1995</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M24</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel élément chimique a pour symbole « Au » ?</div><div class="q-answer">Or</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M25</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel rappeur a sorti l'album « DAMN. » ?</div><ul class="q-choices"><li>A. Drake</li><li>B. J. Cole</li><li class="correct">C. Kendrick Lamar</li><li>D. Kanye</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M26</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu compétitif de Blizzard met en scène des « héros » en 5v5 ?</div><div class="q-answer">Overwatch</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M27</span><span class="q-cat">Série</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Combien de saisons compte Game of Thrones ?</div><div class="q-answer">8</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M28</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel acteur joue Tony Montana dans Scarface ?</div><ul class="q-choices"><li>A. De Niro</li><li class="correct">B. Al Pacino</li><li>C. Nicholson</li><li>D. Brando</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M29</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel jeu chasse-t-on des monstres géants avec des armes variées ?</div><div class="q-answer">Monster Hunter</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M30</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel titre original porte le premier épisode de Star Wars (Ep. IV) ?</div><ul class="q-choices"><li>A. The Force Awakens</li><li class="correct">B. A New Hope</li><li>C. Return of the Jedi</li><li>D. The Phantom Menace</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M31</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Combien de pays composent l'Union Européenne ?</div><div class="q-answer">27</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M32</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu de rôle propose des « Champions » à Los Santos virtuels ?</div><ul class="q-choices"><li>A. GTA RP</li><li class="correct">B. Disco Elysium</li><li>C. Cyberpunk</li><li>D. Sleeping Dogs</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M33</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel rappeur français s'appelle Aurélien Cotentin ?</div><div class="q-answer">Ninho</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M34</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quelle franchise jouent des « Operators » dans un FPS tactique ?</div><ul class="q-choices"><li>A. CS:GO</li><li class="correct">B. Valorant</li><li>C. R6</li><li>D. Overwatch</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M35</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel pays est né Freddie Mercury ?</div><div class="q-answer">Tanzanie</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M36</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel groupe de rock est derrière « OK Computer » et « The Bends » ?</div><ul class="q-choices"><li>A. Oasis</li><li class="correct">B. Radiohead</li><li>C. Muse</li><li>D. Blur</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M37</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle est la capitale du Canada ?</div><div class="q-answer">Ottawa</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M38</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel film Matt Damon survit-il seul sur Mars ?</div><ul class="q-choices"><li>A. Gravity</li><li class="correct">B. The Martian</li><li>C. Europa</li><li>D. Ad Astra</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M39</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Combien de personnes jouent dans un match CS:GO standard ?</div><div class="q-answer">10 (5v5)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M40</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le signe chimique de l'argent ?</div><ul class="q-choices"><li class="correct">A. Ag</li><li>B. Al</li><li>C. Sb</li><li>D. Ar</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M41</span><span class="q-cat">Manga</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le pays d'origine de l'anime Attack on Titan ?</div><div class="q-answer">Japon</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M42</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Qui est l'antagoniste principal de Matrix ?</div><ul class="q-choices"><li>A. Neo</li><li>B. Morpheus</li><li class="correct">C. Agent Smith</li><li>D. Le Mérovingien</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M43</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu Riot oppose des voitures rocket dans des matchs de foot ?</div><div class="q-answer">Rocket League</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M44</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le nom du personnage principal de Cyberpunk 2077 ?</div><div class="q-answer">V</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M45</span><span class="q-cat">Série</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel pays se déroule Squid Game ?</div><ul class="q-choices"><li>A. Japon</li><li>B. Chine</li><li class="correct">C. Corée du Sud</li><li>D. Thaïlande</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M46</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le nom du studio derrière Dark Souls et Elden Ring ?</div><div class="q-answer">FromSoftware</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M47</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel rappeur français a sorti l'album « Trône » ?</div><ul class="q-choices"><li>A. Nekfeu</li><li class="correct">B. Booba</li><li>C. Jul</li><li>D. SCH</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M48</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle est la langue officielle du Brésil ?</div><div class="q-answer">Portugais</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M49</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel film de Denis Villeneuve adapte le roman de Frank Herbert ?</div><ul class="q-choices"><li>A. Arrival</li><li>B. Sicario</li><li class="correct">C. Dune</li><li>D. Blade Runner 2049</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M50</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel rappeur s'appelle Calvin Cordozar Broadus Jr. ?</div><div class="q-answer">Snoop Dogg</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M51</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel jeu gère-t-on un parc avec des dinosaures ?</div><ul class="q-choices"><li>A. Wildlife Park</li><li>B. Zoo Tycoon</li><li class="correct">C. Jurassic World Evolution</li><li>D. Planet Zoo</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M52</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le nom du moteur de jeu créé par Epic Games ?</div><div class="q-answer">Unreal Engine</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M53</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel groupe de K-Pop est le plus vendu de l'histoire ?</div><ul class="q-choices"><li>A. EXO</li><li>B. BLACKPINK</li><li class="correct">C. BTS</li><li>D. TWICE</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M54</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">En quelle année a été lancé YouTube ?</div><div class="q-answer">2005</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M55</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu de stratégie a popularisé « rush » et « build order » ?</div><ul class="q-choices"><li>A. WarCraft</li><li>B. Age of Empires</li><li class="correct">C. StarCraft</li><li>D. C&amp;C</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M56</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le vrai nom de l'artiste The Weeknd ?</div><div class="q-answer">Abel Tesfaye</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M57</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel acteur joue l'agent 007 dans Casino Royale 2006 ?</div><ul class="q-choices"><li>A. Brosnan</li><li>B. Moore</li><li class="correct">C. Daniel Craig</li><li>D. Connery</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M58</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le type de jeu où chaque mort est permanente ?</div><div class="q-answer">Roguelike (ou roguelite)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M59</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel instrument joue Travis Scott sur scène ?</div><ul class="q-choices"><li>A. Guitare</li><li>B. Platines</li><li>C. Basse</li><li class="correct">D. Aucun (rappeur)</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M60</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel jeu de survie solo met en scène deux personnages dont un enfant portant des cornes ?</div><div class="q-answer">Ico (ou Shadow of the Colossus)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M61</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel réalisateur est derrière Inception, Tenet et Oppenheimer ?</div><ul class="q-choices"><li>A. Villeneuve</li><li class="correct">B. Christopher Nolan</li><li>C. Ridley Scott</li><li>D. Cameron</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M62</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le nom de la théorie d'Adam Smith sur l'économie ?</div><div class="q-answer">La main invisible du marché</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M63</span><span class="q-cat">Série</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle série policière danoise a inspiré la série The Killing ?</div><ul class="q-choices"><li class="correct">A. Forbrydelsen</li><li>B. Borgen</li><li>C. The Bridge</li><li>D. Dicte</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M64</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel est le titre de l'album le plus vendu de tous les temps ?</div><div class="q-answer">Thriller (Michael Jackson)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M65</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quel jeu explorer une Angleterre médiévale en tant que Viking ?</div><ul class="q-choices"><li>A. Kingdom Come</li><li>B. Dying Light 2</li><li class="correct">C. Valhalla</li><li>D. For Honor</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M66</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel pays abrite le studio de cinéma universel Hollywood ?</div><div class="q-answer">États-Unis (Los Angeles)</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M67</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel philosophe a dit « Je pense donc je suis » ?</div><ul class="q-choices"><li>A. Platon</li><li>B. Aristote</li><li class="correct">C. Descartes</li><li>D. Nietzsche</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M68</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel constructeur automobile produit la Lamborghini ?</div><div class="q-answer">Volkswagen Group</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M69</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quelle couleur n'est PAS dans l'arc-en-ciel classique ?</div><ul class="q-choices"><li>A. Violet</li><li>B. Indigo</li><li class="correct">C. Rose</li><li>D. Vert</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M70</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Dans quelle franchise de JV les joueurs affrontent-ils des « Titans » ?</div><div class="q-answer">Attack on Titan / Wings of Freedom</div></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M71</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel rappeur a sorti « God's Plan » et « One Dance » ?</div><ul class="q-choices"><li>A. Travis Scott</li><li>B. J. Cole</li><li class="correct">C. Drake</li><li>D. Cardi B</li></ul></div>
+  <div class="q-card medium"><div class="q-head"><span class="q-num">M72</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-2">2 pts</span></div><div class="q-text">Quel personnage de DC Comics est surnommé « The Caped Crusader » ?</div><div class="q-answer">Batman</div></div>
+
+  <!-- DIFFICILES -->
+  <h3 id="q-hard" style="color:#ff6b6b">Questions Difficiles — 3 points (40 questions)</h3>
+
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D01</span><span class="q-cat">Sciences</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel théorème affirme qu'il existe des vérités indémontrables ?</div><ul class="q-choices"><li>A. Bayes</li><li class="correct">B. Gödel</li><li>C. Pythagore</li><li>D. Russell</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D02</span><span class="q-cat">Mathématiques</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quelle est la racine cubique de 512 ?</div><div class="q-answer">8</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D03</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans quel jeu « Handsome Jack » est l'antagoniste principal ?</div><ul class="q-choices"><li class="correct">A. Borderlands 2</li><li>B. Borderlands 3</li><li>C. BioShock Infinite</li><li>D. Dishonored</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D04</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel pays est constitué de 7 000 îles et a Manille pour capitale ?</div><div class="q-answer">Philippines</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D05</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel réalisateur a mis en scène Parasite (2019) ?</div><ul class="q-choices"><li>A. Park Chan-wook</li><li>B. Kim Ki-duk</li><li class="correct">C. Bong Joon-ho</li><li>D. Lee Chang-dong</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D06</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le nom du studio qui a développé Sekiro: Shadows Die Twice ?</div><div class="q-answer">FromSoftware</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D07</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans Dune, quelle est la substance la plus précieuse de l'univers ?</div><ul class="q-choices"><li>A. L'Aqua Vitae</li><li>B. La Mélanine</li><li class="correct">C. L'Épice</li><li>D. Le Duranium</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D08</span><span class="q-cat">Sport</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel pays a remporté le plus de Coupes du Monde de football ?</div><div class="q-answer">Brésil (5 titres)</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D09</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel compositeur sourd a composé sa 9ᵉ symphonie ?</div><ul class="q-choices"><li>A. Bach</li><li>B. Schubert</li><li class="correct">C. Beethoven</li><li>D. Brahms</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D10</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">En cinéma, que signifie l'acronyme IMAX ?</div><div class="q-answer">Image Maximum</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D11</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel jeu a créé le sous-genre « Soulslike » ?</div><ul class="q-choices"><li>A. Dark Souls</li><li class="correct">B. Demon's Souls</li><li>C. Bloodborne</li><li>D. Sekiro</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D12</span><span class="q-cat">Histoire</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">En quelle année Neil Armstrong a-t-il marché sur la Lune ?</div><div class="q-answer">1969</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D13</span><span class="q-cat">Cinéma</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel réalisateur est derrière Blade Runner 2049 ?</div><ul class="q-choices"><li>A. Ridley Scott</li><li>B. Christopher Nolan</li><li class="correct">C. Denis Villeneuve</li><li>D. Alex Garland</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D14</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le signe chimique de l'argent ?</div><div class="q-answer">Ag</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D15</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans quel jeu incarne-t-on un détective dans une ville de fantasy existentielle ?</div><ul class="q-choices"><li>A. Shadowrun</li><li class="correct">B. Disco Elysium</li><li>C. Planescape Torment</li><li>D. Vampire Bloodlines</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D16</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quelle est la fréquence standard d'un écran « compétitif » gaming ?</div><div class="q-answer">144 Hz</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D17</span><span class="q-cat">Culture générale</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel terme désigne une position de marché avec un seul acheteur ?</div><ul class="q-choices"><li>A. Oligopole</li><li>B. Monopole</li><li class="correct">C. Monopsone</li><li>D. Duopole</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D18</span><span class="q-cat">Gaming</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans quel jeu le terme « Tetrominoes » est fondamental ?</div><div class="q-answer">Tetris</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D19</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le terme pour le délai entre une action joueur et sa réponse à l'écran ?</div><ul class="q-choices"><li>A. Framerate</li><li class="correct">B. Input lag</li><li>C. Refresh rate</li><li>D. V-Sync</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D20</span><span class="q-cat">Littérature</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel écrivain américain a créé Jay Gatsby ?</div><div class="q-answer">F. Scott Fitzgerald</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D21</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Qui a sorti « Back to Black » en hommage à Nina Simone ?</div><ul class="q-choices"><li>A. Duffy</li><li>B. Adele</li><li class="correct">C. Amy Winehouse</li><li>D. Paloma Faith</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D22</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel compositeur a écrit les Quatre Saisons ?</div><div class="q-answer">Antonio Vivaldi</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D23</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel JRPG a introduit l'Active Time Battle (ATB) ?</div><ul class="q-choices"><li>A. Dragon Quest</li><li class="correct">B. Final Fantasy IV</li><li>C. Chrono Trigger</li><li>D. Xenogears</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D24</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le nom de la loi physique F = ma ?</div><div class="q-answer">Deuxième loi de Newton</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D25</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel terme désigne un jeu généré procéduralement avec mort permanente ?</div><ul class="q-choices"><li>A. Sandbox</li><li>B. Roguelite</li><li class="correct">C. Roguelike</li><li>D. Metroidvania</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D26</span><span class="q-cat">Géographie</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans quel pays se trouve la ville de Bruges ?</div><div class="q-answer">Belgique</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D27</span><span class="q-cat">Sport</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel pays a remporté le plus de médailles d'or aux JO d'été ?</div><ul class="q-choices"><li>A. URSS</li><li>B. Chine</li><li>C. Russie</li><li class="correct">D. USA</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D28</span><span class="q-cat">Sciences</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le nom du mécanisme qui permet à un transistor de fonctionner ?</div><div class="q-answer">L'effet de champ (FET)</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D29</span><span class="q-cat">Géographie</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quelle est la capitale de la Nouvelle-Zélande ?</div><ul class="q-choices"><li>A. Auckland</li><li class="correct">B. Wellington</li><li>C. Christchurch</li><li>D. Hamilton</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D30</span><span class="q-cat">Histoire</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Dans quel pays est né Nikola Tesla ?</div><div class="q-answer">Serbie</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D31</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel terme désigne le mélange exploration et progression de compétences dans des maps liées ?</div><ul class="q-choices"><li>A. Roguelike</li><li class="correct">B. Metroidvania</li><li>C. Open World</li><li>D. Soulslike</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D32</span><span class="q-cat">Cinéma</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel film de Kubrick met en scène Jack Nicholson dans un hôtel hanté ?</div><div class="q-answer">The Shining</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D33</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel jeu de stratégie créé par Sid Meier propose de construire une civilisation ?</div><ul class="q-choices"><li>A. Age of Empires</li><li class="correct">B. Civilization</li><li>C. Total War</li><li>D. Anno</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D34</span><span class="q-cat">Culture</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le terme japonais pour « animation » ?</div><div class="q-answer">Anime</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D35</span><span class="q-cat">Musique</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le vrai nom de l'artiste Stromae ?</div><ul class="q-choices"><li class="correct">A. Paul Van Haver</li><li>B. Pierre Servais</li><li>C. Arnaud Delafont</li><li>D. Louis Bertrand</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D36</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel pays possède le plus grand nombre de langues officielles ?</div><div class="q-answer">Zimbabwe (16 langues officielles)</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D37</span><span class="q-cat">Série</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quelle série policière danoise a inspiré The Killing ?</div><ul class="q-choices"><li class="correct">A. Forbrydelsen</li><li>B. Borgen</li><li>C. The Bridge</li><li>D. Dicte</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D38</span><span class="q-cat">Musique</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel est le nom du système de notation musicale Do-Ré-Mi ?</div><div class="q-answer">Le solfège</div></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D39</span><span class="q-cat">Gaming</span><span class="badge b-qcm">QCM</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">Quel moteur graphique utilise Epic Games pour Fortnite et des AAA ?</div><ul class="q-choices"><li>A. Unity</li><li>B. CryEngine</li><li class="correct">C. Unreal Engine</li><li>D. Source</li></ul></div>
+  <div class="q-card hard"><div class="q-head"><span class="q-num">D40</span><span class="q-cat">Culture générale</span><span class="badge b-libre">Libre</span><span class="badge b-pts-3">3 pts</span></div><div class="q-text">En quelle année a été fondé Google ?</div><div class="q-answer">1998</div></div>
+
+  <!-- BLIND TESTS -->
+  <h3 id="q-blind" style="color:#b39ddb">Blind Tests — Manche 2, Q4 — 15 secondes (10 questions)</h3>
+
+  <blockquote>Les réponses dépendent de la playlist de l'animateur.</blockquote>
+
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B01</span><span class="q-cat">Musique</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Identifiez le titre et l'artiste de cet extrait.</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B02</span><span class="q-cat">Musique</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">De quelle année date ce titre ? Soyez précis.</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B03</span><span class="q-cat">Gaming</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Identifiez ce son iconique de jeu vidéo.</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B04</span><span class="q-cat">Cinéma</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">De quel film est issue cette bande-son ?</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B05</span><span class="q-cat">Série</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Identifiez le générique de cette série.</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B06</span><span class="q-cat">Musique</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Quel est le genre musical de cet extrait ?</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B07</span><span class="q-cat">Gaming/Cinéma</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Ce son provient d'un jeu ou d'un film. Lequel ?</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B08</span><span class="q-cat">Musique</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Identifiez le rappeur ou la rappeuse.</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B09</span><span class="q-cat">Musique</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Quelle est la nationalité de l'artiste ?</div><div class="q-answer">Playlist animateur</div></div>
+  <div class="q-card blind"><div class="q-head"><span class="q-num">B10</span><span class="q-cat">Gaming</span><span class="badge b-blind">Blind</span><span class="badge b-pts-v">15s</span></div><div class="q-text">Identifiez ce thème musical de jeu vidéo.</div><div class="q-answer">Playlist animateur</div></div>
+
+</div>
+<div class="lock-overlay" data-section="ques">
+  <div class="lock-big">🔒</div>
+  <div class="lock-msg">Accès restreint</div>
+  <div class="lock-sub">Code requis pour consulter la banque de questions</div>
+  <button class="lock-btn">🔐 Voir comment accéder</button>
+</div>
+</div>
+</section>
+<footer>
+  MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas
+</footer>
+
+<!-- ===== ZONE IMPRESSION (pour contrats validés) ===== -->
+<div id="print-area"></div>
+
+<!-- ===== MODAL VIEW (contrat validé) ===== -->
+<div class="modal-overlay modal-view" id="view-modal">
+  <div class="modal-view-box">
+    <div class="modal-view-head">
+      <h3 id="view-modal-title">Contrat</h3>
+      <div id="view-modal-actions" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="modal-view-content" id="view-modal-content"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL LOGIN ===== -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Connexion partenaire</div>
+    <h3>Identifiez-vous</h3>
+    <p>Saisissez vos identifiants fournis par l'organisateur.</p>
+    <form id="login-form" onsubmit="return false" style="text-align:left">
+      <label class="auth-label">Nom d'utilisateur</label>
+      <input type="text" id="login-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Mot de passe</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <div class="modal-error" id="login-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeLoginModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="doLogin()">Se connecter</button>
+      </div>
+    </form>
+    <div style="margin-top:14px;text-align:center">
+      <a href="#" onclick="closeLoginModal();openForgotModal();return false" style="color:#aabbc8;font-size:12px;text-decoration:underline">🔐 Mot de passe oublié ?</a>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,212,255,.15);text-align:center;color:#aabbc8;font-size:13px">
+      Pas encore inscrit ?
+      <a href="#" onclick="closeLoginModal();openRegisterModal();return false" style="color:#f5c518;font-weight:700;text-decoration:underline;margin-left:6px">Créer un compte</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL MOT DE PASSE OUBLIÉ ===== -->
+<div class="modal-overlay" id="forgot-modal">
+  <div class="modal" style="max-width:460px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Mot de passe oublié</div>
+    <h3 style="text-align:center" id="forgot-title">Étape 1/3</h3>
+    <div id="forgot-step-1">
+      <p style="text-align:center;color:#aabbc8">Saisissez votre nom d'utilisateur pour récupérer votre mot de passe.</p>
+      <label class="auth-label">Nom d'utilisateur</label>
+      <input type="text" id="forgot-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+    </div>
+    <div id="forgot-step-2" style="display:none">
+      <p style="text-align:center;color:#aabbc8">Répondez à votre question secrète :</p>
+      <div id="forgot-question-display" style="background:#141926;padding:12px;border-radius:8px;border-left:3px solid #f5c518;color:#f5c518;font-style:italic;margin-bottom:12px"></div>
+      <label class="auth-label">Votre réponse</label>
+      <input type="text" id="forgot-answer" placeholder="Réponse à la question" autocomplete="off" class="auth-input">
+    </div>
+    <div id="forgot-step-3" style="display:none">
+      <p style="text-align:center;color:#00e676">✓ Question vérifiée. Définissez votre nouveau mot de passe :</p>
+      <label class="auth-label">Nouveau mot de passe</label>
+      <input type="password" id="forgot-newpwd" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Confirmer</label>
+      <input type="password" id="forgot-newpwd2" placeholder="••••••••" autocomplete="off" class="auth-input">
+    </div>
+    <div class="modal-error" id="forgot-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeForgotModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="forgot-next-btn" onclick="forgotNext()">Continuer →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL INSCRIPTION (auto-inscription partenaire) ===== -->
+<div class="modal-overlay" id="register-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:480px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Inscription partenaire</div>
+    <h3 style="text-align:center">Créer mon compte</h3>
+    <p style="text-align:center;color:#aabbc8">Renseignez les infos de votre entreprise. Votre compte aura accès au Règlement, aux Partenaires et aux Contrats. Pour des droits supplémentaires, contactez l'organisateur.</p>
+    <form id="register-form" onsubmit="return false">
+      <label class="auth-label">Nom d'utilisateur (login)</label>
+      <input type="text" id="reg-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Nom de l'entreprise / affiché</label>
+      <input type="text" id="reg-displayname" placeholder="ex: Vinewood Salon" autocomplete="off" class="auth-input">
+      <label class="auth-label">Mot de passe</label>
+      <input type="password" id="reg-password" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Confirmer le mot de passe</label>
+      <input type="password" id="reg-password2" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Avatar (logo entreprise — optionnel)</label>
+      <div class="avatar-row">
+        <img id="reg-avatar-preview" class="avatar-preview" src="" alt="">
+        <input type="file" id="reg-avatar-file" accept="image/*" style="display:none" onchange="handleRegAvatarUpload(event)">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="document.getElementById('reg-avatar-file').click()">📷 Choisir une image</button>
+      </div>
+      <label class="auth-label">🔐 Question secrète (pour récupérer votre mot de passe)</label>
+      <select id="reg-secret-question" class="auth-input">
+        <option value="">— Choisissez une question —</option>
+        <option value="pet">Quel est le nom de votre premier animal de compagnie ?</option>
+        <option value="mother">Quel est le nom de jeune fille de votre mère ?</option>
+        <option value="city">Dans quelle ville êtes-vous né(e) ?</option>
+        <option value="friend">Quel est le nom de votre meilleur ami d'enfance ?</option>
+        <option value="color">Quelle est votre couleur préférée ?</option>
+        <option value="car">Quel est le modèle de votre première voiture ?</option>
+        <option value="school">Quel était le nom de votre école primaire ?</option>
+      </select>
+      <label class="auth-label">Réponse (sensible à la casse)</label>
+      <input type="text" id="reg-secret-answer" placeholder="Votre réponse" autocomplete="off" class="auth-input">
+      <div class="modal-error" id="register-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeRegisterModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="doRegister()">Créer le compte</button>
+      </div>
+    </form>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,212,255,.15);text-align:center;color:#aabbc8;font-size:12px">
+      Déjà inscrit ?
+      <a href="#" onclick="closeRegisterModal();openLoginModal();return false" style="color:#00d4ff;font-weight:700;text-decoration:underline;margin-left:6px">Se connecter</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL UTILISATEUR (création/édition par admin) ===== -->
+<div class="modal-overlay" id="user-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="user-modal-sub">Créer un utilisateur</div>
+    <h3 id="user-modal-title" style="text-align:center">Nouvel utilisateur</h3>
+    <form id="user-form" onsubmit="return false">
+      <label class="auth-label">Nom d'utilisateur (login)</label>
+      <input type="text" id="user-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Nom affiché (entreprise / personne)</label>
+      <input type="text" id="user-displayname" placeholder="ex: Vinewood Salon" autocomplete="off" class="auth-input">
+      <label class="auth-label" id="user-pw-label">Mot de passe</label>
+      <div style="display:flex;gap:6px;align-items:stretch">
+        <input type="text" id="user-password" placeholder="Mot de passe (visible)" autocomplete="off" class="auth-input" style="flex:1">
+        <button type="button" class="modal-btn modal-btn-secondary" style="padding:0 14px;flex:0" onclick="generateRandomPassword()" title="Générer un nouveau mot de passe aléatoire">🎲 Générer</button>
+      </div>
+      <label class="auth-label">Avatar (image au choix)</label>
+      <div class="avatar-row">
+        <img id="user-avatar-preview" class="avatar-preview" src="" alt="">
+        <input type="file" id="user-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="document.getElementById('user-avatar-file').click()">📷 Choisir une image</button>
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="clearAvatarPreview()">✕</button>
+      </div>
+      <label class="auth-label">Rôle &amp; permissions</label>
+      <div style="background:#141926;padding:12px;border-radius:8px;border:1px solid rgba(0,212,255,.15)">
+        <label class="perm-line"><input type="checkbox" id="user-isadmin"> <strong style="color:#f5c518">👑 Compte ADMIN (tous les droits)</strong></label>
+        <div style="margin:10px 0 6px;font-size:11px;color:#6a7a8a;text-transform:uppercase;letter-spacing:1px">Sections accessibles</div>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="regl" checked> Règlement</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="part" checked> Partenaires</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="contrats" checked> Contrats (consultation &amp; signature)</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="gouv"> Dossier Gouverneur</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="ques"> Banque de Questions</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="budget"> Budget</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="bons"> Bons Officiels</label>
+        <div style="margin:10px 0 6px;font-size:11px;color:#6a7a8a;text-transform:uppercase;letter-spacing:1px">Actions privilégiées</div>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="validate"> Valider les contrats (signature organisateur)</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="all_contracts"> Voir TOUS les contrats des partenaires</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="print"> Imprimer / télécharger PNG</label>
+      </div>
+      <div class="modal-error" id="user-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeUserModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="saveUserFromModal()">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== MODAL PARTICIPANT (création/édition) ===== -->
+<div class="modal-overlay" id="participant-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="part-modal-sub">Inscription au quiz</div>
+    <h3 style="text-align:center" id="part-modal-title">Nouveau participant</h3>
+    <p style="text-align:center;color:#aabbc8;font-size:13px">Renseignez vos informations <strong style="color:#f5c518">in-game</strong>. Aucune information IRL n'est demandée — immersion totale.</p>
+
+    <label class="auth-label">🎮 ID en jeu</label>
+    <input type="text" id="part-ingameid" class="auth-input" placeholder="ex: 1234" autocomplete="off">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <label class="auth-label">Prénom (in-game)</label>
+        <input type="text" id="part-firstname" class="auth-input" placeholder="Prénom RP" autocomplete="off">
+      </div>
+      <div style="flex:1;min-width:160px">
+        <label class="auth-label">Nom (in-game)</label>
+        <input type="text" id="part-lastname" class="auth-input" placeholder="Nom RP" autocomplete="off">
+      </div>
+    </div>
+    <label class="auth-label">📞 Téléphone (in-game) <span style="color:#6a7a8a;font-weight:400;text-transform:none;letter-spacing:0">— format obligatoire : XXX-XXXX</span></label>
+    <input type="text" id="part-phone" class="auth-input" placeholder="123-4567" autocomplete="off" maxlength="8">
+    <label class="auth-label">💳 IBAN (in-game) — pour récompenses</label>
+    <input type="text" id="part-iban" class="auth-input" placeholder="ex: FR76..." autocomplete="off">
+
+    <div id="part-admin-section" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,212,255,.15)">
+      <label class="auth-label">⚙ Statut (admin uniquement)</label>
+      <select id="part-status" class="auth-input">
+        <option value="pending">⏳ En attente de validation</option>
+        <option value="confirmed">✓ Confirmé (tirable)</option>
+        <option value="absent">✕ Absent</option>
+        <option value="qualified">🏆 Qualifié</option>
+      </select>
+      <label class="auth-label">📝 Notes (admin)</label>
+      <textarea id="part-notes" class="auth-input" placeholder="Notes internes..." style="min-height:60px;resize:vertical;font-family:inherit"></textarea>
+    </div>
+    <div class="modal-error" id="part-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeParticipantModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="saveParticipant()">Valider mon inscription</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL MESSAGERIE ===== -->
+<div class="modal-overlay" id="message-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Contacter l'organisateur</div>
+    <h3 style="text-align:center">📨 Nouveau message</h3>
+    <p style="text-align:center;color:#aabbc8;font-size:13px">Posez votre question ou faites une demande à BoulaTV.</p>
+    <label class="auth-label">Sujet</label>
+    <input type="text" id="msg-subject" placeholder="ex: Question sur mon contrat" autocomplete="off" class="auth-input">
+    <label class="auth-label">Message</label>
+    <textarea id="msg-body" placeholder="Tapez votre message..." class="auth-input" style="min-height:120px;resize:vertical;font-family:inherit"></textarea>
+    <div class="modal-error" id="msg-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeMessageModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="sendMessage()">📨 Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL BOÎTE DE RÉCEPTION (liste threads) ===== -->
+<div class="modal-overlay" id="inbox-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:600px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">📬 Messagerie</div>
+    <h3 style="text-align:center">Mes conversations</h3>
+    <div id="inbox-list" style="max-height:50vh;overflow-y:auto;margin:14px 0"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeInboxModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="inbox-new-btn" onclick="closeInboxModal();openComposeModal()">📨 Nouveau message</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CONVERSATION (thread bidirectionnel) ===== -->
+<div class="modal-overlay" id="msg-view-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:620px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="msg-view-from">Conversation</div>
+    <h3 style="text-align:center" id="msg-view-subject">Sujet</h3>
+    <p style="color:#6a7a8a;font-size:11px;text-align:center;letter-spacing:1px;margin-bottom:14px" id="msg-view-date"></p>
+    <div id="msg-view-body" style="background:#0f1420;padding:16px;border-radius:8px;border:1px solid rgba(0,212,255,.15);max-height:45vh;overflow-y:auto;margin-bottom:12px"></div>
+    <label class="auth-label">✍ Votre réponse</label>
+    <textarea id="msg-reply-body" class="auth-input" placeholder="Tapez votre réponse..." style="min-height:80px;resize:vertical;font-family:inherit"></textarea>
+    <div class="modal-error" id="msg-reply-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeMsgViewModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="sendReply()">📨 Envoyer la réponse</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== MODAL QR CODE ===== -->
+<div class="modal-overlay" id="qr-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Contrat à scanner</div>
+    <h3 id="qr-modal-title">QR Code du contrat</h3>
+    <div id="qr-modal-canvas" style="display:flex;justify-content:center;background:#fff;padding:18px;border-radius:10px;margin:12px 0"></div>
+    <p id="qr-modal-url" style="font-size:11px;color:#aabbc8;word-break:break-all;font-family:monospace;text-align:center;background:#141926;padding:8px;border-radius:6px;border:1px solid rgba(0,212,255,.18)"></p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeQrModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="downloadQrPng()">⬇ Télécharger PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODE PRÉSENTATION PLEIN ÉCRAN ===== -->
+<div class="present-overlay" id="present-overlay">
+  <div class="present-bar">
+    <div class="present-bar-title">
+      <div class="pbt-icon" id="present-icon">📄</div>
+      <div class="pbt-text">
+        <strong id="present-title">Contrat</strong>
+        <span id="present-subtitle">Mode présentation</span>
+      </div>
+    </div>
+    <div class="present-bar-actions">
+      <button class="present-close" onclick="closePresent()">✕ Quitter</button>
+    </div>
+  </div>
+  <div class="present-content" id="present-content"></div>
+</div>
+
+<!-- ===== MODAL DIALOGUE UNIVERSEL (alert/confirm/prompt custom) ===== -->
+<div class="modal-overlay" id="dlg-modal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-logo" id="dlg-icon"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" id="dlg-title">Information</div>
+    <p id="dlg-msg" style="white-space:pre-wrap"></p>
+    <input type="text" id="dlg-input" style="display:none;width:100%;padding:12px 14px;background:#141926;border:1px solid rgba(0,212,255,.3);border-radius:8px;color:#dce4f0;font-size:16px;font-family:inherit;letter-spacing:1.5px;text-align:center;outline:none;margin-bottom:6px" autocomplete="off">
+    <div class="modal-error" id="dlg-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" id="dlg-cancel">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="dlg-ok">Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CODE ===== -->
+<div class="modal-overlay" id="mc-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mc-modal-title">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Accès restreint</div>
+    <h3 id="mc-modal-title">Code requis</h3>
+    <p>Cette section est protégée. Saisissez le code d'accès pour continuer.</p>
+    <form id="mc-code-form" onsubmit="return false">
+      <input type="password" id="mc-code-input" placeholder="••••••••" autocomplete="off" maxlength="32" inputmode="text">
+      <div class="modal-error" id="mc-code-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" id="mc-code-cancel">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" id="mc-code-submit">Accéder</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/default_templates.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/sw-register.js" defer></script>
+</body>
+</html>

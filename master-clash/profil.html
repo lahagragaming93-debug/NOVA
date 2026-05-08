@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Profil — MASTER CLASH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/lazy-libs.js" defer></script>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="assets/site.webmanifest">
+<link rel="shortcut icon" href="assets/favicon.ico">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="assets/firebase-init.js"></script>
+<script src="assets/firebase-data.js"></script>
+<script src="assets/firebase-sync.js"></script>
+<script src="assets/firebase-users.js"></script>
+<script src="assets/firebase-messages.js"></script>
+<script src="assets/firebase-participants.js"></script>
+<script src="assets/firebase-contracts.js"></script>
+<script src="assets/firebase-budget.js"></script>
+</head>
+<body data-page="profil">
+<nav class="nav">
+  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <div class="nav-links">
+    <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
+    <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
+    <a href="partenaires.html" title="Partenaires"><span class="nav-icon">🤝</span><span class="nav-text">Partenaires</span></a>
+    <a href="contrats.html" class="locked-link" data-section="contrats" title="Contrats &amp; Bons"><span class="lock-icon">🔒</span><span class="nav-icon">📋</span><span class="nav-text">Contrats</span></a>
+    <a href="questions.html" class="locked-link" data-section="ques" title="Banque de Questions"><span class="lock-icon">🔒</span><span class="nav-icon">❓</span><span class="nav-text">Questions</span></a>
+    <a href="budget.html" class="locked-link" data-section="budget" title="Budget"><span class="lock-icon">🔒</span><span class="nav-icon">💰</span><span class="nav-text">Budget</span></a>
+    <a href="participants.html" id="nav-participants-link" style="display:none" title="Participants"><span class="nav-icon">🎯</span><span class="nav-text">Participants</span></a>
+    <a href="profil.html" id="nav-profil-link" style="display:none" title="Mon profil"><span class="nav-icon">👤</span><span class="nav-text">Profil</span></a>
+    <a href="admin.html" class="locked-link" data-section="admin" title="Administration"><span class="lock-icon">🔒</span><span class="nav-icon">🔧</span><span class="nav-text">Admin</span></a>
+  </div>
+  <div class="nav-user" id="nav-user">
+    <button class="nav-msg-btn" id="nav-msg-btn" onclick="openMessageModal()" style="display:none" title="Contacter l'organisateur">📨</button><div class="nav-notif-wrap" id="nav-notif-wrap" style="display:none"><button class="nav-bell" id="nav-bell" onclick="toggleNotifs(event)">🔔<span class="nav-notif-count" id="nav-notif-count">0</span></button><div class="nav-notif-dropdown" id="nav-notif-dropdown"><div class="nav-notif-head"><strong>Notifications</strong><button class="nav-notif-mark" onclick="markAllNotifsRead()">✓ Tout marquer lu</button></div><div class="nav-notif-list" id="nav-notif-list"></div></div></div><button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
+    <div class="nav-user-box" id="nav-user-box" style="display:none">
+      <img class="nav-avatar" id="nav-avatar" src="" alt="">
+      <div class="nav-user-text">
+        <div class="nav-username" id="nav-username"></div>
+        <div class="nav-userrole" id="nav-userrole"></div>
+      </div>
+      <button class="nav-logout-btn" onclick="doLogout()" title="Déconnexion">⏻</button>
+    </div>
+  </div>
+</nav>
+<!-- ===== SECTION MON PROFIL (utilisateur connecté) ===== -->
+<section id="profil">
+  <h2 class="section-title">👤 Mon profil</h2>
+  <div class="section-subtitle">Gérer mes informations</div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📝 Mes informations</h3>
+    <div class="avatar-row" style="margin-bottom:14px">
+      <img id="profil-avatar-preview" class="avatar-preview" style="width:80px;height:80px" src="" alt="">
+      <input type="file" id="profil-avatar-file" accept="image/*" style="display:none" onchange="handleProfilAvatarUpload(event)">
+      <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('profil-avatar-file').click()">📷 Changer mon avatar / logo</button>
+    </div>
+    <label class="auth-label">Nom d'utilisateur (login) — non modifiable</label>
+    <input type="text" id="profil-username" class="auth-input" disabled>
+    <label class="auth-label">Nom affiché (entreprise / personne)</label>
+    <input type="text" id="profil-displayname" class="auth-input">
+    <button class="admin-btn" onclick="saveMyProfile()" style="margin-top:14px">💾 Enregistrer mes informations</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🔑 Changer mon mot de passe</h3>
+    <label class="auth-label">Mot de passe actuel</label>
+    <input type="password" id="profil-oldpwd" class="auth-input">
+    <label class="auth-label">Nouveau mot de passe</label>
+    <input type="password" id="profil-newpwd" class="auth-input">
+    <label class="auth-label">Confirmer le nouveau mot de passe</label>
+    <input type="password" id="profil-newpwd2" class="auth-input">
+    <button class="admin-btn" onclick="changeMyPassword()" style="margin-top:14px">🔑 Changer mon mot de passe</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🔐 Question secrète</h3>
+    <p>Permet de récupérer votre mot de passe en cas d'oubli.</p>
+    <label class="auth-label">Question secrète</label>
+    <select id="profil-secret-question" class="auth-input">
+      <option value="">— Choisissez une question —</option>
+      <option value="pet">Quel est le nom de votre premier animal de compagnie ?</option>
+      <option value="mother">Quel est le nom de jeune fille de votre mère ?</option>
+      <option value="city">Dans quelle ville êtes-vous né(e) ?</option>
+      <option value="friend">Quel est le nom de votre meilleur ami d'enfance ?</option>
+      <option value="color">Quelle est votre couleur préférée ?</option>
+      <option value="car">Quel est le modèle de votre première voiture ?</option>
+      <option value="school">Quel était le nom de votre école primaire ?</option>
+    </select>
+    <label class="auth-label">Réponse</label>
+    <input type="password" id="profil-secret-answer" class="auth-input">
+    <button class="admin-btn" onclick="saveMySecret()" style="margin-top:14px">💾 Enregistrer ma question secrète</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📋 Mes contrats</h3>
+    <div id="profil-mes-contrats"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📜 Mon historique d'activité</h3>
+    <p style="color:#aabbc8;font-size:13px">Les 50 dernières actions de votre compte.</p>
+    <div id="profil-mes-logs"></div>
+  </div>
+</section>
+<footer>
+  MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas
+</footer>
+
+<!-- ===== ZONE IMPRESSION (pour contrats validés) ===== -->
+<div id="print-area"></div>
+
+<!-- ===== MODAL VIEW (contrat validé) ===== -->
+<div class="modal-overlay modal-view" id="view-modal">
+  <div class="modal-view-box">
+    <div class="modal-view-head">
+      <h3 id="view-modal-title">Contrat</h3>
+      <div id="view-modal-actions" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="modal-view-content" id="view-modal-content"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL LOGIN ===== -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Connexion partenaire</div>
+    <h3>Identifiez-vous</h3>
+    <p>Saisissez vos identifiants fournis par l'organisateur.</p>
+    <form id="login-form" onsubmit="return false" style="text-align:left">
+      <label class="auth-label">Nom d'utilisateur</label>
+      <input type="text" id="login-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Mot de passe</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <div class="modal-error" id="login-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeLoginModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="doLogin()">Se connecter</button>
+      </div>
+    </form>
+    <div style="margin-top:14px;text-align:center">
+      <a href="#" onclick="closeLoginModal();openForgotModal();return false" style="color:#aabbc8;font-size:12px;text-decoration:underline">🔐 Mot de passe oublié ?</a>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,212,255,.15);text-align:center;color:#aabbc8;font-size:13px">
+      Pas encore inscrit ?
+      <a href="#" onclick="closeLoginModal();openRegisterModal();return false" style="color:#f5c518;font-weight:700;text-decoration:underline;margin-left:6px">Créer un compte</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL MOT DE PASSE OUBLIÉ ===== -->
+<div class="modal-overlay" id="forgot-modal">
+  <div class="modal" style="max-width:460px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Mot de passe oublié</div>
+    <h3 style="text-align:center" id="forgot-title">Étape 1/3</h3>
+    <div id="forgot-step-1">
+      <p style="text-align:center;color:#aabbc8">Saisissez votre nom d'utilisateur pour récupérer votre mot de passe.</p>
+      <label class="auth-label">Nom d'utilisateur</label>
+      <input type="text" id="forgot-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+    </div>
+    <div id="forgot-step-2" style="display:none">
+      <p style="text-align:center;color:#aabbc8">Répondez à votre question secrète :</p>
+      <div id="forgot-question-display" style="background:#141926;padding:12px;border-radius:8px;border-left:3px solid #f5c518;color:#f5c518;font-style:italic;margin-bottom:12px"></div>
+      <label class="auth-label">Votre réponse</label>
+      <input type="text" id="forgot-answer" placeholder="Réponse à la question" autocomplete="off" class="auth-input">
+    </div>
+    <div id="forgot-step-3" style="display:none">
+      <p style="text-align:center;color:#00e676">✓ Question vérifiée. Définissez votre nouveau mot de passe :</p>
+      <label class="auth-label">Nouveau mot de passe</label>
+      <input type="password" id="forgot-newpwd" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Confirmer</label>
+      <input type="password" id="forgot-newpwd2" placeholder="••••••••" autocomplete="off" class="auth-input">
+    </div>
+    <div class="modal-error" id="forgot-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeForgotModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="forgot-next-btn" onclick="forgotNext()">Continuer →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL INSCRIPTION (auto-inscription partenaire) ===== -->
+<div class="modal-overlay" id="register-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:480px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Inscription partenaire</div>
+    <h3 style="text-align:center">Créer mon compte</h3>
+    <p style="text-align:center;color:#aabbc8">Renseignez les infos de votre entreprise. Votre compte aura accès au Règlement, aux Partenaires et aux Contrats. Pour des droits supplémentaires, contactez l'organisateur.</p>
+    <form id="register-form" onsubmit="return false">
+      <label class="auth-label">Nom d'utilisateur (login)</label>
+      <input type="text" id="reg-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Nom de l'entreprise / affiché</label>
+      <input type="text" id="reg-displayname" placeholder="ex: Vinewood Salon" autocomplete="off" class="auth-input">
+      <label class="auth-label">Mot de passe</label>
+      <input type="password" id="reg-password" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Confirmer le mot de passe</label>
+      <input type="password" id="reg-password2" placeholder="••••••••" autocomplete="off" class="auth-input">
+      <label class="auth-label">Avatar (logo entreprise — optionnel)</label>
+      <div class="avatar-row">
+        <img id="reg-avatar-preview" class="avatar-preview" src="" alt="">
+        <input type="file" id="reg-avatar-file" accept="image/*" style="display:none" onchange="handleRegAvatarUpload(event)">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="document.getElementById('reg-avatar-file').click()">📷 Choisir une image</button>
+      </div>
+      <label class="auth-label">🔐 Question secrète (pour récupérer votre mot de passe)</label>
+      <select id="reg-secret-question" class="auth-input">
+        <option value="">— Choisissez une question —</option>
+        <option value="pet">Quel est le nom de votre premier animal de compagnie ?</option>
+        <option value="mother">Quel est le nom de jeune fille de votre mère ?</option>
+        <option value="city">Dans quelle ville êtes-vous né(e) ?</option>
+        <option value="friend">Quel est le nom de votre meilleur ami d'enfance ?</option>
+        <option value="color">Quelle est votre couleur préférée ?</option>
+        <option value="car">Quel est le modèle de votre première voiture ?</option>
+        <option value="school">Quel était le nom de votre école primaire ?</option>
+      </select>
+      <label class="auth-label">Réponse (sensible à la casse)</label>
+      <input type="text" id="reg-secret-answer" placeholder="Votre réponse" autocomplete="off" class="auth-input">
+      <div class="modal-error" id="register-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeRegisterModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="doRegister()">Créer le compte</button>
+      </div>
+    </form>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,212,255,.15);text-align:center;color:#aabbc8;font-size:12px">
+      Déjà inscrit ?
+      <a href="#" onclick="closeRegisterModal();openLoginModal();return false" style="color:#00d4ff;font-weight:700;text-decoration:underline;margin-left:6px">Se connecter</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL UTILISATEUR (création/édition par admin) ===== -->
+<div class="modal-overlay" id="user-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="user-modal-sub">Créer un utilisateur</div>
+    <h3 id="user-modal-title" style="text-align:center">Nouvel utilisateur</h3>
+    <form id="user-form" onsubmit="return false">
+      <label class="auth-label">Nom d'utilisateur (login)</label>
+      <input type="text" id="user-username" placeholder="ex: vinewood" autocomplete="off" class="auth-input">
+      <label class="auth-label">Nom affiché (entreprise / personne)</label>
+      <input type="text" id="user-displayname" placeholder="ex: Vinewood Salon" autocomplete="off" class="auth-input">
+      <label class="auth-label" id="user-pw-label">Mot de passe</label>
+      <div style="display:flex;gap:6px;align-items:stretch">
+        <input type="text" id="user-password" placeholder="Mot de passe (visible)" autocomplete="off" class="auth-input" style="flex:1">
+        <button type="button" class="modal-btn modal-btn-secondary" style="padding:0 14px;flex:0" onclick="generateRandomPassword()" title="Générer un nouveau mot de passe aléatoire">🎲 Générer</button>
+      </div>
+      <label class="auth-label">Avatar (image au choix)</label>
+      <div class="avatar-row">
+        <img id="user-avatar-preview" class="avatar-preview" src="" alt="">
+        <input type="file" id="user-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="document.getElementById('user-avatar-file').click()">📷 Choisir une image</button>
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="clearAvatarPreview()">✕</button>
+      </div>
+      <label class="auth-label">Rôle &amp; permissions</label>
+      <div style="background:#141926;padding:12px;border-radius:8px;border:1px solid rgba(0,212,255,.15)">
+        <label class="perm-line"><input type="checkbox" id="user-isadmin"> <strong style="color:#f5c518">👑 Compte ADMIN (tous les droits)</strong></label>
+        <div style="margin:10px 0 6px;font-size:11px;color:#6a7a8a;text-transform:uppercase;letter-spacing:1px">Sections accessibles</div>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="regl" checked> Règlement</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="part" checked> Partenaires</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="contrats" checked> Contrats (consultation &amp; signature)</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="gouv"> Dossier Gouverneur</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="ques"> Banque de Questions</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="budget"> Budget</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="bons"> Bons Officiels</label>
+        <div style="margin:10px 0 6px;font-size:11px;color:#6a7a8a;text-transform:uppercase;letter-spacing:1px">Actions privilégiées</div>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="validate"> Valider les contrats (signature organisateur)</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="all_contracts"> Voir TOUS les contrats des partenaires</label>
+        <label class="perm-line"><input type="checkbox" class="perm-cb" data-perm="print"> Imprimer / télécharger PNG</label>
+      </div>
+      <div class="modal-error" id="user-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeUserModal()">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" onclick="saveUserFromModal()">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== MODAL PARTICIPANT (création/édition) ===== -->
+<div class="modal-overlay" id="participant-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="part-modal-sub">Inscription au quiz</div>
+    <h3 style="text-align:center" id="part-modal-title">Nouveau participant</h3>
+    <p style="text-align:center;color:#aabbc8;font-size:13px">Renseignez vos informations <strong style="color:#f5c518">in-game</strong>. Aucune information IRL n'est demandée — immersion totale.</p>
+
+    <label class="auth-label">🎮 ID en jeu</label>
+    <input type="text" id="part-ingameid" class="auth-input" placeholder="ex: 1234" autocomplete="off">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <label class="auth-label">Prénom (in-game)</label>
+        <input type="text" id="part-firstname" class="auth-input" placeholder="Prénom RP" autocomplete="off">
+      </div>
+      <div style="flex:1;min-width:160px">
+        <label class="auth-label">Nom (in-game)</label>
+        <input type="text" id="part-lastname" class="auth-input" placeholder="Nom RP" autocomplete="off">
+      </div>
+    </div>
+    <label class="auth-label">📞 Téléphone (in-game) <span style="color:#6a7a8a;font-weight:400;text-transform:none;letter-spacing:0">— format obligatoire : XXX-XXXX</span></label>
+    <input type="text" id="part-phone" class="auth-input" placeholder="123-4567" autocomplete="off" maxlength="8">
+    <label class="auth-label">💳 IBAN (in-game) — pour récompenses</label>
+    <input type="text" id="part-iban" class="auth-input" placeholder="ex: FR76..." autocomplete="off">
+
+    <div id="part-admin-section" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,212,255,.15)">
+      <label class="auth-label">⚙ Statut (admin uniquement)</label>
+      <select id="part-status" class="auth-input">
+        <option value="pending">⏳ En attente de validation</option>
+        <option value="confirmed">✓ Confirmé (tirable)</option>
+        <option value="absent">✕ Absent</option>
+        <option value="qualified">🏆 Qualifié</option>
+      </select>
+      <label class="auth-label">📝 Notes (admin)</label>
+      <textarea id="part-notes" class="auth-input" placeholder="Notes internes..." style="min-height:60px;resize:vertical;font-family:inherit"></textarea>
+    </div>
+    <div class="modal-error" id="part-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeParticipantModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="saveParticipant()">Valider mon inscription</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL MESSAGERIE ===== -->
+<div class="modal-overlay" id="message-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">Contacter l'organisateur</div>
+    <h3 style="text-align:center">📨 Nouveau message</h3>
+    <p style="text-align:center;color:#aabbc8;font-size:13px">Posez votre question ou faites une demande à BoulaTV.</p>
+    <label class="auth-label">Sujet</label>
+    <input type="text" id="msg-subject" placeholder="ex: Question sur mon contrat" autocomplete="off" class="auth-input">
+    <label class="auth-label">Message</label>
+    <textarea id="msg-body" placeholder="Tapez votre message..." class="auth-input" style="min-height:120px;resize:vertical;font-family:inherit"></textarea>
+    <div class="modal-error" id="msg-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeMessageModal()">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="sendMessage()">📨 Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL BOÎTE DE RÉCEPTION (liste threads) ===== -->
+<div class="modal-overlay" id="inbox-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:600px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center">📬 Messagerie</div>
+    <h3 style="text-align:center">Mes conversations</h3>
+    <div id="inbox-list" style="max-height:50vh;overflow-y:auto;margin:14px 0"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeInboxModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="inbox-new-btn" onclick="closeInboxModal();openComposeModal()">📨 Nouveau message</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CONVERSATION (thread bidirectionnel) ===== -->
+<div class="modal-overlay" id="msg-view-modal" style="align-items:flex-start;padding:30px 20px;overflow-y:auto">
+  <div class="modal" style="max-width:620px;text-align:left">
+    <div class="modal-logo" style="text-align:center"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" style="text-align:center" id="msg-view-from">Conversation</div>
+    <h3 style="text-align:center" id="msg-view-subject">Sujet</h3>
+    <p style="color:#6a7a8a;font-size:11px;text-align:center;letter-spacing:1px;margin-bottom:14px" id="msg-view-date"></p>
+    <div id="msg-view-body" style="background:#0f1420;padding:16px;border-radius:8px;border:1px solid rgba(0,212,255,.15);max-height:45vh;overflow-y:auto;margin-bottom:12px"></div>
+    <label class="auth-label">✍ Votre réponse</label>
+    <textarea id="msg-reply-body" class="auth-input" placeholder="Tapez votre réponse..." style="min-height:80px;resize:vertical;font-family:inherit"></textarea>
+    <div class="modal-error" id="msg-reply-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeMsgViewModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="sendReply()">📨 Envoyer la réponse</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== MODAL QR CODE ===== -->
+<div class="modal-overlay" id="qr-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Contrat à scanner</div>
+    <h3 id="qr-modal-title">QR Code du contrat</h3>
+    <div id="qr-modal-canvas" style="display:flex;justify-content:center;background:#fff;padding:18px;border-radius:10px;margin:12px 0"></div>
+    <p id="qr-modal-url" style="font-size:11px;color:#aabbc8;word-break:break-all;font-family:monospace;text-align:center;background:#141926;padding:8px;border-radius:6px;border:1px solid rgba(0,212,255,.18)"></p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" onclick="closeQrModal()">Fermer</button>
+      <button type="button" class="modal-btn modal-btn-primary" onclick="downloadQrPng()">⬇ Télécharger PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODE PRÉSENTATION PLEIN ÉCRAN ===== -->
+<div class="present-overlay" id="present-overlay">
+  <div class="present-bar">
+    <div class="present-bar-title">
+      <div class="pbt-icon" id="present-icon">📄</div>
+      <div class="pbt-text">
+        <strong id="present-title">Contrat</strong>
+        <span id="present-subtitle">Mode présentation</span>
+      </div>
+    </div>
+    <div class="present-bar-actions">
+      <button class="present-close" onclick="closePresent()">✕ Quitter</button>
+    </div>
+  </div>
+  <div class="present-content" id="present-content"></div>
+</div>
+
+<!-- ===== MODAL DIALOGUE UNIVERSEL (alert/confirm/prompt custom) ===== -->
+<div class="modal-overlay" id="dlg-modal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-logo" id="dlg-icon"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub" id="dlg-title">Information</div>
+    <p id="dlg-msg" style="white-space:pre-wrap"></p>
+    <input type="text" id="dlg-input" style="display:none;width:100%;padding:12px 14px;background:#141926;border:1px solid rgba(0,212,255,.3);border-radius:8px;color:#dce4f0;font-size:16px;font-family:inherit;letter-spacing:1.5px;text-align:center;outline:none;margin-bottom:6px" autocomplete="off">
+    <div class="modal-error" id="dlg-error"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-secondary" id="dlg-cancel">Annuler</button>
+      <button type="button" class="modal-btn modal-btn-primary" id="dlg-ok">Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CODE ===== -->
+<div class="modal-overlay" id="mc-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mc-modal-title">
+    <div class="modal-logo"><img src="assets/logo-mc.png" alt="Master Clash"></div>
+    <div class="modal-sub">Accès restreint</div>
+    <h3 id="mc-modal-title">Code requis</h3>
+    <p>Cette section est protégée. Saisissez le code d'accès pour continuer.</p>
+    <form id="mc-code-form" onsubmit="return false">
+      <input type="password" id="mc-code-input" placeholder="••••••••" autocomplete="off" maxlength="32" inputmode="text">
+      <div class="modal-error" id="mc-code-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn modal-btn-secondary" id="mc-code-cancel">Annuler</button>
+        <button type="submit" class="modal-btn modal-btn-primary" id="mc-code-submit">Accéder</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/default_templates.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/sw-register.js" defer></script>
+</body>
+</html>

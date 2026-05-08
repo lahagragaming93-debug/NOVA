@@ -23,7 +23,8 @@ export const DOC_TYPES = Object.freeze({
   RECU_DON:           'recu_don',
   FACTURE:            'facture',
   CONVENTION:         'convention',
-  CONTRAT_ENGAGEMENT: 'contrat_engagement'
+  CONTRAT_ENGAGEMENT: 'contrat_engagement',
+  BREVET:             'brevet'
 });
 
 export const TYPE_META = Object.freeze({
@@ -50,6 +51,12 @@ export const TYPE_META = Object.freeze({
     prefix:   'NOVA-ENG',
     icon:     '⌘',
     desc:     'Contrat formalisant l\'engagement d\'un bénévole (Art. 8-1.5 du T.T.E.).'
+  },
+  brevet: {
+    label:    'Brevet de concept',
+    prefix:   'NOVA-BRV',
+    icon:     '✦',
+    desc:     'Dépôt officiel d\'un concept (émission, format, dénomination) attestant de l\'antériorité et de la propriété intellectuelle de NOVA.'
   }
 });
 
