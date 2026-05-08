@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Documents & Templates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  .doc-tabs { display: flex; border-bottom: 1px solid var(--rule); margin: 18px 0; }
+  .doc-tabs button {
+    background: transparent; border: none; padding: 10px 22px;
+    font-family: inherit; font-size: 14px; color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent; font-variant: small-caps; letter-spacing: 1.5px;
+  }
+  .doc-tabs button.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 600; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Templates grid */
+  .templates-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+    margin-top: 12px;
+  }
+  .template-card {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 22px 24px; cursor: pointer; transition: all 0.25s; position: relative;
+  }
+  .template-card:hover { border-color: var(--gold); box-shadow: 0 8px 24px rgba(31,45,74,0.10); transform: translateY(-2px); }
+  .template-card.disabled { opacity: 0.55; cursor: not-allowed; }
+  .template-card .icon { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--gold); margin-bottom: 6px; }
+  .template-card .title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .template-card .desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .template-card .badge {
+    position: absolute; top: 12px; right: 12px;
+    font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.5px; font-variant: small-caps;
+    padding: 3px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .template-card .badge.live { background: #e3ebdc; color: #4a6b3a; }
+  .template-card .badge.coming { background: var(--rule-soft); color: var(--muted); }
+
+  /* Liste docs */
+  table.docs { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  table.docs th { background: var(--navy); color: var(--paper); text-align: left; padding: 10px 14px; font-family: 'Cormorant Garamond', serif; font-size: 12.5px; letter-spacing: 1.2px; font-variant: small-caps; font-weight: 600; }
+  table.docs td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  table.docs tr:last-child td { border-bottom: none; }
+  table.docs tr:hover td { background: var(--gold-bg); }
+  table.docs .ref { font-family: 'Consolas', monospace; font-size: 12px; color: var(--gold); font-weight: 700; }
+  table.docs .actions { text-align: right; white-space: nowrap; }
+  table.docs .actions a, table.docs .actions button {
+    background: transparent; border: 1px solid var(--rule); padding: 4px 10px;
+    font-size: 11px; cursor: pointer; border-radius: 3px; margin-left: 4px;
+    color: var(--muted); text-decoration: none; display: inline-block;
+  }
+  table.docs .actions a:hover, table.docs .actions button:hover { border-color: var(--gold); color: var(--ink); }
+  table.docs .actions .del:hover { border-color: var(--red); color: var(--red); }
+
+  .empty { padding: 30px; text-align: center; color: var(--muted); font-style: italic; }
+
+  /* Modal formulaire */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(31,45,74,.55); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--paper); border-radius: 6px; width: 100%; max-width: 600px; padding: 24px 28px; box-shadow: 0 20px 60px rgba(0,0,0,.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; color: var(--navy); margin: 0 0 8px; font-size: 22px; }
+  .modal .info { color: var(--muted); font-style: italic; font-size: 13px; margin-bottom: 16px; }
+  .modal .field { margin-bottom: 12px; }
+  .modal .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-variant: small-caps; color: var(--muted); margin-bottom: 3px; }
+  .modal select, .modal input, .modal textarea { width: 100%; font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--paper); border-radius: 3px; color: var(--ink); }
+  .modal select:focus, .modal input:focus, .modal textarea:focus { outline: none; border-color: var(--gold); }
+  .modal textarea { min-height: 60px; resize: vertical; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+  .modal-actions button { padding: 9px 18px; font-family: inherit; font-size: 13px; border-radius: 3px; cursor: pointer; border: 1px solid transparent; }
+  .modal-actions .cancel { background: transparent; color: var(--muted); border-color: var(--rule); }
+  .modal-actions .save { background: var(--navy); color: var(--paper); }
+  .modal-actions .save:hover { background: var(--gold); }
+  .modal-error { color: var(--red); font-size: 12.5px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div><div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div><div class="brand-sub">Documents & Templates</div></div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+    <div class="welcome-card">
+      <h1>Documents & Templates</h1>
+      <p class="subtitle">Génération et archivage des documents officiels NOVA — reçus de don, factures, conventions, contrats.</p>
+    </div>
+
+    <div class="doc-tabs">
+      <button type="button" class="tab-btn active" data-tab="new">Nouveau document</button>
+      <button type="button" class="tab-btn" data-tab="archive">Archives</button>
+    </div>
+
+    <!-- ONGLET : Nouveau -->
+    <div class="panel active" id="panel-new">
+      <p style="color:var(--muted);font-size:13.5px;margin-bottom:8px;">Choisissez le type de document à créer. La référence est attribuée automatiquement (NOVA-DON-2026-0001 etc.).</p>
+      <div class="templates-grid" id="templates-grid"></div>
+    </div>
+
+    <!-- ONGLET : Archives -->
+    <div class="panel" id="panel-archive">
+      <table class="docs">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Auteur</th>
+            <th>Données</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody id="docs-tbody"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="app-footer">NOVA — Espace membre — Documents officiels archivés en Firestore</footer>
+</div>
+
+<!-- Modal Reçu de Don -->
+<div class="modal-overlay" id="modal-don" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2>Nouveau reçu de don</h2>
+    <p class="info">Document remis à un donateur attestant la réception d'un don sans contrepartie commerciale (hors plafond Art. 8-1.4).</p>
+    <div class="field">
+      <label for="d-donateur">Nom du donateur (personne ou raison sociale)</label>
+      <input id="d-donateur" type="text" placeholder="ex. Boucherie Vinewood">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="d-qualite">Qualité / Statut</label>
+        <input id="d-qualite" type="text" placeholder="citoyen / entreprise / institution">
+      </div>
+      <div class="field">
+        <label for="d-date">Date du don</label>
+        <input id="d-date" type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label for="d-adresse">Adresse</label>
+      <input id="d-adresse" type="text" placeholder="Adresse in-game">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="d-nature">Nature du don</label>
+        <select id="d-nature">
+          <option value="numeraire">Numéraire</option>
+          <option value="nature">Nature (bons, biens, services)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="d-montant">Montant ($)</label>
+        <input id="d-montant" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="field">
+      <label for="d-description">Description (pour les dons en nature)</label>
+      <textarea id="d-description" placeholder="Description précise des biens, bons ou services apportés…"></textarea>
+    </div>
+    <div class="modal-error" id="don-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="don-cancel">Annuler</button>
+      <button type="button" class="save" id="don-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
+  import { DOC_TYPES, TYPE_META, subscribeToDocuments, createDocument, deleteDocument, formatDate, fmt } from './js/documents.js';
+
+  const shell = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  let me = null, myProfile = null, canWrite = false;
+  let current = [];
+
+  function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function renderTemplates() {
+    const grid = document.getElementById('templates-grid');
+    grid.innerHTML = '';
+    Object.entries(TYPE_META).forEach(([type, meta]) => {
+      const live = type === 'recu_don';
+      const card = document.createElement('div');
+      card.className = 'template-card' + (live ? '' : ' disabled');
+      card.innerHTML = `
+        <span class="badge ${live ? 'live' : 'coming'}">${live ? 'Disponible' : 'Bientôt'}</span>
+        <div class="icon">${meta.icon}</div>
+        <div class="title">${meta.label}</div>
+        <div class="desc">${meta.desc}</div>
+      `;
+      if (live) card.addEventListener('click', () => openModal(type));
+      grid.appendChild(card);
+    });
+  }
+
+  function renderArchive(docs) {
+    const tbody = document.getElementById('docs-tbody');
+    if (docs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">Aucun document archivé. Créez-en un depuis l\'onglet « Nouveau document ».</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    docs.forEach(d => {
+      const meta = TYPE_META[d.type] || { label: d.type };
+      const summary = d.type === 'recu_don'
+        ? `${escapeHtml(d.data?.donateur || '?')} — ${fmt(d.data?.montant || 0)}`
+        : '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="ref">${escapeHtml(d.reference || '—')}</span></td>
+        <td>${meta.label}</td>
+        <td>${formatDate(d.createdAt)}</td>
+        <td>${escapeHtml(d.createdByName || '—')}</td>
+        <td>${summary}</td>
+        <td class="actions">
+          <a href="document-view.html?id=${d.id}" target="_blank">Voir</a>
+          ${canWrite ? `<button class="del" data-id="${d.id}">Supprimer</button>` : ''}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.del').forEach(b => b.addEventListener('click', e => onDelete(e.target.dataset.id)));
+  }
+
+  // ===== Tabs =====
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ===== Modal Don =====
+  const modalDon = document.getElementById('modal-don');
+  function openModal(type) {
+    if (!canWrite) { alert('Lecture seule pour votre rôle.'); return; }
+    if (type === 'recu_don') {
+      ['d-donateur','d-qualite','d-adresse','d-description'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('d-nature').value = 'numeraire';
+      document.getElementById('d-montant').value = '';
+      document.getElementById('d-date').valueAsDate = new Date();
+      document.getElementById('don-err').textContent = '';
+      modalDon.classList.add('active');
+    }
+  }
+  document.getElementById('don-cancel').addEventListener('click', () => modalDon.classList.remove('active'));
+  modalDon.addEventListener('click', e => { if (e.target === modalDon) modalDon.classList.remove('active'); });
+
+  document.getElementById('don-save').addEventListener('click', async () => {
+    const data = {
+      donateur:    document.getElementById('d-donateur').value.trim(),
+      qualite:     document.getElementById('d-qualite').value.trim(),
+      adresse:     document.getElementById('d-adresse').value.trim(),
+      nature:      document.getElementById('d-nature').value,
+      montant:     parseFloat(document.getElementById('d-montant').value) || 0,
+      description: document.getElementById('d-description').value.trim(),
+      dateDon:     document.getElementById('d-date').valueAsDate?.toISOString() || null
+    };
+    const err = document.getElementById('don-err');
+    err.textContent = '';
+    if (!data.donateur) { err.textContent = 'Donateur requis.'; return; }
+    if (!data.montant || data.montant <= 0) { err.textContent = 'Montant > 0 requis.'; return; }
+    const btn = document.getElementById('don-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const result = await createDocument(DOC_TYPES.RECU_DON, data);
+      modalDon.classList.remove('active');
+      // Ouvre le document dans un nouvel onglet
+      window.open(`document-view.html?id=${result.id}`, '_blank');
+    } catch (e) {
+      err.textContent = e.message || 'Erreur.';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Créer & archiver';
+    }
+  });
+
+  async function onDelete(id) {
+    const d = current.find(x => x.id === id);
+    if (!d) return;
+    if (!confirm(`Supprimer le document ${d.reference} ?`)) return;
+    try { await deleteDocument(id); }
+    catch (e) { alert('Erreur : ' + e.message); }
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });
+
+  onAuthChange(async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      myProfile = await getUserProfile(user.uid);
+      if (!myProfile || !hasPermission(myProfile.role, 'documents:read')) {
+        loader.innerHTML = '<div style="text-align:center;color:#8b3a3a;">⛔ Accès non autorisé.</div>';
+        setTimeout(() => window.location.href = 'dashboard.html', 1800);
+        return;
+      }
+      canWrite = hasPermission(myProfile.role, 'documents:write');
+      document.getElementById('header-username').textContent = myProfile.displayName;
+      const badge = document.getElementById('header-role');
+      badge.textContent = ROLE_LABELS[myProfile.role];
+      badge.className = 'role-badge role-' + myProfile.role;
+      renderTemplates();
+      subscribeToDocuments((docs, err) => {
+        if (err) { document.getElementById('docs-tbody').innerHTML = `<tr><td colspan="6" class="empty" style="color:var(--red);">Erreur : ${err.message}</td></tr>`; return; }
+        current = docs;
+        renderArchive(docs);
+      });
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (e) {
+      loader.innerHTML = '<div style="color:#8b3a3a;">Erreur : ' + e.message + '</div>';
+    }
+  });
+</script>
+</body>
+</html>

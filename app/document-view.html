@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Document officiel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../nova-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  /* Surcharges spécifiques pour le viewer (réutilise nova-style.css A4) */
+  body { background: #e8e4d8; }
+  .recu-num {
+    position: absolute; top: 22mm; right: 24mm; text-align: right;
+    font-size: 10pt; color: var(--muted); line-height: 1.5;
+  }
+  .recu-num .num-value {
+    font-family: 'Cormorant Garamond', serif; font-size: 16pt;
+    font-weight: 700; color: var(--navy); letter-spacing: 2px;
+  }
+  .montant-block {
+    text-align: center; margin: 8mm 0; padding: 6mm 8mm;
+    background: var(--paper-alt);
+    border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+  }
+  .montant-block .label {
+    font-size: 10pt; color: var(--muted);
+    font-variant: small-caps; letter-spacing: 2px;
+  }
+  .montant-block .montant {
+    font-family: 'Cormorant Garamond', serif; font-size: 28pt; font-weight: 700;
+    color: var(--navy); margin-top: 2mm; font-variant-numeric: tabular-nums;
+  }
+  .montant-block .lettres {
+    font-style: italic; color: var(--ink-soft); margin-top: 2mm; font-size: 11pt;
+  }
+  .info-table td {
+    padding: 3mm 4mm; border-bottom: 0.5px dotted var(--rule); font-size: 10.5pt;
+  }
+  .info-table td:first-child {
+    color: var(--muted); font-variant: small-caps; letter-spacing: 1px; font-size: 9.5pt; width: 50mm;
+  }
+  .official-stamp { margin-top: 12mm; text-align: right; }
+  .official-stamp .seal {
+    display: inline-block; border: 2px solid var(--gold); color: var(--gold);
+    padding: 4mm 10mm; font-family: 'Cormorant Garamond', serif;
+    font-weight: 700; font-size: 10pt; letter-spacing: 3px;
+    transform: rotate(-3deg); text-align: center; line-height: 1.4;
+  }
+  .loading-state {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; color: var(--navy);
+    font-size: 18px; letter-spacing: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print" style="display:none;" id="toolbar">
+  <button type="button" onclick="NovaExport.toPDF(window.exportFilename || 'NOVA-document')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', window.exportFilename || 'NOVA-document')">Télécharger PNG</button>
+  <button type="button" onclick="window.close()" style="background:transparent;color:#fbf9f3;border:1px solid #b89c5e;">Fermer</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../nova-export.js"></script>
+
+<div id="container">
+  <div class="loading-state" id="loader">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
+</div>
+
+<script type="module">
+  import { onAuthChange } from './js/auth.js';
+  import { getDocument, numberToWords, formatDateLong, fmt } from './js/documents.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const docId = params.get('id');
+  const container = document.getElementById('container');
+  const toolbar = document.getElementById('toolbar');
+
+  function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function renderRecuDon(d) {
+    const data = d.data || {};
+    const dateDonStr = data.dateDon ? formatDateLong(new Date(data.dateDon)) : '—';
+    const montantLettres = numberToWords(data.montant) + ' dollars';
+    const numShort = (d.reference || '').replace('NOVA-DON-', '').replace(/-/g, '/');
+
+    window.exportFilename = d.reference || 'NOVA-Recu-Don';
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official">
+            <strong>État de San Andreas</strong><br>
+            Reçu de don associatif<br>
+            Document officiel
+          </div>
+        </header>
+
+        <div class="recu-num">
+          Reçu N°<br>
+          <span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+
+        <div class="doc-title">
+          <h1>Reçu de Don</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">Délivré au titre d'un don sans contrepartie commerciale<br>conformément à l'Article 8-1.4 du T.T.E.</div>
+        </div>
+
+        <p style="text-align:center;margin-top:6mm;">L'Association <strong>NOVA</strong>, déclarée auprès du département de la Vie Civile de l'État de San Andreas,<br>certifie avoir reçu le don suivant :</p>
+
+        <table class="info-table" style="width:100%;border-collapse:collapse;margin-top:6mm;">
+          <tr><td>Donateur</td><td><strong>${escapeHtml(data.donateur || '—')}</strong></td></tr>
+          <tr><td>Qualité / Statut</td><td>${escapeHtml(data.qualite || '—')}</td></tr>
+          <tr><td>Adresse</td><td>${escapeHtml(data.adresse || '—')}</td></tr>
+          <tr><td>Date du don</td><td>${dateDonStr}</td></tr>
+          <tr><td>Nature du don</td><td>${data.nature === 'nature' ? 'Don en nature' : 'Don numéraire'}</td></tr>
+        </table>
+
+        <div class="montant-block">
+          <div class="label">Montant du don</div>
+          <div class="montant">${fmt(data.montant)}</div>
+          <div class="lettres">${montantLettres}</div>
+        </div>
+
+        ${data.description ? `<table class="info-table" style="width:100%;border-collapse:collapse;">
+          <tr><td>Description détaillée</td><td>${escapeHtml(data.description)}</td></tr>
+          <tr><td>Affectation</td><td>Réalisation de l'objet social de l'Association NOVA, conformément à ses Statuts.</td></tr>
+        </table>` : ''}
+
+        <div class="alert" style="margin-top:6mm;">
+          <strong>Mentions légales :</strong> Le présent reçu atteste que le don décrit ci-dessus a été effectué <strong>sans contrepartie commerciale</strong> et qu'il relève à ce titre du régime des dons défini par l'<span class="tte-ref">Article 8-1.4 du T.T.E.</span>, hors plafond hebdomadaire de chiffre généré.
+        </div>
+
+        <div class="official-stamp">
+          <div class="seal">ASSOCIATION<br>NOVA<br>RÉF. ${escapeHtml(numShort)}</div>
+        </div>
+
+        <table class="signatures" style="margin-top:6mm;width:100%;border-collapse:collapse;">
+          <tr><th style="width:35%">Pour l'Association</th><th style="width:35%">Nom</th><th>Signature</th></tr>
+          <tr><td><strong>Trésorier</strong></td><td>Jeff TAYLOR</td><td class="signature-line"></td></tr>
+          <tr><td><strong>Président</strong></td><td>Andrew BEAUCHAMP</td><td class="signature-line"></td></tr>
+        </table>
+
+        <p style="text-align:center;margin-top:6mm;font-size:9.5pt;color:var(--muted);font-style:italic;">
+          Reçu créé le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.<br>
+          Document archivé dans la base NOVA — référence ${escapeHtml(d.reference)}.
+        </p>
+
+        <footer class="footer">
+          <span>NOVA — Reçu de don</span>
+          <span>Page 1 / 1</span>
+        </footer>
+      </section>
+    `;
+  }
+
+  function renderError(msg) {
+    container.innerHTML = `
+      <div class="loading-state" style="color:#8b3a3a;flex-direction:column;gap:14px;">
+        <div>${escapeHtml(msg)}</div>
+        <a href="documents.html" style="color:#8b7340;font-size:13px;text-decoration:underline;letter-spacing:1px;">← Retour aux documents</a>
+      </div>
+    `;
+  }
+
+  onAuthChange(async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    if (!docId) { renderError('Aucun document spécifié.'); return; }
+    try {
+      const d = await getDocument(docId);
+      if (!d) { renderError('Document introuvable.'); return; }
+      if (d.type === 'recu_don') {
+        renderRecuDon(d);
+        toolbar.style.display = 'flex';
+      } else {
+        renderError(`Type "${d.type}" non encore pris en charge par le viewer.`);
+      }
+    } catch (e) {
+      renderError('Erreur : ' + (e.message || e));
+    }
+  });
+</script>
+</body>
+</html>
