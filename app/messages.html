@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Messagerie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  /* ============================================================
+     MESSAGERIE NOVA — layout 2 panneaux (threads | conversation)
+     ============================================================ */
+  .msg-shell {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    height: calc(100vh - 240px);
+    min-height: 480px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .msg-shell.no-thread .msg-conversation { background: var(--paper-alt); }
+
+  /* === Panneau gauche : liste des threads === */
+  .msg-threads {
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .msg-threads-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-alt);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .msg-threads-head h3 {
+    font-family: 'Cormorant Garamond', serif;
+    margin: 0;
+    font-size: 17px;
+    color: var(--navy);
+    letter-spacing: 1.5px;
+  }
+
+  .msg-new-btn {
+    background: var(--navy);
+    color: var(--paper);
+    border: none;
+    padding: 7px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .msg-new-btn:hover { background: var(--gold); }
+
+  .msg-threads-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .msg-thread-item {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .msg-thread-item:hover { background: var(--gold-bg); }
+  .msg-thread-item.active {
+    background: var(--paper-alt);
+    border-left: 3px solid var(--gold);
+    padding-left: 15px;
+  }
+  .msg-thread-item.unread::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+  .msg-thread-item.unread .subject { font-weight: 700; }
+
+  .msg-thread-item .subject {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 4px;
+    padding-right: 18px;
+  }
+
+  .msg-thread-item .preview {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .msg-thread-item .meta {
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .msg-thread-item .participants {
+    color: var(--gold);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .msg-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* === Panneau droit : conversation === */
+  .msg-conversation {
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .msg-conv-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-alt);
+  }
+  .msg-conv-head h3 {
+    font-family: 'Cormorant Garamond', serif;
+    margin: 0;
+    font-size: 18px;
+    color: var(--navy);
+  }
+  .msg-conv-head .conv-meta {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  .msg-conv-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .msg-bubble {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    position: relative;
+    word-wrap: break-word;
+  }
+  .msg-bubble.mine {
+    align-self: flex-end;
+    background: var(--navy);
+    color: var(--paper);
+    border-bottom-right-radius: 2px;
+  }
+  .msg-bubble.other {
+    align-self: flex-start;
+    background: var(--paper-alt);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-bottom-left-radius: 2px;
+  }
+  .msg-bubble .author {
+    font-size: 11px;
+    margin-bottom: 4px;
+    opacity: 0.75;
+    font-style: italic;
+  }
+  .msg-bubble .time {
+    font-size: 10.5px;
+    margin-top: 5px;
+    opacity: 0.6;
+    text-align: right;
+  }
+
+  .msg-conv-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 1.5px;
+  }
+
+  .msg-composer {
+    border-top: 1px solid var(--rule);
+    padding: 14px 18px;
+    background: var(--paper-alt);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .msg-composer textarea {
+    flex: 1;
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 10px 12px;
+    border-radius: 3px;
+    resize: none;
+    min-height: 60px;
+    max-height: 160px;
+  }
+  .msg-composer textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-bg);
+  }
+  .msg-composer button {
+    background: var(--navy);
+    color: var(--paper);
+    border: none;
+    padding: 10px 22px;
+    font-family: inherit;
+    font-size: 13px;
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+    border-radius: 3px;
+    cursor: pointer;
+    height: 60px;
+  }
+  .msg-composer button:hover { background: var(--gold); }
+  .msg-composer button:disabled { background: var(--muted); cursor: not-allowed; }
+
+  /* === Modal nouveau thread === */
+  .msg-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 45, 74, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .msg-modal-overlay.active { display: flex; }
+
+  .msg-modal {
+    background: var(--paper);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 520px;
+    padding: 28px 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border-top: 4px solid var(--gold);
+  }
+
+  .msg-modal h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--navy);
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+  .msg-modal .sub { color: var(--muted); font-style: italic; margin-bottom: 20px; font-size: 13px; }
+
+  .msg-modal .field { margin-bottom: 14px; }
+  .msg-modal label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-variant: small-caps;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .msg-modal select,
+  .msg-modal input,
+  .msg-modal textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 11px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 3px;
+  }
+  .msg-modal select:focus,
+  .msg-modal input:focus,
+  .msg-modal textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-bg);
+  }
+  .msg-modal textarea { min-height: 110px; resize: vertical; }
+
+  .msg-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 18px;
+  }
+  .msg-modal-actions button {
+    padding: 9px 20px;
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .msg-modal-actions .cancel {
+    background: transparent;
+    color: var(--muted);
+    border-color: var(--rule);
+  }
+  .msg-modal-actions .send {
+    background: var(--navy);
+    color: var(--paper);
+  }
+  .msg-modal-actions .send:hover { background: var(--gold); }
+
+  .msg-error {
+    color: var(--red);
+    font-size: 12.5px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 800px) {
+    .msg-shell { grid-template-columns: 1fr; height: auto; }
+    .msg-threads { max-height: 280px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div>
+        <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
+        <div class="brand-sub">Messagerie</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info">
+      <span class="username" id="header-username">—</span>
+      <span class="role-badge" id="header-role">…</span>
+    </div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+
+    <a href="dashboard.html" class="admin-back" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+
+    <div class="welcome-card">
+      <h1>Boîte de réception</h1>
+      <p class="subtitle">Messagerie interne entre membres et Bureau de l'Association NOVA.</p>
+    </div>
+
+    <div class="msg-shell no-thread" id="msg-shell">
+
+      <!-- Panneau gauche : threads -->
+      <aside class="msg-threads">
+        <div class="msg-threads-head">
+          <h3>Conversations</h3>
+          <button type="button" class="msg-new-btn" id="btn-new-thread">+ Nouveau</button>
+        </div>
+        <div class="msg-threads-list" id="threads-list">
+          <div class="msg-empty">Chargement…</div>
+        </div>
+      </aside>
+
+      <!-- Panneau droit : conversation -->
+      <section class="msg-conversation" id="conversation">
+        <div class="msg-conv-empty">
+          ❦<br>
+          Sélectionnez une conversation<br>
+          ou <strong style="color:var(--navy);cursor:pointer;text-decoration:underline;" onclick="document.getElementById('btn-new-thread').click()">commencez-en une nouvelle</strong>.
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    NOVA — Espace membre — Messagerie<br>
+    Toute communication est confidentielle entre les participants du thread.
+  </footer>
+
+</div>
+
+<!-- Modal nouveau thread -->
+<div class="msg-modal-overlay" id="modal-new" role="dialog" aria-modal="true">
+  <div class="msg-modal">
+    <h2>Nouvelle conversation</h2>
+    <p class="sub">Choisissez un destinataire et rédigez votre premier message.</p>
+    <div class="field">
+      <label for="to-uid">Destinataire</label>
+      <select id="to-uid">
+        <option value="">— Sélectionner un membre —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="subj">Sujet</label>
+      <input type="text" id="subj" placeholder="ex. Demande de partenariat" maxlength="120">
+    </div>
+    <div class="field">
+      <label for="body">Message</label>
+      <textarea id="body" placeholder="Tapez votre message…"></textarea>
+    </div>
+    <div class="msg-error" id="modal-err"></div>
+    <div class="msg-modal-actions">
+      <button type="button" class="cancel" id="btn-cancel">Annuler</button>
+      <button type="button" class="send" id="btn-send-new">Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">
+  Chargement&nbsp;<span style="color:#8b7340;">…</span>
+</div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS } from './js/roles.js';
+  import {
+    subscribeToMyThreads, subscribeToMessages,
+    createThread, sendMessage, markThreadAsRead,
+    formatMsgTime, otherParticipants, isUnread
+  } from './js/messages.js';
+  import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+  import { db } from './js/firebase-init.js';
+
+  const shell  = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const threadsList = document.getElementById('threads-list');
+  const conversation = document.getElementById('conversation');
+  const msgShell = document.getElementById('msg-shell');
+  const modalNew = document.getElementById('modal-new');
+
+  let me = null;
+  let myProfile = null;
+  let usersByUid = {};                 // cache des profils utilisateurs
+  let currentThreadId = null;
+  let unsubscribeMessages = null;
+
+  // -------------------- HEADER USER --------------------
+  function renderHeader() {
+    document.getElementById('header-username').textContent = myProfile.displayName || me.displayName || 'Membre';
+    const badge = document.getElementById('header-role');
+    badge.textContent = ROLE_LABELS[myProfile.role] || myProfile.role;
+    badge.className = 'role-badge role-' + myProfile.role;
+  }
+
+  // -------------------- USERS CACHE --------------------
+  async function loadUsersCache() {
+    const snap = await getDocs(collection(db, 'users'));
+    snap.forEach(d => { usersByUid[d.id] = d.data(); });
+  }
+
+  function nameOf(uid) {
+    const u = usersByUid[uid];
+    if (!u) return uid.slice(0, 8) + '…';
+    return u.displayName || u.username || uid;
+  }
+
+  // -------------------- THREADS LIST --------------------
+  function renderThreadsList(threads) {
+    if (!threads || threads.length === 0) {
+      threadsList.innerHTML = '<div class="msg-empty">Aucune conversation pour le moment.<br><br>Cliquez sur <strong>+ Nouveau</strong> pour démarrer.</div>';
+      return;
+    }
+    threadsList.innerHTML = '';
+    threads.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'msg-thread-item';
+      if (t.id === currentThreadId) item.classList.add('active');
+      if (isUnread(t, me.uid)) item.classList.add('unread');
+
+      const others = otherParticipants(t, me.uid);
+      const otherNames = others.map(uid => nameOf(uid)).join(', ') || 'Vous-même';
+
+      item.innerHTML = `
+        <div class="subject">${escapeHtml(t.subject || '(Sans sujet)')}</div>
+        <div class="preview">${escapeHtml(t.lastMessagePreview || '')}</div>
+        <div class="meta">
+          <span class="participants">${escapeHtml(otherNames)}</span>
+          <span>${formatMsgTime(t.lastActivity)}</span>
+        </div>
+      `;
+      item.addEventListener('click', () => openThread(t.id, t));
+      threadsList.appendChild(item);
+    });
+  }
+
+  // -------------------- OPEN THREAD --------------------
+  function openThread(tid, threadData) {
+    currentThreadId = tid;
+    msgShell.classList.remove('no-thread');
+
+    // Met à jour les active states
+    document.querySelectorAll('.msg-thread-item').forEach(el => el.classList.remove('active'));
+
+    // Annule l'écoute précédente
+    if (unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
+
+    // Affiche un loader
+    conversation.innerHTML = `
+      <div class="msg-conv-head">
+        <h3>${escapeHtml(threadData.subject || '(Sans sujet)')}</h3>
+        <div class="conv-meta">Avec ${escapeHtml(otherParticipants(threadData, me.uid).map(nameOf).join(', ') || 'vous-même')}</div>
+      </div>
+      <div class="msg-conv-body" id="conv-body"><div class="msg-empty">Chargement des messages…</div></div>
+      <div class="msg-composer">
+        <textarea id="reply-body" placeholder="Tapez votre réponse…"></textarea>
+        <button type="button" id="btn-send-reply">Envoyer</button>
+      </div>
+    `;
+
+    const body = document.getElementById('conv-body');
+    const replyBody = document.getElementById('reply-body');
+    const btnReply = document.getElementById('btn-send-reply');
+
+    // Souscription temps réel aux messages
+    unsubscribeMessages = subscribeToMessages(tid, (messages) => {
+      if (messages.length === 0) {
+        body.innerHTML = '<div class="msg-empty">Aucun message dans cette conversation.</div>';
+        return;
+      }
+      body.innerHTML = '';
+      messages.forEach(m => {
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble ' + (m.from === me.uid ? 'mine' : 'other');
+        bubble.innerHTML = `
+          ${m.from !== me.uid ? `<div class="author">${escapeHtml(nameOf(m.from))}</div>` : ''}
+          <div>${escapeHtml(m.body || '').replace(/\n/g, '<br>')}</div>
+          <div class="time">${formatMsgTime(m.createdAt)}</div>
+        `;
+        body.appendChild(bubble);
+      });
+      body.scrollTop = body.scrollHeight;
+    });
+
+    // Marque comme lu
+    markThreadAsRead(tid).catch(err => console.warn('readBy update :', err));
+
+    // Send reply
+    btnReply.addEventListener('click', async () => {
+      const text = replyBody.value.trim();
+      if (!text) return;
+      btnReply.disabled = true;
+      try {
+        await sendMessage(tid, text);
+        replyBody.value = '';
+      } catch (err) {
+        alert('Erreur : ' + (err.message || err));
+      } finally {
+        btnReply.disabled = false;
+        replyBody.focus();
+      }
+    });
+    replyBody.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); btnReply.click(); }
+    });
+  }
+
+  // -------------------- NOUVEAU THREAD --------------------
+  document.getElementById('btn-new-thread').addEventListener('click', () => {
+    const select = document.getElementById('to-uid');
+    select.innerHTML = '<option value="">— Sélectionner un membre —</option>';
+    Object.entries(usersByUid).forEach(([uid, u]) => {
+      if (uid === me.uid) return;
+      const opt = document.createElement('option');
+      opt.value = uid;
+      opt.textContent = `${u.displayName || u.username} — ${ROLE_LABELS[u.role] || u.role}`;
+      select.appendChild(opt);
+    });
+    document.getElementById('subj').value = '';
+    document.getElementById('body').value = '';
+    document.getElementById('modal-err').textContent = '';
+    modalNew.classList.add('active');
+  });
+
+  document.getElementById('btn-cancel').addEventListener('click', () => modalNew.classList.remove('active'));
+  modalNew.addEventListener('click', (e) => { if (e.target === modalNew) modalNew.classList.remove('active'); });
+
+  document.getElementById('btn-send-new').addEventListener('click', async () => {
+    const toUid = document.getElementById('to-uid').value;
+    const subject = document.getElementById('subj').value.trim();
+    const body = document.getElementById('body').value.trim();
+    const errEl = document.getElementById('modal-err');
+    errEl.textContent = '';
+
+    if (!toUid) { errEl.textContent = 'Sélectionnez un destinataire.'; return; }
+    if (!subject) { errEl.textContent = 'Saisissez un sujet.'; return; }
+    if (!body) { errEl.textContent = 'Écrivez un message.'; return; }
+
+    const sendBtn = document.getElementById('btn-send-new');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Envoi…';
+    try {
+      const tid = await createThread({
+        participants: [toUid],
+        subject,
+        firstMessage: body
+      });
+      modalNew.classList.remove('active');
+      // ouvre directement le thread
+      setTimeout(() => {
+        const t = { id: tid, subject, participants: [me.uid, toUid], lastActivity: new Date() };
+        openThread(tid, t);
+      }, 200);
+    } catch (err) {
+      errEl.textContent = err.message || 'Erreur lors de l\'envoi.';
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Envoyer';
+    }
+  });
+
+  // -------------------- LOGOUT --------------------
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  // -------------------- INIT --------------------
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  onAuthChange(async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      myProfile = await getUserProfile(user.uid);
+      if (!myProfile) {
+        loader.innerHTML = '<div style="color:#8b3a3a;text-align:center;">Profil introuvable. Contactez l\'administrateur.</div>';
+        return;
+      }
+      renderHeader();
+      await loadUsersCache();
+      subscribeToMyThreads(me.uid, (threads, err) => {
+        if (err) {
+          threadsList.innerHTML = `<div class="msg-empty" style="color:#8b3a3a;">Erreur : ${err.message || err}</div>`;
+          return;
+        }
+        renderThreadsList(threads);
+      });
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (err) {
+      console.error(err);
+      loader.innerHTML = '<div style="color:#8b3a3a;text-align:center;">Erreur : ' + (err.message || err) + '</div>';
+    }
+  });
+</script>
+
+</body>
+</html>

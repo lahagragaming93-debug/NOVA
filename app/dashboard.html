@@ -97,6 +97,14 @@
   // Définition des modules de l'app et leurs permissions requises
   const MODULES = [
     {
+      title: 'Messagerie',
+      icon:  '✉',
+      description: 'Boîte de réception interne. Échangez avec le Bureau ou avec d\'autres membres.',
+      href:  'messages.html',
+      perm:  'documents:read', // tout authentifié peut messager
+      ready: true
+    },
+    {
       title: 'Comptabilité',
       icon:  '₪',
       description: 'Saisie des opérations, suivi hebdomadaire, calcul fiscal automatique.',

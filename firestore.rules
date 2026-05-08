@@ -114,6 +114,47 @@ service cloud.firestore {
       allow delete: if isPresident();
     }
 
+    // ===== THREADS DE MESSAGERIE =====
+    // Conversations entre membres. L'accès est limité aux participants.
+    match /threads/{tid} {
+      // Lecture : seuls les participants
+      allow read: if isAuth()
+        && resource.data.participants is list
+        && resource.data.participants.hasAny([request.auth.uid]);
+
+      // Création : tout authentifié, à condition d'être dans les participants ET créateur
+      allow create: if isAuth()
+        && request.resource.data.participants is list
+        && request.resource.data.participants.hasAny([request.auth.uid])
+        && request.resource.data.createdBy == request.auth.uid;
+
+      // Update : participant uniquement (pour lastActivity, readBy, lastMessagePreview)
+      // ne peut pas modifier participants ni createdBy
+      allow update: if isAuth()
+        && resource.data.participants.hasAny([request.auth.uid])
+        && request.resource.data.participants == resource.data.participants
+        && request.resource.data.createdBy == resource.data.createdBy;
+
+      // Delete : créateur ou président
+      allow delete: if isAuth()
+        && (resource.data.createdBy == request.auth.uid || isPresident());
+
+      // ===== MESSAGES (sous-collection) =====
+      match /messages/{mid} {
+        function threadParticipants() {
+          return get(/databases/$(database)/documents/threads/$(tid)).data.participants;
+        }
+        // Lecture : participant du thread parent
+        allow read: if isAuth() && threadParticipants().hasAny([request.auth.uid]);
+        // Création : participant + auteur du message
+        allow create: if isAuth()
+          && threadParticipants().hasAny([request.auth.uid])
+          && request.resource.data.from == request.auth.uid;
+        // Pas de modif/suppression a posteriori
+        allow update, delete: if false;
+      }
+    }
+
     // ===== JOURNAL D'ACTIVITÉ (audit log, lecture seule pour Bureau) =====
     match /journal/{entryId} {
       allow read:   if isBureau();
