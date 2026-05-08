@@ -300,7 +300,10 @@
         <label for="year-select" style="font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-variant:small-caps;color:var(--muted);">Année :</label>
         <select id="year-select"></select>
       </div>
-      <button type="button" class="add-btn" id="btn-add" disabled>+ Nouvelle opération</button>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="add-btn" id="btn-export" style="background:transparent;color:var(--gold);border:1px solid var(--gold-soft);">↓ Exporter CSV</button>
+        <button type="button" class="add-btn" id="btn-add" disabled>+ Nouvelle opération</button>
+      </div>
     </div>
 
     <div class="compta-tabs">
@@ -410,7 +413,7 @@
     TX_TYPES, TYPE_LABELS, TYPE_COLORS, TYPE_DESCRIPTIONS,
     subscribeToTransactions, addTransaction, updateTransaction, deleteTransaction,
     aggregateByWeek, computeRollingCumul, sumByType,
-    formatDate, fmt
+    formatDate, fmt, exportTransactionsToCSV, downloadCSV
   } from './js/compta.js';
   import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
@@ -585,6 +588,15 @@
   function closeModal() { modal.classList.remove('active'); }
 
   document.getElementById('btn-add').addEventListener('click', openAdd);
+  document.getElementById('btn-export').addEventListener('click', async () => {
+    if (!currentTransactions || currentTransactions.length === 0) {
+      await alertDialog('Aucune opération à exporter pour cette année.', { type: 'warning' });
+      return;
+    }
+    const year = parseInt(yearSelect.value, 10);
+    const csv = exportTransactionsToCSV(currentTransactions, year);
+    downloadCSV(csv, `NOVA_Comptabilite_${year}.csv`);
+  });
   document.getElementById('btn-cancel').addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 

@@ -287,3 +287,113 @@ export function computeBracket(ca) {
   }
   return TAX_BRACKETS.length - 1;
 }
+
+/* =========================================================================
+   EXPORT CSV
+   ========================================================================= */
+
+function csvEscape(s) {
+  if (s == null) return '';
+  const str = String(s);
+  if (str.includes('"') || str.includes(',') || str.includes(';') || str.includes('\n')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+/**
+ * Génère un CSV (séparateur point-virgule, format européen) à partir d'une liste
+ * de transactions. Inclut un onglet de synthèse hebdomadaire en fin de fichier.
+ *
+ * @param {Array} transactions - liste des transactions de l'année
+ * @param {number} year
+ * @returns {string} contenu CSV (avec BOM UTF-8 pour Excel FR)
+ */
+export function exportTransactionsToCSV(transactions, year) {
+  const lines = [];
+  lines.push(`COMPTABILITÉ NOVA — Exercice ${year}`);
+  lines.push(`Exporté le : ${new Date().toLocaleString('fr-FR')}`);
+  lines.push('');
+
+  // === BLOC 1 : Liste détaillée ===
+  lines.push('=== Détail des opérations ===');
+  lines.push(['Date', 'Semaine ISO', 'Type', 'Catégorie', 'Libellé', 'Montant ($)']
+    .map(csvEscape).join(';'));
+  const sorted = transactions.slice().sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return da - db;
+  });
+  sorted.forEach(tx => {
+    const dateStr = formatDate(tx.date);
+    const montantStr = (Number(tx.montant) || 0).toFixed(2).replace('.', ',');
+    lines.push([
+      dateStr,
+      tx.weekKey || '',
+      TYPE_LABELS[tx.type] || tx.type,
+      tx.categorie || '',
+      tx.libelle || '',
+      montantStr
+    ].map(csvEscape).join(';'));
+  });
+  lines.push('');
+
+  // === BLOC 2 : Totaux par type ===
+  const totals = sumByType(transactions);
+  lines.push('=== Totaux par type ===');
+  lines.push(['Type', 'Total ($)'].map(csvEscape).join(';'));
+  Object.entries(TYPE_LABELS).forEach(([type, label]) => {
+    const val = (totals[type] || 0).toFixed(2).replace('.', ',');
+    lines.push([label, val].map(csvEscape).join(';'));
+  });
+  lines.push('');
+
+  // === BLOC 3 : Synthèse hebdo (avec calculs fiscaux) ===
+  const byWeek = aggregateByWeek(transactions);
+  const weeks = computeRollingCumul(byWeek);
+  if (weeks.length > 0) {
+    lines.push('=== Synthèse hebdomadaire (T.T.E. Art. 4) ===');
+    lines.push(['Semaine', 'Don', 'Subvention', 'Prestation', 'Autre', 'Charges déd.',
+                'Charges non-déd.', 'CA hebdo', 'Résultat', 'Tranche', 'Taux', 'Impôt',
+                'Hors dons', 'Cumul 4 sem.', 'Plafond']
+      .map(csvEscape).join(';'));
+    weeks.forEach(w => {
+      const fmtN = n => (Number(n) || 0).toFixed(2).replace('.', ',');
+      lines.push([
+        w.weekKey,
+        fmtN(w.sums.don),
+        fmtN(w.sums.subvention),
+        fmtN(w.sums.prestation),
+        fmtN(w.sums.autre),
+        fmtN(w.sums.charge_deductible),
+        fmtN(w.sums.charge_non_deductible),
+        fmtN(w.ca),
+        fmtN(w.resultat),
+        `T${w.tranche}`,
+        fmtN(w.taux * 100) + '%',
+        fmtN(w.impot),
+        fmtN(w.horsDons),
+        fmtN(w.cumul4),
+        w.plafondStatut.toUpperCase()
+      ].map(csvEscape).join(';'));
+    });
+  }
+
+  // BOM UTF-8 pour qu'Excel FR ouvre correctement les accents
+  return '﻿' + lines.join('\r\n');
+}
+
+/**
+ * Déclenche le téléchargement d'un fichier CSV depuis le navigateur.
+ */
+export function downloadCSV(content, filename) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
