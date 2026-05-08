@@ -61,7 +61,7 @@
 <div class="toolbar no-print" style="display:none;" id="toolbar">
   <button type="button" onclick="NovaExport.toPDF(window.exportFilename || 'NOVA-document')">Télécharger PDF</button>
   <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', window.exportFilename || 'NOVA-document')">Télécharger PNG</button>
-  <button type="button" onclick="window.close()" style="background:transparent;color:#fbf9f3;border:1px solid #b89c5e;">Fermer</button>
+  <button type="button" onclick="window.history.length > 1 ? window.history.back() : window.location.href='documents.html'" style="background:transparent;color:#fbf9f3;border:1px solid #b89c5e;">← Retour</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -234,7 +234,7 @@
         <td>${escapeHtml(d.createdByName || '—')}</td>
         <td>${summary}</td>
         <td class="actions">
-          <a href="document-view.html?id=${d.id}" target="_blank">Voir</a>
+          <a href="document-view.html?id=${d.id}">Voir</a>
           ${canWrite ? `<button class="del" data-id="${d.id}">Supprimer</button>` : ''}
         </td>
       `;
