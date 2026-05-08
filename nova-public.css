@@ -929,3 +929,88 @@
     .nv-scroll-hint { animation: none; }
     html { scroll-behavior: auto; }
   }
+
+  /* ===== ENGAGEMENTS / PILIERS ===== */
+  .nv-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .nv-pillar {
+    background: var(--paper);
+    border-top: 2px solid var(--gold);
+    padding: 36px 28px 32px;
+    position: relative;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .nv-pillar:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 38px rgba(31,45,74,0.10);
+  }
+  .nv-pillar-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 38px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .nv-pillar h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--navy);
+    letter-spacing: 1px;
+    margin: 0 0 12px;
+  }
+  .nv-pillar p {
+    font-size: 14px;
+    color: #3a3a3a;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* ===== CITATION INSTITUTIONNELLE ===== */
+  .nv-quote {
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    padding: 0 30px;
+  }
+  .nv-quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 96px;
+    color: var(--gold);
+    line-height: 0.6;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+  .nv-quote blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.55;
+    color: var(--navy);
+    margin: 0 0 22px;
+    padding: 0;
+    border: none;
+    quotes: none;
+  }
+  .nv-quote blockquote::before, .nv-quote blockquote::after { content: none; }
+  .nv-quote cite {
+    font-family: 'EB Garamond', serif;
+    font-style: normal;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  @media (max-width: 980px) {
+    .nv-pillars-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .nv-pillars-grid { grid-template-columns: 1fr; }
+  }
