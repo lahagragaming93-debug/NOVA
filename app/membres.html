@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Membres & Bénévoles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  .registry-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; margin: 16px 0;
+  }
+  .registry-toolbar .add-btn {
+    background: var(--navy); color: var(--paper); border: none;
+    padding: 9px 18px; font-family: inherit; font-size: 13px;
+    letter-spacing: 1.2px; border-radius: 3px; cursor: pointer; font-variant: small-caps;
+  }
+  .registry-toolbar .add-btn:hover { background: var(--gold); }
+  .registry-toolbar .add-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+  table.registry {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden;
+  }
+  table.registry th {
+    background: var(--navy); color: var(--paper); text-align: left; padding: 10px 14px;
+    font-family: 'Cormorant Garamond', serif; font-size: 12.5px;
+    letter-spacing: 1.2px; font-variant: small-caps; font-weight: 600;
+  }
+  table.registry td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  table.registry tr:last-child td { border-bottom: none; }
+  table.registry tr:hover td { background: var(--gold-bg); }
+  table.registry .actions { text-align: right; white-space: nowrap; }
+  table.registry .actions button {
+    background: transparent; border: 1px solid var(--rule); padding: 4px 10px;
+    font-size: 11px; cursor: pointer; border-radius: 3px; margin-left: 4px; color: var(--muted);
+  }
+  table.registry .actions button:hover { border-color: var(--gold); color: var(--ink); }
+  table.registry .actions .del:hover { border-color: var(--red); color: var(--red); }
+
+  .statut-badge {
+    display: inline-block; padding: 3px 9px; border-radius: 12px;
+    font-size: 10.5px; letter-spacing: 0.6px; font-variant: small-caps; font-weight: 600;
+  }
+
+  .empty { padding: 30px; text-align: center; color: var(--muted); font-style: italic; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(31,45,74,.55); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--paper); border-radius: 6px; width: 100%; max-width: 540px; padding: 24px 28px; box-shadow: 0 20px 60px rgba(0,0,0,.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; color: var(--navy); margin: 0 0 14px; font-size: 22px; }
+  .modal .field { margin-bottom: 11px; }
+  .modal .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-variant: small-caps; color: var(--muted); margin-bottom: 3px; }
+  .modal select, .modal input, .modal textarea {
+    width: 100%; font-family: inherit; font-size: 14px; padding: 8px 10px;
+    border: 1px solid var(--rule); background: var(--paper); border-radius: 3px;
+  }
+  .modal select:focus, .modal input:focus, .modal textarea:focus { outline: none; border-color: var(--gold); }
+  .modal textarea { min-height: 70px; resize: vertical; }
+  .modal .check { display: flex; align-items: center; gap: 8px; }
+  .modal .check input { width: auto; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+  .modal-actions button { padding: 9px 18px; font-family: inherit; font-size: 13px; border-radius: 3px; cursor: pointer; border: 1px solid transparent; }
+  .modal-actions .cancel { background: transparent; color: var(--muted); border-color: var(--rule); }
+  .modal-actions .save { background: var(--navy); color: var(--paper); }
+  .modal-actions .save:hover { background: var(--gold); }
+  .modal-error { color: var(--red); font-size: 12.5px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div><div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div><div class="brand-sub">Membres & Bénévoles</div></div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+    <div class="welcome-card">
+      <h1>Membres & Bénévoles</h1>
+      <p class="subtitle">Registre des membres de l'association et des bénévoles sous contrat d'engagement (Art. 8-1.5 du T.T.E.).</p>
+    </div>
+
+    <div class="registry-toolbar">
+      <div id="counter" style="color:var(--muted);font-size:13px;">Chargement…</div>
+      <button type="button" class="add-btn" id="btn-add" disabled>+ Nouveau membre</button>
+    </div>
+
+    <table class="registry">
+      <thead>
+        <tr>
+          <th>Nom</th><th>Identité in-game</th><th>Statut</th>
+          <th>Adhésion</th><th>Contrat</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody>
+    </table>
+  </main>
+
+  <footer class="app-footer">NOVA — Espace membre — Registre des membres et bénévoles</footer>
+</div>
+
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2 id="modal-title">Nouveau membre</h2>
+    <div class="field-row">
+      <div class="field">
+        <label for="m-name">Nom complet</label>
+        <input id="m-name" type="text" placeholder="Prénom Nom">
+      </div>
+      <div class="field">
+        <label for="m-ingame">Identité in-game</label>
+        <input id="m-ingame" type="text" placeholder="ex. Andrew Beauchamp">
+      </div>
+    </div>
+    <div class="field">
+      <label for="m-email">Email (optionnel)</label>
+      <input id="m-email" type="email" placeholder="contact@...">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="m-statut">Statut</label>
+        <select id="m-statut">
+          <option value="">—</option>
+          <option value="fondateur">Membre fondateur</option>
+          <option value="actif">Membre actif</option>
+          <option value="benevole">Bénévole</option>
+          <option value="honneur">Membre d'honneur</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="m-date">Date d'adhésion</label>
+        <input id="m-date" type="date">
+      </div>
+    </div>
+    <div class="field check">
+      <input id="m-contract" type="checkbox">
+      <label for="m-contract" style="margin:0;text-transform:none;letter-spacing:0;font-variant:normal;font-size:13px;color:var(--ink);">A signé un contrat d'engagement associatif (bénévole)</label>
+    </div>
+    <div class="field">
+      <label for="m-contractref">Référence contrat (optionnel)</label>
+      <input id="m-contractref" type="text" placeholder="ex. NOVA-ENG-2026-0001">
+    </div>
+    <div class="field">
+      <label for="m-notes">Notes</label>
+      <textarea id="m-notes" placeholder="Informations complémentaires…"></textarea>
+    </div>
+    <div class="modal-error" id="err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="btn-cancel">Annuler</button>
+      <button type="button" class="save" id="btn-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
+  import { subscribeToMembres, addMembre, updateMembre, deleteMembre,
+           STATUT_LABELS, STATUT_COLORS, formatDate } from './js/membres.js';
+  import { logEvent } from './js/journal.js';
+
+  const shell = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const tbody = document.getElementById('tbody');
+  const modal = document.getElementById('modal');
+  let me = null, myProfile = null, canWrite = false, canEdit = false;
+  let editingId = null, current = [];
+
+  function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function render(items) {
+    document.getElementById('counter').textContent = `${items.length} membre${items.length > 1 ? 's' : ''} enregistré${items.length > 1 ? 's' : ''}`;
+    if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Aucun membre. Cliquez sur « + Nouveau membre » pour commencer.</td></tr>'; return; }
+    tbody.innerHTML = '';
+    items.forEach(m => {
+      const tr = document.createElement('tr');
+      const c = STATUT_COLORS[m.statut] || { bg: '#eee', fg: '#333' };
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(m.displayName)}</strong>${m.email ? `<br><small style="color:var(--muted);font-style:italic;">${escapeHtml(m.email)}</small>` : ''}</td>
+        <td>${escapeHtml(m.inGameName || '—')}</td>
+        <td><span class="statut-badge" style="background:${c.bg};color:${c.fg};">${STATUT_LABELS[m.statut] || m.statut}</span></td>
+        <td>${formatDate(m.dateAdhesion)}</td>
+        <td>${m.hasContract ? `✓ <small style="color:var(--muted);">${escapeHtml(m.contractRef || 'Oui')}</small>` : '—'}</td>
+        <td class="actions">${canEdit ? `<button class="edit" data-id="${m.id}">Modifier</button>` : ''}${canWrite ? `<button class="del" data-id="${m.id}">Supprimer</button>` : ''}${!canEdit && !canWrite ? '<em style="color:var(--muted);font-size:11px;">Lecture seule</em>' : ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.edit').forEach(b => b.addEventListener('click', e => openEdit(e.target.dataset.id)));
+    tbody.querySelectorAll('.del').forEach(b => b.addEventListener('click', e => onDelete(e.target.dataset.id)));
+  }
+
+  function openAdd() {
+    if (!canEdit) return;
+    editingId = null;
+    document.getElementById('modal-title').textContent = 'Nouveau membre';
+    document.getElementById('m-name').value = '';
+    document.getElementById('m-ingame').value = '';
+    document.getElementById('m-email').value = '';
+    document.getElementById('m-statut').value = '';
+    document.getElementById('m-date').valueAsDate = new Date();
+    document.getElementById('m-contract').checked = false;
+    document.getElementById('m-contractref').value = '';
+    document.getElementById('m-notes').value = '';
+    document.getElementById('err').textContent = '';
+    modal.classList.add('active');
+  }
+  function openEdit(id) {
+    const m = current.find(x => x.id === id);
+    if (!m) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Modifier le membre';
+    document.getElementById('m-name').value = m.displayName || '';
+    document.getElementById('m-ingame').value = m.inGameName || '';
+    document.getElementById('m-email').value = m.email || '';
+    document.getElementById('m-statut').value = m.statut || '';
+    const d = m.dateAdhesion?.toDate ? m.dateAdhesion.toDate() : new Date(m.dateAdhesion);
+    document.getElementById('m-date').valueAsDate = d;
+    document.getElementById('m-contract').checked = !!m.hasContract;
+    document.getElementById('m-contractref').value = m.contractRef || '';
+    document.getElementById('m-notes').value = m.notes || '';
+    document.getElementById('err').textContent = '';
+    modal.classList.add('active');
+  }
+  function closeModal() { modal.classList.remove('active'); }
+
+  document.getElementById('btn-add').addEventListener('click', openAdd);
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const data = {
+      displayName: document.getElementById('m-name').value,
+      inGameName: document.getElementById('m-ingame').value,
+      email: document.getElementById('m-email').value,
+      statut: document.getElementById('m-statut').value,
+      dateAdhesion: document.getElementById('m-date').valueAsDate || new Date(),
+      hasContract: document.getElementById('m-contract').checked,
+      contractRef: document.getElementById('m-contractref').value,
+      notes: document.getElementById('m-notes').value
+    };
+    const err = document.getElementById('err');
+    err.textContent = '';
+    if (!data.displayName.trim()) { err.textContent = 'Nom requis.'; return; }
+    if (!data.statut) { err.textContent = 'Statut requis.'; return; }
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    try {
+      if (editingId) {
+        await updateMembre(editingId, data);
+        await logEvent('membre_updated', { target: editingId, details: { name: data.displayName }, actorName: myProfile.displayName, actorRole: myProfile.role });
+      } else {
+        const ref = await addMembre(data);
+        await logEvent('membre_created', { target: ref.id, details: { name: data.displayName }, actorName: myProfile.displayName, actorRole: myProfile.role });
+      }
+      closeModal();
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; }
+  });
+
+  async function onDelete(id) {
+    const m = current.find(x => x.id === id);
+    if (!m) return;
+    if (!confirm(`Supprimer ${m.displayName} du registre ?`)) return;
+    try {
+      await deleteMembre(id);
+      await logEvent('membre_deleted', { target: id, details: { name: m.displayName }, actorName: myProfile.displayName, actorRole: myProfile.role });
+    } catch (e) { alert('Erreur : ' + e.message); }
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });
+
+  onAuthChange(async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      myProfile = await getUserProfile(user.uid);
+      if (!myProfile || !hasPermission(myProfile.role, 'membres:read')) {
+        loader.innerHTML = '<div style="text-align:center;color:#8b3a3a;">⛔ Accès réservé au Bureau.<br><span style="font-size:13px;color:#6b6356;font-style:italic;">Redirection…</span></div>';
+        setTimeout(() => window.location.href = 'dashboard.html', 1800);
+        return;
+      }
+      canWrite = hasPermission(myProfile.role, 'membres:write') || myProfile.role === ROLES.PRESIDENT;
+      canEdit = canWrite;
+      document.getElementById('btn-add').disabled = !canEdit;
+      document.getElementById('header-username').textContent = myProfile.displayName;
+      const badge = document.getElementById('header-role');
+      badge.textContent = ROLE_LABELS[myProfile.role];
+      badge.className = 'role-badge role-' + myProfile.role;
+      subscribeToMembres((items, err) => {
+        if (err) { tbody.innerHTML = `<tr><td colspan="6" class="empty" style="color:var(--red);">Erreur : ${err.message}</td></tr>`; return; }
+        current = items;
+        render(items);
+      });
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (e) {
+      loader.innerHTML = '<div style="color:#8b3a3a;">Erreur : ' + e.message + '</div>';
+    }
+  });
+</script>
+</body>
+</html>

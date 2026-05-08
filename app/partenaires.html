@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Partenaires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  .registry-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+  .registry-toolbar .add-btn { background: var(--navy); color: var(--paper); border: none; padding: 9px 18px; font-family: inherit; font-size: 13px; letter-spacing: 1.2px; border-radius: 3px; cursor: pointer; font-variant: small-caps; }
+  .registry-toolbar .add-btn:hover { background: var(--gold); }
+  .registry-toolbar .add-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+  table.registry { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  table.registry th { background: var(--navy); color: var(--paper); text-align: left; padding: 10px 12px; font-family: 'Cormorant Garamond', serif; font-size: 12.5px; letter-spacing: 1.2px; font-variant: small-caps; font-weight: 600; }
+  table.registry td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  table.registry tr:last-child td { border-bottom: none; }
+  table.registry tr:hover td { background: var(--gold-bg); }
+  table.registry .actions { text-align: right; white-space: nowrap; }
+  table.registry .actions button { background: transparent; border: 1px solid var(--rule); padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 3px; margin-left: 4px; color: var(--muted); }
+  table.registry .actions button:hover { border-color: var(--gold); color: var(--ink); }
+  table.registry .actions .del:hover { border-color: var(--red); color: var(--red); }
+
+  .type-pill {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10.5px; letter-spacing: 0.5px; font-weight: 600;
+    background: var(--gold-bg); color: var(--gold); margin-right: 3px; margin-bottom: 2px;
+  }
+  .statut-pill {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10.5px; font-variant: small-caps; letter-spacing: 0.5px; font-weight: 600;
+  }
+  .statut-pill.actif { background: #e3ebdc; color: #4a6b3a; }
+  .statut-pill.archive { background: #ddd; color: #555; }
+
+  .empty { padding: 30px; text-align: center; color: var(--muted); font-style: italic; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(31,45,74,.55); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--paper); border-radius: 6px; width: 100%; max-width: 600px; padding: 24px 28px; box-shadow: 0 20px 60px rgba(0,0,0,.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; color: var(--navy); margin: 0 0 14px; font-size: 22px; }
+  .modal .field { margin-bottom: 11px; }
+  .modal .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-variant: small-caps; color: var(--muted); margin-bottom: 3px; }
+  .modal select, .modal input, .modal textarea { width: 100%; font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--paper); border-radius: 3px; }
+  .modal select:focus, .modal input:focus, .modal textarea:focus { outline: none; border-color: var(--gold); }
+  .modal textarea { min-height: 60px; resize: vertical; }
+  .types-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .types-checks label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); margin: 0; text-transform: none; letter-spacing: 0; font-variant: normal; cursor: pointer; }
+  .types-checks input { width: auto; }
+
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+  .modal-actions button { padding: 9px 18px; font-family: inherit; font-size: 13px; border-radius: 3px; cursor: pointer; border: 1px solid transparent; }
+  .modal-actions .cancel { background: transparent; color: var(--muted); border-color: var(--rule); }
+  .modal-actions .save { background: var(--navy); color: var(--paper); }
+  .modal-actions .save:hover { background: var(--gold); }
+  .modal-error { color: var(--red); font-size: 12.5px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div><div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div><div class="brand-sub">Partenaires</div></div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+    <div class="welcome-card">
+      <h1>Partenaires</h1>
+      <p class="subtitle">Registre des partenaires de l'association et conventions de partenariat associées.</p>
+    </div>
+
+    <div class="registry-toolbar">
+      <div id="counter" style="color:var(--muted);font-size:13px;">Chargement…</div>
+      <button type="button" class="add-btn" id="btn-add" disabled>+ Nouveau partenaire</button>
+    </div>
+
+    <table class="registry">
+      <thead>
+        <tr>
+          <th>Raison sociale</th><th>Secteur</th><th>Représentant</th>
+          <th>Types</th><th>Convention</th><th>Statut</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"><tr><td colspan="7" class="empty">Chargement…</td></tr></tbody>
+    </table>
+  </main>
+
+  <footer class="app-footer">NOVA — Espace membre — Registre des partenaires et conventions</footer>
+</div>
+
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2 id="modal-title">Nouveau partenaire</h2>
+    <div class="field">
+      <label for="p-rs">Raison sociale</label>
+      <input id="p-rs" type="text" placeholder="Nom de l'enseigne / entreprise">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="p-secteur">Secteur</label>
+        <select id="p-secteur"></select>
+      </div>
+      <div class="field">
+        <label for="p-statut">Statut</label>
+        <select id="p-statut">
+          <option value="actif">Actif</option>
+          <option value="archive">Archivé</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="p-rep">Représentant</label>
+        <input id="p-rep" type="text" placeholder="Nom du contact">
+      </div>
+      <div class="field">
+        <label for="p-email">Email contact</label>
+        <input id="p-email" type="email">
+      </div>
+    </div>
+    <div class="field">
+      <label for="p-adresse">Adresse</label>
+      <input id="p-adresse" type="text" placeholder="Adresse in-game">
+    </div>
+    <div class="field">
+      <label>Types de partenariat</label>
+      <div class="types-checks">
+        <label><input type="checkbox" name="ptype" value="recompenses"> Récompenses (bons en nature)</label>
+        <label><input type="checkbox" name="ptype" value="questions"> Questions sponsorisées</label>
+        <label><input type="checkbox" name="ptype" value="experiences"> Expériences VIP</label>
+        <label><input type="checkbox" name="ptype" value="visuel"> Visibilité (logo, supports)</label>
+      </div>
+    </div>
+    <div class="field">
+      <label for="p-date">Date de signature de la convention</label>
+      <input id="p-date" type="date">
+    </div>
+    <div class="field">
+      <label for="p-notes">Notes</label>
+      <textarea id="p-notes" placeholder="Engagements particuliers, valeur estimée…"></textarea>
+    </div>
+    <div class="modal-error" id="err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="btn-cancel">Annuler</button>
+      <button type="button" class="save" id="btn-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
+  import { subscribeToPartenaires, addPartenaire, updatePartenaire, deletePartenaire,
+           TYPE_LABELS, SECTEURS, formatDate } from './js/partenaires.js';
+  import { logEvent } from './js/journal.js';
+
+  const shell = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const tbody = document.getElementById('tbody');
+  const modal = document.getElementById('modal');
+  let me = null, myProfile = null, canWrite = false;
+  let editingId = null, current = [];
+
+  function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // Init secteur select
+  const secteurSel = document.getElementById('p-secteur');
+  SECTEURS.forEach(s => {
+    const o = document.createElement('option'); o.value = s; o.textContent = s; secteurSel.appendChild(o);
+  });
+
+  function render(items) {
+    document.getElementById('counter').textContent = `${items.length} partenaire${items.length > 1 ? 's' : ''}`;
+    if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty">Aucun partenaire enregistré.</td></tr>'; return; }
+    tbody.innerHTML = '';
+    items.forEach(p => {
+      const tr = document.createElement('tr');
+      const types = (p.types || []).map(t => `<span class="type-pill">${TYPE_LABELS[t] || t}</span>`).join('');
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(p.raisonSociale)}</strong>${p.email ? `<br><small style="color:var(--muted);font-style:italic;">${escapeHtml(p.email)}</small>` : ''}</td>
+        <td>${escapeHtml(p.secteur || '—')}</td>
+        <td>${escapeHtml(p.representant || '—')}</td>
+        <td>${types || '<em style="color:var(--muted);">—</em>'}</td>
+        <td>${formatDate(p.dateConvention)}</td>
+        <td><span class="statut-pill ${p.statut}">${p.statut === 'actif' ? 'Actif' : 'Archivé'}</span></td>
+        <td class="actions">${canWrite ? `<button class="edit" data-id="${p.id}">Modifier</button><button class="del" data-id="${p.id}">Supprimer</button>` : '<em style="color:var(--muted);font-size:11px;">Lecture seule</em>'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.edit').forEach(b => b.addEventListener('click', e => openEdit(e.target.dataset.id)));
+    tbody.querySelectorAll('.del').forEach(b => b.addEventListener('click', e => onDelete(e.target.dataset.id)));
+  }
+
+  function openAdd() {
+    if (!canWrite) return;
+    editingId = null;
+    document.getElementById('modal-title').textContent = 'Nouveau partenaire';
+    ['p-rs','p-rep','p-email','p-adresse','p-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('p-secteur').value = SECTEURS[0];
+    document.getElementById('p-statut').value = 'actif';
+    document.querySelectorAll('input[name="ptype"]').forEach(c => c.checked = false);
+    document.getElementById('p-date').valueAsDate = new Date();
+    document.getElementById('err').textContent = '';
+    modal.classList.add('active');
+  }
+  function openEdit(id) {
+    const p = current.find(x => x.id === id);
+    if (!p) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Modifier le partenaire';
+    document.getElementById('p-rs').value = p.raisonSociale || '';
+    document.getElementById('p-secteur').value = p.secteur || SECTEURS[0];
+    document.getElementById('p-rep').value = p.representant || '';
+    document.getElementById('p-email').value = p.email || '';
+    document.getElementById('p-adresse').value = p.adresse || '';
+    document.getElementById('p-statut').value = p.statut || 'actif';
+    document.getElementById('p-notes').value = p.notes || '';
+    document.querySelectorAll('input[name="ptype"]').forEach(c => c.checked = (p.types || []).includes(c.value));
+    const d = p.dateConvention?.toDate ? p.dateConvention.toDate() : new Date(p.dateConvention);
+    document.getElementById('p-date').valueAsDate = d;
+    document.getElementById('err').textContent = '';
+    modal.classList.add('active');
+  }
+  function closeModal() { modal.classList.remove('active'); }
+
+  document.getElementById('btn-add').addEventListener('click', openAdd);
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const types = Array.from(document.querySelectorAll('input[name="ptype"]:checked')).map(c => c.value);
+    const data = {
+      raisonSociale: document.getElementById('p-rs').value,
+      secteur: document.getElementById('p-secteur').value,
+      representant: document.getElementById('p-rep').value,
+      email: document.getElementById('p-email').value,
+      adresse: document.getElementById('p-adresse').value,
+      types,
+      dateConvention: document.getElementById('p-date').valueAsDate || new Date(),
+      statut: document.getElementById('p-statut').value,
+      notes: document.getElementById('p-notes').value
+    };
+    const err = document.getElementById('err');
+    err.textContent = '';
+    if (!data.raisonSociale.trim()) { err.textContent = 'Raison sociale requise.'; return; }
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    try {
+      if (editingId) {
+        await updatePartenaire(editingId, data);
+        await logEvent('partenaire_updated', { target: editingId, details: { name: data.raisonSociale }, actorName: myProfile.displayName, actorRole: myProfile.role });
+      } else {
+        const ref = await addPartenaire(data);
+        await logEvent('partenaire_created', { target: ref.id, details: { name: data.raisonSociale }, actorName: myProfile.displayName, actorRole: myProfile.role });
+      }
+      closeModal();
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; }
+  });
+
+  async function onDelete(id) {
+    const p = current.find(x => x.id === id);
+    if (!p) return;
+    if (!confirm(`Supprimer ${p.raisonSociale} ?`)) return;
+    try {
+      await deletePartenaire(id);
+      await logEvent('partenaire_deleted', { target: id, details: { name: p.raisonSociale }, actorName: myProfile.displayName, actorRole: myProfile.role });
+    } catch (e) { alert('Erreur : ' + e.message); }
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });
+
+  onAuthChange(async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      myProfile = await getUserProfile(user.uid);
+      if (!myProfile || !hasPermission(myProfile.role, 'partenaires:read')) {
+        loader.innerHTML = '<div style="text-align:center;color:#8b3a3a;">⛔ Accès non autorisé.</div>';
+        setTimeout(() => window.location.href = 'dashboard.html', 1800);
+        return;
+      }
+      canWrite = hasPermission(myProfile.role, 'partenaires:write');
+      document.getElementById('btn-add').disabled = !canWrite;
+      document.getElementById('header-username').textContent = myProfile.displayName;
+      const badge = document.getElementById('header-role');
+      badge.textContent = ROLE_LABELS[myProfile.role];
+      badge.className = 'role-badge role-' + myProfile.role;
+      subscribeToPartenaires((items, err) => {
+        if (err) { tbody.innerHTML = `<tr><td colspan="7" class="empty" style="color:var(--red);">Erreur : ${err.message}</td></tr>`; return; }
+        current = items;
+        render(items);
+      });
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (e) {
+      loader.innerHTML = '<div style="color:#8b3a3a;">Erreur : ' + e.message + '</div>';
+    }
+  });
+</script>
+</body>
+</html>
