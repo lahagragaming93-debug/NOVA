@@ -42,7 +42,28 @@
     line-height: 1.7;
     color: #2a2a2a;
     overflow-x: hidden;
+    position: relative;
   }
+
+  /* Filigrane NOVA léger en arrière-plan de toute la page */
+  body.home::before {
+    content: "";
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70vmin;
+    height: 70vmin;
+    max-width: 700px;
+    max-height: 700px;
+    background-image: url('favicon.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body.home > * { position: relative; z-index: 1; }
 
   body.home .page,
   body.home .header,
@@ -961,7 +982,7 @@
     <p class="lede reveal delay-3">
       NOVA est une association à but non lucratif dédiée à la promotion d'événements
       culturels, festifs et compétitifs au sein de l'État de San Andreas. Elle agit dans
-      le strict respect du Texte Territorial de l'Économie et inscrit chacun de ses
+      le strict respect du Code des Taxes, du Travail et des Entreprises et inscrit chacun de ses
       projets dans une démarche d'impartialité et d'utilité publique.
     </p>
     <div class="nv-cta-row reveal delay-4">
@@ -1241,7 +1262,7 @@
         <a href="T.T.E_FlashFA.md" class="nv-doc-card md reveal">
           <div class="nv-doc-icon">¶</div>
           <h4>Référentiel T.T.E.</h4>
-          <p>Articles fiscaux du Texte Territorial de l'Économie applicables au régime juridique de NOVA.</p>
+          <p>Articles fiscaux du Code des Taxes, du Travail et des Entreprises applicables au régime juridique de NOVA.</p>
           <div class="nv-doc-link"><span>Consulter</span></div>
         </a>
       </div>

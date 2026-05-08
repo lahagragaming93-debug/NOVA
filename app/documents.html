@@ -181,6 +181,167 @@
   </div>
 </div>
 
+<!-- Modal Facture -->
+<div class="modal-overlay" id="modal-facture" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:640px;">
+    <h2>Nouvelle facture</h2>
+    <p class="info">Facture émise à un partenaire au titre d'une prestation (visibilité, mention, etc.). Compte dans le chiffre généré (Art. 8-1.4 du T.T.E.).</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-client">Client (raison sociale)</label>
+        <input id="f-client" type="text" placeholder="ex. Garage Vinewood">
+      </div>
+      <div class="field">
+        <label for="f-rep">Représentant client</label>
+        <input id="f-rep" type="text" placeholder="Nom du contact">
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-adresse">Adresse client</label>
+      <input id="f-adresse" type="text">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-conv">Réf. convention liée (optionnel)</label>
+        <input id="f-conv" type="text" placeholder="ex. NOVA-CONV-2026-0003">
+      </div>
+      <div class="field">
+        <label for="f-date">Date d'émission</label>
+        <input id="f-date" type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label>Lignes de prestation</label>
+      <div id="f-lignes" style="display:flex;flex-direction:column;gap:6px;"></div>
+      <button type="button" id="f-add-line" style="margin-top:6px;background:transparent;border:1px dashed var(--gold);color:var(--gold);padding:6px 12px;font-family:inherit;font-size:12px;cursor:pointer;border-radius:3px;">+ Ajouter une ligne</button>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-echeance">Échéance de paiement</label>
+        <input id="f-echeance" type="date">
+      </div>
+      <div class="field">
+        <label>Total ($)</label>
+        <input id="f-total" type="text" readonly style="font-weight:700;color:var(--navy);background:var(--paper-alt);">
+      </div>
+    </div>
+    <div class="modal-error" id="f-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="f-cancel">Annuler</button>
+      <button type="button" class="save" id="f-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Convention de partenariat -->
+<div class="modal-overlay" id="modal-conv" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:640px;">
+    <h2>Nouvelle convention de partenariat</h2>
+    <p class="info">Convention encadrant un partenariat entre NOVA et un tiers — détermine la qualification fiscale (don ou prestation).</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="c-partenaire">Partenaire (raison sociale)</label>
+        <input id="c-partenaire" type="text">
+      </div>
+      <div class="field">
+        <label for="c-secteur">Secteur d'activité</label>
+        <input id="c-secteur" type="text" placeholder="ex. Automobile / Garage">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="c-rep">Représentant</label>
+        <input id="c-rep" type="text">
+      </div>
+      <div class="field">
+        <label for="c-email">Email contact</label>
+        <input id="c-email" type="email">
+      </div>
+    </div>
+    <div class="field">
+      <label for="c-adresse">Adresse</label>
+      <input id="c-adresse" type="text">
+    </div>
+    <div class="field">
+      <label>Type de partenariat (cocher tout ce qui s'applique)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0;font-variant:normal;cursor:pointer;"><input type="checkbox" name="ctype" value="recompenses" style="width:auto;"> Récompenses (bons en nature)</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0;font-variant:normal;cursor:pointer;"><input type="checkbox" name="ctype" value="questions" style="width:auto;"> Questions sponsorisées</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0;font-variant:normal;cursor:pointer;"><input type="checkbox" name="ctype" value="experiences" style="width:auto;"> Expériences VIP</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0;font-variant:normal;cursor:pointer;"><input type="checkbox" name="ctype" value="visuel" style="width:auto;"> Visibilité (logo, supports)</label>
+      </div>
+    </div>
+    <div class="field">
+      <label for="c-contribution">Description de la contribution</label>
+      <textarea id="c-contribution" placeholder="ex. 30 bons de coiffure d'une valeur unitaire de 300 $, soit 9 000 $ au total."></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="c-valeur">Valeur estimée totale ($)</label>
+        <input id="c-valeur" type="number" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label for="c-date">Date de signature</label>
+        <input id="c-date" type="date">
+      </div>
+    </div>
+    <div class="modal-error" id="c-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="c-cancel">Annuler</button>
+      <button type="button" class="save" id="c-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Contrat d'engagement bénévole -->
+<div class="modal-overlay" id="modal-eng" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:640px;">
+    <h2>Nouveau contrat d'engagement bénévole</h2>
+    <p class="info">Engagement bénévole gratuit conformément à l'Article 8-1.5 du T.T.E.</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="e-nom">Nom complet du bénévole</label>
+        <input id="e-nom" type="text">
+      </div>
+      <div class="field">
+        <label for="e-ingame">Identité in-game</label>
+        <input id="e-ingame" type="text">
+      </div>
+    </div>
+    <div class="field">
+      <label for="e-adresse">Adresse / Coordonnées</label>
+      <input id="e-adresse" type="text">
+    </div>
+    <div class="field">
+      <label for="e-mission">Mission confiée</label>
+      <textarea id="e-mission" placeholder="ex. Animation de la Manche 1, régie technique, accueil du public…"></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="e-debut">Date de début</label>
+        <input id="e-debut" type="date">
+      </div>
+      <div class="field">
+        <label for="e-fin">Date de fin</label>
+        <input id="e-fin" type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label for="e-lieu">Lieu(x) d'exécution</label>
+      <input id="e-lieu" type="text" placeholder="ex. Los Santos">
+    </div>
+    <div class="field">
+      <label for="e-defraiement">Défraiement éventuel</label>
+      <textarea id="e-defraiement" placeholder="ex. Restauration limite 750 $ ; ou « Aucun »."></textarea>
+    </div>
+    <div class="modal-error" id="e-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="e-cancel">Annuler</button>
+      <button type="button" class="save" id="e-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
 <div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
 
 <script type="module">
@@ -200,16 +361,15 @@
     const grid = document.getElementById('templates-grid');
     grid.innerHTML = '';
     Object.entries(TYPE_META).forEach(([type, meta]) => {
-      const live = type === 'recu_don';
       const card = document.createElement('div');
-      card.className = 'template-card' + (live ? '' : ' disabled');
+      card.className = 'template-card';
       card.innerHTML = `
-        <span class="badge ${live ? 'live' : 'coming'}">${live ? 'Disponible' : 'Bientôt'}</span>
+        <span class="badge live">Disponible</span>
         <div class="icon">${meta.icon}</div>
         <div class="title">${meta.label}</div>
         <div class="desc">${meta.desc}</div>
       `;
-      if (live) card.addEventListener('click', () => openModal(type));
+      card.addEventListener('click', () => openModal(type));
       grid.appendChild(card);
     });
   }
@@ -223,9 +383,11 @@
     tbody.innerHTML = '';
     docs.forEach(d => {
       const meta = TYPE_META[d.type] || { label: d.type };
-      const summary = d.type === 'recu_don'
-        ? `${escapeHtml(d.data?.donateur || '?')} — ${fmt(d.data?.montant || 0)}`
-        : '—';
+      let summary = '—';
+      if (d.type === 'recu_don') summary = `${escapeHtml(d.data?.donateur || '?')} — ${fmt(d.data?.montant || 0)}`;
+      else if (d.type === 'facture') summary = `${escapeHtml(d.data?.client || '?')} — ${fmt(d.data?.total || 0)}`;
+      else if (d.type === 'convention') summary = `${escapeHtml(d.data?.partenaire || '?')} — ${fmt(d.data?.valeur || 0)}`;
+      else if (d.type === 'contrat_engagement') summary = `${escapeHtml(d.data?.nom || '?')} — Bénévole`;
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><span class="ref">${escapeHtml(d.reference || '—')}</span></td>
@@ -253,8 +415,12 @@
     });
   });
 
-  // ===== Modal Don =====
+  // ===== Modals =====
   const modalDon = document.getElementById('modal-don');
+  const modalFact = document.getElementById('modal-facture');
+  const modalConv = document.getElementById('modal-conv');
+  const modalEng = document.getElementById('modal-eng');
+
   async function openModal(type) {
     if (!canWrite) { await alertDialog('Lecture seule pour votre rôle.', { type: 'warning' }); return; }
     if (type === 'recu_don') {
@@ -264,10 +430,158 @@
       document.getElementById('d-date').valueAsDate = new Date();
       document.getElementById('don-err').textContent = '';
       modalDon.classList.add('active');
+    } else if (type === 'facture') {
+      ['f-client','f-rep','f-adresse','f-conv'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('f-date').valueAsDate = new Date();
+      document.getElementById('f-echeance').value = '';
+      document.getElementById('f-total').value = '0,00 $';
+      document.getElementById('f-err').textContent = '';
+      // Reset lignes : 1 ligne vide
+      document.getElementById('f-lignes').innerHTML = '';
+      addFactureLine();
+      modalFact.classList.add('active');
+    } else if (type === 'convention') {
+      ['c-partenaire','c-secteur','c-rep','c-email','c-adresse','c-contribution'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('c-valeur').value = '';
+      document.getElementById('c-date').valueAsDate = new Date();
+      document.querySelectorAll('input[name="ctype"]').forEach(c => c.checked = false);
+      document.getElementById('c-err').textContent = '';
+      modalConv.classList.add('active');
+    } else if (type === 'contrat_engagement') {
+      ['e-nom','e-ingame','e-adresse','e-mission','e-lieu','e-defraiement'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('e-debut').valueAsDate = new Date();
+      document.getElementById('e-fin').value = '';
+      document.getElementById('e-err').textContent = '';
+      modalEng.classList.add('active');
     }
   }
+
+  // ===== Lignes facture =====
+  function addFactureLine(designation = '', qte = 1, pu = 0) {
+    const wrap = document.getElementById('f-lignes');
+    const row = document.createElement('div');
+    row.className = 'f-line';
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 60px 90px 90px 28px;gap:6px;align-items:center;';
+    row.innerHTML = `
+      <input type="text" class="f-des" placeholder="Désignation" value="${escapeHtml(designation)}">
+      <input type="number" class="f-qte" min="1" step="1" value="${qte}">
+      <input type="number" class="f-pu" min="0" step="0.01" placeholder="P.U." value="${pu || ''}">
+      <input type="text" class="f-tot" readonly style="background:var(--paper-alt);text-align:right;">
+      <button type="button" class="f-del" style="background:transparent;border:1px solid var(--rule);color:var(--muted);cursor:pointer;border-radius:3px;font-size:14px;padding:4px;">×</button>
+    `;
+    wrap.appendChild(row);
+    const update = () => {
+      const q = parseFloat(row.querySelector('.f-qte').value) || 0;
+      const p = parseFloat(row.querySelector('.f-pu').value) || 0;
+      row.querySelector('.f-tot').value = fmt(q * p);
+      let total = 0;
+      document.querySelectorAll('#f-lignes .f-line').forEach(r => {
+        const qq = parseFloat(r.querySelector('.f-qte').value) || 0;
+        const pp = parseFloat(r.querySelector('.f-pu').value) || 0;
+        total += qq * pp;
+      });
+      document.getElementById('f-total').value = fmt(total);
+    };
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
+    row.querySelector('.f-del').addEventListener('click', () => { row.remove(); update(); });
+    update();
+  }
+  document.getElementById('f-add-line').addEventListener('click', () => addFactureLine());
   document.getElementById('don-cancel').addEventListener('click', () => modalDon.classList.remove('active'));
   modalDon.addEventListener('click', e => { if (e.target === modalDon) modalDon.classList.remove('active'); });
+  document.getElementById('f-cancel').addEventListener('click', () => modalFact.classList.remove('active'));
+  modalFact.addEventListener('click', e => { if (e.target === modalFact) modalFact.classList.remove('active'); });
+  document.getElementById('c-cancel').addEventListener('click', () => modalConv.classList.remove('active'));
+  modalConv.addEventListener('click', e => { if (e.target === modalConv) modalConv.classList.remove('active'); });
+  document.getElementById('e-cancel').addEventListener('click', () => modalEng.classList.remove('active'));
+  modalEng.addEventListener('click', e => { if (e.target === modalEng) modalEng.classList.remove('active'); });
+
+  // ===== SAVE FACTURE =====
+  document.getElementById('f-save').addEventListener('click', async () => {
+    const lignes = [];
+    document.querySelectorAll('#f-lignes .f-line').forEach(r => {
+      const designation = r.querySelector('.f-des').value.trim();
+      const qte = parseFloat(r.querySelector('.f-qte').value) || 0;
+      const pu = parseFloat(r.querySelector('.f-pu').value) || 0;
+      if (designation && qte > 0 && pu >= 0) lignes.push({ designation, qte, pu, total: qte * pu });
+    });
+    const data = {
+      client:     document.getElementById('f-client').value.trim(),
+      representant: document.getElementById('f-rep').value.trim(),
+      adresse:    document.getElementById('f-adresse').value.trim(),
+      conventionRef: document.getElementById('f-conv').value.trim(),
+      dateEmission: document.getElementById('f-date').valueAsDate?.toISOString() || null,
+      echeance:   document.getElementById('f-echeance').valueAsDate?.toISOString() || null,
+      lignes,
+      total:      lignes.reduce((s, l) => s + l.total, 0)
+    };
+    const err = document.getElementById('f-err');
+    err.textContent = '';
+    if (!data.client) { err.textContent = 'Client requis.'; return; }
+    if (lignes.length === 0) { err.textContent = 'Au moins une ligne de prestation requise.'; return; }
+    const btn = document.getElementById('f-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const r = await createDocument(DOC_TYPES.FACTURE, data);
+      modalFact.classList.remove('active');
+      window.location.href = `document-view.html?id=${r.id}`;
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
+  });
+
+  // ===== SAVE CONVENTION =====
+  document.getElementById('c-save').addEventListener('click', async () => {
+    const types = Array.from(document.querySelectorAll('input[name="ctype"]:checked')).map(c => c.value);
+    const data = {
+      partenaire: document.getElementById('c-partenaire').value.trim(),
+      secteur:    document.getElementById('c-secteur').value.trim(),
+      representant: document.getElementById('c-rep').value.trim(),
+      email:      document.getElementById('c-email').value.trim(),
+      adresse:    document.getElementById('c-adresse').value.trim(),
+      types,
+      contribution: document.getElementById('c-contribution').value.trim(),
+      valeur:     parseFloat(document.getElementById('c-valeur').value) || 0,
+      dateConv:   document.getElementById('c-date').valueAsDate?.toISOString() || null
+    };
+    const err = document.getElementById('c-err');
+    err.textContent = '';
+    if (!data.partenaire) { err.textContent = 'Partenaire requis.'; return; }
+    if (types.length === 0) { err.textContent = 'Sélectionnez au moins un type de partenariat.'; return; }
+    const btn = document.getElementById('c-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const r = await createDocument(DOC_TYPES.CONVENTION, data);
+      modalConv.classList.remove('active');
+      window.location.href = `document-view.html?id=${r.id}`;
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
+  });
+
+  // ===== SAVE CONTRAT ENGAGEMENT =====
+  document.getElementById('e-save').addEventListener('click', async () => {
+    const data = {
+      nom:         document.getElementById('e-nom').value.trim(),
+      inGameName:  document.getElementById('e-ingame').value.trim(),
+      adresse:     document.getElementById('e-adresse').value.trim(),
+      mission:     document.getElementById('e-mission').value.trim(),
+      dateDebut:   document.getElementById('e-debut').valueAsDate?.toISOString() || null,
+      dateFin:     document.getElementById('e-fin').valueAsDate?.toISOString() || null,
+      lieu:        document.getElementById('e-lieu').value.trim(),
+      defraiement: document.getElementById('e-defraiement').value.trim()
+    };
+    const err = document.getElementById('e-err');
+    err.textContent = '';
+    if (!data.nom) { err.textContent = 'Nom du bénévole requis.'; return; }
+    if (!data.mission) { err.textContent = 'Description de la mission requise.'; return; }
+    const btn = document.getElementById('e-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const r = await createDocument(DOC_TYPES.CONTRAT_ENGAGEMENT, data);
+      modalEng.classList.remove('active');
+      window.location.href = `document-view.html?id=${r.id}`;
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
+  });
 
   document.getElementById('don-save').addEventListener('click', async () => {
     const data = {
