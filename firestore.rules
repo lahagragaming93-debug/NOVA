@@ -107,8 +107,10 @@ service cloud.firestore {
 
     // ===== PARTENAIRES =====
     match /partenaires/{partenaireId} {
+      // Lecture publique uniquement pour les partenaires "vitrine" actifs (site public)
       allow read:   if isBureau()
-        || (isAuth() && myRole() == 'partenaire' && resource.data.userUid == request.auth.uid);
+        || (isAuth() && myRole() == 'partenaire' && resource.data.userUid == request.auth.uid)
+        || (resource.data.vitrine == true && resource.data.statut == 'actif');
       allow create: if isBureau();
       allow update: if isPresident() || isSecretaire();
       allow delete: if isPresident();

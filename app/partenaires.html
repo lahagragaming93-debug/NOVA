@@ -149,9 +149,30 @@
       <input id="p-date" type="date">
     </div>
     <div class="field">
-      <label for="p-notes">Notes</label>
-      <textarea id="p-notes" placeholder="Engagements particuliers, valeur estimée…"></textarea>
+      <label for="p-notes">Notes (privées)</label>
+      <textarea id="p-notes" placeholder="Engagements particuliers, valeur estimée… (non public)"></textarea>
     </div>
+
+    <div class="field" style="border-top:1px solid var(--rule);padding-top:14px;margin-top:8px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;font-variant:normal;font-size:14px;color:var(--ink);">
+        <input id="p-vitrine" type="checkbox" style="width:auto;margin:0;">
+        <strong>Afficher sur la page publique « Nos Projets »</strong>
+      </label>
+      <p style="font-size:12px;color:var(--muted);font-style:italic;margin:4px 0 0 24px;">
+        Si coché, ce partenaire apparaît dans la vitrine publique du site (raison sociale, secteur, types de partenariat, lien et description ci-dessous). Les notes et coordonnées privées restent confidentielles.
+      </p>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="p-site-url">Lien du site / page (vitrine publique)</label>
+        <input id="p-site-url" type="url" placeholder="https://… (optionnel)">
+      </div>
+      <div class="field">
+        <label for="p-description-publique">Description publique courte</label>
+        <input id="p-description-publique" type="text" placeholder="ex. Garage automobile partenaire">
+      </div>
+    </div>
+
     <div class="modal-error" id="err"></div>
     <div class="modal-actions">
       <button type="button" class="cancel" id="btn-cancel">Annuler</button>
@@ -212,9 +233,10 @@
     if (!canWrite) return;
     editingId = null;
     document.getElementById('modal-title').textContent = 'Nouveau partenaire';
-    ['p-rs','p-rep','p-email','p-adresse','p-notes'].forEach(id => document.getElementById(id).value = '');
+    ['p-rs','p-rep','p-email','p-adresse','p-notes','p-site-url','p-description-publique'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('p-secteur').value = SECTEURS[0];
     document.getElementById('p-statut').value = 'actif';
+    document.getElementById('p-vitrine').checked = false;
     document.querySelectorAll('input[name="ptype"]').forEach(c => c.checked = false);
     document.getElementById('p-date').valueAsDate = new Date();
     document.getElementById('err').textContent = '';
@@ -232,6 +254,9 @@
     document.getElementById('p-adresse').value = p.adresse || '';
     document.getElementById('p-statut').value = p.statut || 'actif';
     document.getElementById('p-notes').value = p.notes || '';
+    document.getElementById('p-vitrine').checked = !!p.vitrine;
+    document.getElementById('p-site-url').value = p.siteUrl || '';
+    document.getElementById('p-description-publique').value = p.descriptionPublique || '';
     document.querySelectorAll('input[name="ptype"]').forEach(c => c.checked = (p.types || []).includes(c.value));
     const d = p.dateConvention?.toDate ? p.dateConvention.toDate() : new Date(p.dateConvention);
     document.getElementById('p-date').valueAsDate = d;
@@ -255,7 +280,10 @@
       types,
       dateConvention: document.getElementById('p-date').valueAsDate || new Date(),
       statut: document.getElementById('p-statut').value,
-      notes: document.getElementById('p-notes').value
+      notes: document.getElementById('p-notes').value,
+      vitrine: document.getElementById('p-vitrine').checked,
+      siteUrl: document.getElementById('p-site-url').value,
+      descriptionPublique: document.getElementById('p-description-publique').value
     };
     const err = document.getElementById('err');
     err.textContent = '';

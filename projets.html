@@ -88,6 +88,23 @@
   </div>
 </section>
 
+<!-- =================== NOS PARTENAIRES =================== -->
+<section class="nv-section alt" id="partenaires">
+  <div class="nv-section-inner">
+    <div class="nv-section-head reveal">
+      <div class="label">Soutiens</div>
+      <h2>Nos Partenaires</h2>
+      <div class="ornament">❦ ✦ ❦</div>
+    </div>
+    <div id="partenaires-vitrine" class="nv-doc-grid">
+      <div class="nv-future-projects" style="grid-column:1/-1;">
+        <strong>Chargement…</strong>
+        Les partenaires de NOVA s'afficheront ici.
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="nv-footer">
   <div class="nv-footer-inner">
     <div>
@@ -167,12 +184,59 @@
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-  import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+  import { getFirestore, doc, getDoc, collection, onSnapshot, query } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
   import { firebaseConfig } from './firebase-config.js';
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // === Vitrine partenaires (lecture publique des partenaires `vitrine: true && statut: actif`) ===
+  function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  const TYPES_LABELS_PUB = {
+    recompenses: 'Récompenses',
+    questions:   'Questions',
+    experiences: 'Expériences',
+    visuel:      'Visibilité'
+  };
+  const grid = document.getElementById('partenaires-vitrine');
+  onSnapshot(query(collection(db, 'partenaires')), (snap) => {
+    const items = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.vitrine === true && data.statut === 'actif') items.push({ id: d.id, ...data });
+    });
+    if (items.length === 0) {
+      grid.innerHTML = `
+        <div class="nv-future-projects" style="grid-column:1/-1;">
+          <strong>Vitrine en cours de constitution</strong>
+          Les partenaires officiels de NOVA seront annoncés prochainement.
+        </div>`;
+      return;
+    }
+    grid.innerHTML = items.map(p => {
+      const types = (p.types || []).map(t => `<span style="display:inline-block;background:var(--cream-alt);color:var(--gold);padding:2px 8px;border-radius:10px;font-size:11px;letter-spacing:1px;font-variant:small-caps;margin-right:4px;">${escapeHtml(TYPES_LABELS_PUB[t] || t)}</span>`).join('');
+      const link = p.siteUrl
+        ? `<a href="${escapeHtml(p.siteUrl)}" class="nv-doc-link" target="_blank" rel="noopener noreferrer"><span>Visiter</span></a>`
+        : `<div class="nv-doc-link"><span style="color:var(--muted);">Partenaire NOVA</span></div>`;
+      return `
+        <div class="nv-doc-card reveal">
+          <div class="nv-doc-icon">★</div>
+          <h4>${escapeHtml(p.raisonSociale || '—')}</h4>
+          <p>${escapeHtml(p.descriptionPublique || p.secteur || '')}</p>
+          <div style="margin:0 0 12px;line-height:1.8;">${types}</div>
+          ${link}
+        </div>`;
+    }).join('');
+    // Réveille les nouvelles cartes (animation reveal)
+    grid.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  }, (err) => {
+    console.error('Erreur chargement vitrine :', err);
+    grid.innerHTML = `
+      <div class="nv-future-projects" style="grid-column:1/-1;color:#8b3a3a;">
+        Vitrine momentanément indisponible.
+      </div>`;
+  });
 
   onAuthStateChanged(auth, async (user) => {
     const cta = document.querySelector('.nv-member-cta');
