@@ -16,12 +16,15 @@
 
   <!-- HEADER -->
   <header class="app-header">
-    <img class="logo" src="../logo-nova.svg" alt="NOVA" onerror="this.style.display='none'">
-    <div>
-      <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
-      <div class="brand-sub">Espace membre</div>
-    </div>
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.svg" alt="NOVA" onerror="this.style.display='none'">
+      <div>
+        <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
+        <div class="brand-sub">Espace membre</div>
+      </div>
+    </a>
     <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
     <div class="user-info">
       <span class="username" id="header-username">—</span>
       <span class="role-badge" id="header-role">…</span>
@@ -139,7 +142,7 @@
       description: 'Gestion des comptes utilisateurs, rôles et permissions. Réservé Président.',
       href:  'admin.html',
       perm:  'admin:write',
-      ready: false
+      ready: true
     }
   ];
 

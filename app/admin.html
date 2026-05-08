@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/svg+xml" href="../logo-nova.svg">
+<style>
+  /* Styles spécifiques à l'administration */
+  .admin-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gold);
+    font-size: 13px;
+    text-decoration: none;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .admin-back:hover { color: var(--navy); }
+
+  .users-table-wrap {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .users-table th {
+    background: var(--navy);
+    color: var(--paper);
+    text-align: left;
+    padding: 12px 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    font-variant: small-caps;
+    font-weight: 600;
+  }
+
+  .users-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+
+  .users-table tr:last-child td { border-bottom: none; }
+
+  .users-table tr:hover td { background: var(--gold-bg); }
+
+  .users-table .name-cell {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .users-table .name-cell .username {
+    display: block;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Consolas', monospace;
+    margin-top: 2px;
+  }
+
+  .users-table .email-cell {
+    font-family: 'Consolas', monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    word-break: break-all;
+  }
+
+  .users-table .date-cell {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  .role-select {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px 8px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 3px;
+    cursor: pointer;
+    min-width: 140px;
+  }
+
+  .role-select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-bg);
+  }
+
+  .role-select.dirty {
+    border-color: var(--gold);
+    background: var(--gold-bg);
+  }
+
+  .users-table .actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .users-table .save-btn {
+    background: var(--navy);
+    color: var(--paper);
+    border: none;
+    padding: 7px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 6px;
+    transition: all 0.2s;
+  }
+
+  .users-table .save-btn:disabled {
+    background: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .users-table .save-btn:not(:disabled):hover { background: var(--gold); }
+
+  .self-row {
+    background: var(--paper-alt);
+  }
+
+  .self-row td:first-child::before {
+    content: "★ ";
+    color: var(--gold);
+  }
+
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    background: var(--paper-alt);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--gold);
+    padding: 8px 16px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+
+  .stat-pill .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-right: 6px;
+  }
+
+  .stat-pill .label {
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  /* Toast custom pour cette page */
+  .admin-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy);
+    color: var(--paper);
+    padding: 12px 18px;
+    border-radius: 3px;
+    font-size: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    border-left: 3px solid var(--gold);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .admin-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .admin-toast.error {
+    border-left-color: var(--red);
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.svg" alt="NOVA" onerror="this.style.display='none'">
+      <div>
+        <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
+        <div class="brand-sub">Administration</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info">
+      <span class="username" id="header-username">—</span>
+      <span class="role-badge" id="header-role">…</span>
+    </div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+
+    <a href="dashboard.html" class="admin-back">← Retour au tableau de bord</a>
+
+    <div class="welcome-card">
+      <h1>Administration des comptes</h1>
+      <p class="subtitle">Gestion des utilisateurs, attribution des rôles et permissions. Réservé au Président.</p>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <!-- statistiques injectées dynamiquement -->
+    </div>
+
+    <h2 class="section-title">Liste des utilisateurs</h2>
+
+    <div class="users-table-wrap">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th style="width:24%">Membre</th>
+            <th style="width:26%">Email</th>
+            <th style="width:14%">Inscription</th>
+            <th style="width:14%">Rôle actuel</th>
+            <th style="width:22%">Modification</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="5" class="empty-state">Chargement de la liste…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 13px; color: var(--muted); font-style: italic;">
+      ★ La ligne marquée d'une étoile est votre propre compte. Vous ne pouvez pas modifier votre propre rôle (sécurité — éviter de perdre l'accès Président).
+    </p>
+
+  </main>
+
+  <footer class="app-footer">
+    NOVA — Espace membre — Module Administration<br>
+    Conformité Article 18 des Statuts (récusation IRS) et Règlement intérieur (gouvernance)
+  </footer>
+
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">
+  Chargement&nbsp;<span style="color:#8b7340;">…</span>
+</div>
+
+<div id="toast" class="admin-toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { subscribeToUsers, updateUserRole, formatDate } from './js/admin.js';
+  import { ROLES, ROLE_LABELS } from './js/roles.js';
+
+  const shell  = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const tbody  = document.getElementById('users-tbody');
+  const statsRow = document.getElementById('stats-row');
+  const toast  = document.getElementById('toast');
+
+  let currentUid = null;
+  let currentUserRole = null;
+
+  function showToast(msg, isError) {
+    toast.textContent = msg;
+    toast.classList.toggle('error', !!isError);
+    toast.classList.add('visible');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('visible'), 2800);
+  }
+
+  function buildRoleSelect(currentRole, userId) {
+    const sel = document.createElement('select');
+    sel.className = 'role-select';
+    sel.dataset.uid = userId;
+    sel.dataset.original = currentRole;
+    Object.entries(ROLE_LABELS).forEach(([key, label]) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = label;
+      if (key === currentRole) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    return sel;
+  }
+
+  function renderStats(users) {
+    const counts = {};
+    users.forEach(u => { counts[u.role] = (counts[u.role] || 0) + 1; });
+    const order = ['president', 'tresorier', 'secretaire', 'utilisateur', 'partenaire'];
+    statsRow.innerHTML = '';
+    const total = document.createElement('div');
+    total.className = 'stat-pill';
+    total.innerHTML = `<span class="value">${users.length}</span><span class="label">Total comptes</span>`;
+    statsRow.appendChild(total);
+    order.forEach(role => {
+      if (!counts[role]) return;
+      const pill = document.createElement('div');
+      pill.className = 'stat-pill';
+      pill.innerHTML = `<span class="value">${counts[role]}</span><span class="label">${ROLE_LABELS[role] || role}</span>`;
+      statsRow.appendChild(pill);
+    });
+  }
+
+  function renderUsers(users) {
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Aucun utilisateur enregistré pour le moment.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      const isSelf = u.id === currentUid;
+      if (isSelf) tr.classList.add('self-row');
+
+      // Name cell
+      const tdName = document.createElement('td');
+      tdName.className = 'name-cell';
+      tdName.innerHTML = `${u.displayName || u.username || '—'}<span class="username">@${u.username || '—'}</span>`;
+      tr.appendChild(tdName);
+
+      // Email
+      const tdEmail = document.createElement('td');
+      tdEmail.className = 'email-cell';
+      tdEmail.textContent = u.email || '—';
+      tr.appendChild(tdEmail);
+
+      // Date
+      const tdDate = document.createElement('td');
+      tdDate.className = 'date-cell';
+      tdDate.textContent = formatDate(u.createdAt);
+      tr.appendChild(tdDate);
+
+      // Current role badge
+      const tdCurrent = document.createElement('td');
+      const badge = document.createElement('span');
+      badge.className = 'role-badge role-' + (u.role || 'utilisateur');
+      badge.textContent = ROLE_LABELS[u.role] || u.role || '—';
+      tdCurrent.appendChild(badge);
+      tr.appendChild(tdCurrent);
+
+      // Actions
+      const tdActions = document.createElement('td');
+      tdActions.className = 'actions';
+      if (isSelf) {
+        const lock = document.createElement('em');
+        lock.style.color = 'var(--muted)';
+        lock.style.fontSize = '12px';
+        lock.textContent = 'Vous-même — verrouillé';
+        tdActions.appendChild(lock);
+      } else {
+        const sel = buildRoleSelect(u.role || 'utilisateur', u.id);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'save-btn';
+        btn.textContent = 'Sauver';
+        btn.disabled = true;
+        sel.addEventListener('change', () => {
+          const dirty = sel.value !== sel.dataset.original;
+          sel.classList.toggle('dirty', dirty);
+          btn.disabled = !dirty;
+        });
+        btn.addEventListener('click', async () => {
+          const newRole = sel.value;
+          if (newRole === sel.dataset.original) return;
+          if (!confirm(`Confirmer le changement de rôle de ${u.displayName || u.username} en « ${ROLE_LABELS[newRole]} » ?`)) return;
+          btn.disabled = true;
+          btn.textContent = '…';
+          try {
+            await updateUserRole(u.id, newRole);
+            showToast(`Rôle mis à jour : ${u.displayName || u.username} → ${ROLE_LABELS[newRole]}`);
+            // Le snapshot temps réel rafraîchira automatiquement
+          } catch (err) {
+            console.error(err);
+            showToast('Erreur : ' + (err.message || err), true);
+            btn.disabled = false;
+            btn.textContent = 'Sauver';
+          }
+        });
+        tdActions.appendChild(sel);
+        tdActions.appendChild(btn);
+      }
+      tr.appendChild(tdActions);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  onAuthChange(async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    try {
+      const profile = await getUserProfile(user.uid);
+      if (!profile || profile.role !== ROLES.PRESIDENT) {
+        // Pas autorisé : redirige vers le dashboard
+        loader.innerHTML = `
+          <div style="text-align:center;color:#8b3a3a;">
+            ⛔ Accès réservé au Président.<br>
+            <span style="font-size:13px;color:#6b6356;font-style:italic;">Redirection vers le tableau de bord…</span>
+          </div>
+        `;
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+        return;
+      }
+
+      currentUid = user.uid;
+      currentUserRole = profile.role;
+
+      document.getElementById('header-username').textContent = profile.displayName || user.displayName || 'Membre';
+      const badge = document.getElementById('header-role');
+      badge.textContent = ROLE_LABELS[profile.role] || profile.role;
+      badge.className = 'role-badge role-' + profile.role;
+
+      // Souscription temps réel à la liste des utilisateurs
+      subscribeToUsers((users, err) => {
+        if (err) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#8b3a3a;">Erreur de chargement : ${err.message || err}</td></tr>`;
+          return;
+        }
+        renderStats(users);
+        renderUsers(users);
+      });
+
+      loader.style.display = 'none';
+      shell.style.display  = '';
+    } catch (err) {
+      console.error('Erreur init admin :', err);
+      loader.innerHTML = `<div style="text-align:center;color:#8b3a3a;">Erreur : ${err.message || err}</div>`;
+    }
+  });
+</script>
+
+</body>
+</html>
