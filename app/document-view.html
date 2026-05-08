@@ -492,6 +492,154 @@
     }
   }
 
+  const STATUT_SUBV_LABELS = {
+    envoyee:     { label: 'Envoyée',       color: '#1f2d4a', bg: '#e8eaf0' },
+    instruction: { label: 'En instruction',color: '#a06b1f', bg: '#f5e9d3' },
+    accordee:    { label: 'Accordée',      color: '#4a6b3a', bg: '#e3ebdc' },
+    refusee:     { label: 'Refusée',       color: '#8b3a3a', bg: '#f4e0e0' }
+  };
+
+  function renderSubvention(d) {
+    const data = d.data || {};
+    const dateDemande = data.dateDemande ? formatDateLong(new Date(data.dateDemande)) : '—';
+    const dateReponse = data.dateReponse ? formatDateLong(new Date(data.dateReponse)) : null;
+    const utilisationList = (data.utilisation || []).map(e => `<li>${escapeHtml(e)}</li>`).join('') || '<li>—</li>';
+    const statut = STATUT_SUBV_LABELS[data.statut] || STATUT_SUBV_LABELS.envoyee;
+    window.exportFilename = d.reference || 'NOVA-Subvention';
+
+    const banniereStatut = `<div style="background:${statut.bg};border-left:3px solid ${statut.color};padding:4mm 6mm;margin:6mm 0;font-size:10.5pt;color:${statut.color};">
+      <strong>Statut : ${statut.label}</strong>
+      ${data.statut === 'accordee' && data.montantAccorde ? ` — Montant accordé : <strong>${fmt(data.montantAccorde)}</strong>` : ''}
+      ${dateReponse ? ` (réponse du ${dateReponse})` : ''}
+      ${data.reponseInstitution ? `<br><em style="font-size:9.5pt;">${escapeHtml(data.reponseInstitution)}</em>` : ''}
+    </div>`;
+
+    const peutGerer = myProfile && myProfile.role === 'president';
+    const boutonsStatut = peutGerer && data.statut !== 'accordee' && data.statut !== 'refusee'
+      ? `<div class="no-print" style="display:flex;gap:10px;justify-content:center;margin:4mm 0;flex-wrap:wrap;">
+          ${data.statut === 'envoyee' ? '<button id="btn-subv-instruction" style="background:#a06b1f;color:#fbf9f3;border:none;padding:8px 18px;font-family:\'EB Garamond\',serif;font-size:13px;letter-spacing:1.2px;font-variant:small-caps;cursor:pointer;border-radius:3px;">⌛ Marquer en instruction</button>' : ''}
+          <button id="btn-subv-accordee" style="background:#4a6b3a;color:#fbf9f3;border:none;padding:8px 18px;font-family:\'EB Garamond\',serif;font-size:13px;letter-spacing:1.2px;font-variant:small-caps;cursor:pointer;border-radius:3px;">✓ Subvention accordée</button>
+          <button id="btn-subv-refusee" style="background:#8b3a3a;color:#fbf9f3;border:none;padding:8px 18px;font-family:\'EB Garamond\',serif;font-size:13px;letter-spacing:1.2px;font-variant:small-caps;cursor:pointer;border-radius:3px;">✗ Subvention refusée</button>
+        </div>`
+      : '';
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official"><strong>État de San Andreas</strong><br>Demande de subvention<br>Conforme T.T.E. Art. 4-2.16</div>
+        </header>
+        <div class="recu-num">
+          Demande N°<br><span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+
+        <div style="margin:8mm 0 6mm; font-size:11pt;">
+          <p style="margin:0;"><strong>L'Association NOVA</strong></p>
+          <p style="margin:0;">Représentée par Andrew BEAUCHAMP, Président</p>
+          <p style="margin:0;font-style:italic;color:var(--muted);">Association déclarée — Vie Civile S.A.</p>
+        </div>
+
+        <div style="text-align:right;margin:6mm 0; font-size:11pt;">
+          <p style="margin:0;"><strong>À l'attention de :</strong></p>
+          <p style="margin:0;">${escapeHtml(data.destinataire || '—')}</p>
+          <p style="margin:0;font-style:italic;color:var(--muted);">${escapeHtml(data.institution || '—')}</p>
+          <p style="margin:6mm 0 0;font-size:10pt;">Los Santos, le ${dateDemande}</p>
+        </div>
+
+        <div class="doc-title">
+          <h1>Demande de subvention</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">${escapeHtml(data.objet || '—')}</div>
+        </div>
+
+        ${banniereStatut}
+        ${boutonsStatut}
+
+        <h3 class="article"><span class="num">Article 1.</span> Identification de la demande</h3>
+        <table class="info-table" style="width:100%;border-collapse:collapse;">
+          <tr><td>Demandeur</td><td><strong>Association NOVA</strong></td></tr>
+          <tr><td>Représentant légal</td><td>Andrew BEAUCHAMP, Président</td></tr>
+          <tr><td>Objet de la demande</td><td><strong>${escapeHtml(data.objet || '—')}</strong></td></tr>
+          <tr><td>Projet concerné</td><td>${escapeHtml(data.projet || '—')}</td></tr>
+          <tr><td>Montant sollicité</td><td><strong style="color:var(--navy);font-size:13pt;">${fmt(data.montant || 0)}</strong></td></tr>
+          <tr><td>Date de la demande</td><td>${dateDemande}</td></tr>
+        </table>
+
+        <h3 class="article"><span class="num">Article 2.</span> Contexte et motivation</h3>
+        <blockquote>${escapeHtml(data.contexte || '—').replace(/\n/g,'<br>')}</blockquote>
+
+        <h3 class="article"><span class="num">Article 3.</span> Plan d'utilisation des fonds</h3>
+        <p>L'Association NOVA s'engage à affecter l'intégralité de la subvention sollicitée selon la répartition prévisionnelle suivante :</p>
+        <ul>${utilisationList}</ul>
+
+        <h3 class="article"><span class="num">Article 4.</span> Engagements de l'Association</h3>
+        <blockquote>${escapeHtml(data.engagements || '—').replace(/\n/g,'<br>')}</blockquote>
+
+        <h3 class="article"><span class="num">Article 5.</span> Cadre fiscal</h3>
+        <p>Conformément à l'<span class="tte-ref">Article 4-2.16 du T.T.E.</span> (Code des Taxes, du Travail et des Entreprises), la subvention publique sollicitée n'entre pas dans le calcul du chiffre d'affaires imposable de l'Association et reste entièrement affectée à la réalisation de son objet statutaire non lucratif.</p>
+
+        <h3 class="article"><span class="num">Article 6.</span> Reddition de comptes</h3>
+        <p>L'Association NOVA s'engage, en cas d'octroi de la subvention, à transmettre à l'autorité versante un <strong>rapport d'utilisation des fonds</strong> dans les soixante (60) jours suivant la clôture du projet, comprenant l'ensemble des justificatifs comptables (factures, reçus, conventions) ainsi que la balance d'utilisation détaillée.</p>
+
+        <p style="font-size:9.5pt;color:var(--muted);font-style:italic;text-align:justify;margin-top:6mm;">Demande enregistrée — réf. ${escapeHtml(d.reference)} — créée le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.</p>
+
+        <table class="signatures" style="margin-top:8mm;width:100%;border-collapse:collapse;">
+          <tr><th style="width:35%">Signataire</th><th style="width:30%">Nom</th><th>Signature & Date</th></tr>
+          <tr>
+            <td><strong>Pour l'Association NOVA</strong></td>
+            <td>Andrew BEAUCHAMP, Président</td>
+            <td class="signature-line"></td>
+          </tr>
+        </table>
+
+        <footer class="footer"><span>NOVA — Demande de subvention (T.T.E. Art. 4-2.16)</span><span>Page 1 / 1</span></footer>
+      </section>
+    `;
+
+    if (peutGerer) {
+      async function setStatut(nouveauStatut, prompt) {
+        let reponseTexte = null;
+        let montant = null;
+        if (nouveauStatut === 'accordee') {
+          montant = prompt ? Number(prompt) : null;
+          if (!montant || montant <= 0) {
+            await alertDialog('Montant accordé invalide. Saisie annulée.', { type: 'error' });
+            return;
+          }
+        }
+        const ok = await confirmDialog(
+          `Confirmer le changement de statut vers : ${STATUT_SUBV_LABELS[nouveauStatut].label}${nouveauStatut === 'accordee' ? ` (${fmt(montant)})` : ''}.`,
+          { title: 'Mettre à jour le statut', confirmLabel: 'Confirmer' }
+        );
+        if (!ok) return;
+        try {
+          const newData = {
+            ...data,
+            statut: nouveauStatut,
+            dateReponse: new Date().toISOString()
+          };
+          if (nouveauStatut === 'accordee') newData.montantAccorde = montant;
+          await updateDocument(d.id, { data: newData });
+          const fresh = await getDocument(d.id);
+          renderSubvention(fresh);
+        } catch (e) {
+          await alertDialog(e.message || 'Erreur.', { type: 'error' });
+        }
+      }
+      const btnInstr = document.getElementById('btn-subv-instruction');
+      if (btnInstr) btnInstr.addEventListener('click', () => setStatut('instruction'));
+      document.getElementById('btn-subv-accordee').addEventListener('click', async () => {
+        const montant = window.prompt(`Montant accordé par l'institution (en $) :`, String(data.montant || 0));
+        if (montant === null) return;
+        setStatut('accordee', montant);
+      });
+      document.getElementById('btn-subv-refusee').addEventListener('click', () => setStatut('refusee'));
+    }
+  }
+
   function renderError(msg) {
     container.innerHTML = `
       <div class="loading-state" style="color:#8b3a3a;flex-direction:column;gap:14px;">
@@ -513,7 +661,8 @@
         facture: renderFacture,
         convention: renderConvention,
         contrat_engagement: renderContratEngagement,
-        brevet: renderBrevet
+        brevet: renderBrevet,
+        demande_subvention: renderSubvention
       };
       const renderer = renderers[d.type];
       if (renderer) {

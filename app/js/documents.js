@@ -24,7 +24,8 @@ export const DOC_TYPES = Object.freeze({
   FACTURE:            'facture',
   CONVENTION:         'convention',
   CONTRAT_ENGAGEMENT: 'contrat_engagement',
-  BREVET:             'brevet'
+  BREVET:             'brevet',
+  SUBVENTION:         'demande_subvention'
 });
 
 export const TYPE_META = Object.freeze({
@@ -57,6 +58,12 @@ export const TYPE_META = Object.freeze({
     prefix:   'NOVA-BRV',
     icon:     '✦',
     desc:     'Dépôt officiel d\'un concept (émission, format, dénomination) attestant de l\'antériorité et de la propriété intellectuelle de NOVA.'
+  },
+  demande_subvention: {
+    label:    'Demande de subvention',
+    prefix:   'NOVA-SUB',
+    icon:     '⛨',
+    desc:     'Demande officielle adressée au Gouverneur ou à une institution publique pour l\'octroi d\'une subvention au profit de NOVA.'
   }
 });
 

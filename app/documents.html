@@ -293,6 +293,61 @@
   </div>
 </div>
 
+<!-- Modal Demande de subvention -->
+<div class="modal-overlay" id="modal-subvention" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:680px;">
+    <h2>Nouvelle demande de subvention</h2>
+    <p class="info">Demande officielle adressée à une institution publique (Gouverneur, État de San Andreas) pour l'octroi d'une subvention au profit de NOVA. Conforme à l'Art. 4-2.16 du T.T.E. (subvention non imposable).</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="s-destinataire">Destinataire (autorité)</label>
+        <input id="s-destinataire" type="text" placeholder="ex. Monsieur le Gouverneur">
+      </div>
+      <div class="field">
+        <label for="s-institution">Institution</label>
+        <input id="s-institution" type="text" placeholder="ex. Gouvernement de San Andreas">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="s-objet">Objet (court)</label>
+        <input id="s-objet" type="text" placeholder="ex. Subvention pour Master Clash 2026">
+      </div>
+      <div class="field">
+        <label for="s-montant">Montant demandé ($)</label>
+        <input id="s-montant" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="s-date">Date de la demande</label>
+        <input id="s-date" type="date">
+      </div>
+      <div class="field">
+        <label for="s-projet">Projet concerné</label>
+        <input id="s-projet" type="text" placeholder="ex. Master Clash">
+      </div>
+    </div>
+    <div class="field">
+      <label for="s-contexte">Contexte et motivation</label>
+      <textarea id="s-contexte" placeholder="Présentez l'association, le projet et les raisons de la demande…" style="min-height:90px;"></textarea>
+    </div>
+    <div class="field">
+      <label for="s-utilisation">Plan d'utilisation des fonds (un poste par ligne)</label>
+      <textarea id="s-utilisation" placeholder="ex.&#10;Récompenses joueurs : 200 000 $&#10;Logistique et régie : 50 000 $&#10;Communication : 30 000 $&#10;Frais divers : 40 000 $" style="min-height:100px;"></textarea>
+    </div>
+    <div class="field">
+      <label for="s-engagements">Engagements de NOVA</label>
+      <textarea id="s-engagements" placeholder="ex. Transparence comptable, reddition de comptes hebdomadaire, archivage public…" style="min-height:70px;"></textarea>
+    </div>
+    <div class="modal-error" id="s-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="s-cancel">Annuler</button>
+      <button type="button" class="save" id="s-save">Créer & archiver</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Brevet de concept -->
 <div class="modal-overlay" id="modal-brevet" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:660px;">
@@ -445,6 +500,16 @@
         const tag = sv === 'valide' ? '<span style="color:#4a6b3a;font-weight:600;">✓ Validé</span>' : '<span style="color:#a06b1f;font-weight:600;">⌛ En attente</span>';
         summary = `${escapeHtml(d.data?.titre || '?')} — ${tag}`;
       }
+      else if (d.type === 'demande_subvention') {
+        const st = d.data?.statut;
+        const tagMap = {
+          envoyee:    '<span style="color:#1f2d4a;font-weight:600;">→ Envoyée</span>',
+          instruction:'<span style="color:#a06b1f;font-weight:600;">⌛ En instruction</span>',
+          accordee:   '<span style="color:#4a6b3a;font-weight:600;">✓ Accordée</span>',
+          refusee:    '<span style="color:#8b3a3a;font-weight:600;">✗ Refusée</span>'
+        };
+        summary = `${escapeHtml(d.data?.objet || '?')} — ${fmt(d.data?.montant || 0)} — ${tagMap[st] || st}`;
+      }
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><span class="ref">${escapeHtml(d.reference || '—')}</span></td>
@@ -478,6 +543,7 @@
   const modalConv = document.getElementById('modal-conv');
   const modalEng = document.getElementById('modal-eng');
   const modalBrevet = document.getElementById('modal-brevet');
+  const modalSubv = document.getElementById('modal-subvention');
 
   async function openModal(type) {
     if (!canWrite) { await alertDialog('Lecture seule pour votre rôle.', { type: 'warning' }); return; }
@@ -511,6 +577,15 @@
       document.getElementById('e-fin').value = '';
       document.getElementById('e-err').textContent = '';
       modalEng.classList.add('active');
+    } else if (type === 'demande_subvention') {
+      ['s-destinataire','s-institution','s-objet','s-projet','s-contexte','s-utilisation','s-engagements'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('s-montant').value = '';
+      document.getElementById('s-date').valueAsDate = new Date();
+      document.getElementById('s-engagements').value = 'Transparence comptable intégrale, reddition de comptes hebdomadaire conforme au T.T.E. Chap. IV, archivage public de tous les documents financiers, restitution des fonds non utilisés.';
+      document.getElementById('s-destinataire').value = 'Monsieur le Gouverneur de l\'État de San Andreas';
+      document.getElementById('s-institution').value = 'Gouvernement de l\'État de San Andreas';
+      document.getElementById('s-err').textContent = '';
+      modalSubv.classList.add('active');
     } else if (type === 'brevet') {
       ['b-titre','b-description','b-elements','b-clause'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('b-categorie').value = 'emission';
@@ -562,6 +637,8 @@
   modalEng.addEventListener('click', e => { if (e.target === modalEng) modalEng.classList.remove('active'); });
   document.getElementById('b-cancel').addEventListener('click', () => modalBrevet.classList.remove('active'));
   modalBrevet.addEventListener('click', e => { if (e.target === modalBrevet) modalBrevet.classList.remove('active'); });
+  document.getElementById('s-cancel').addEventListener('click', () => modalSubv.classList.remove('active'));
+  modalSubv.addEventListener('click', e => { if (e.target === modalSubv) modalSubv.classList.remove('active'); });
 
   // ===== SAVE FACTURE =====
   document.getElementById('f-save').addEventListener('click', async () => {
@@ -645,6 +722,42 @@
     try {
       const r = await createDocument(DOC_TYPES.CONTRAT_ENGAGEMENT, data);
       modalEng.classList.remove('active');
+      window.location.href = `document-view.html?id=${r.id}`;
+    } catch (e) { err.textContent = e.message || 'Erreur.'; }
+    finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
+  });
+
+  // ===== SAVE SUBVENTION =====
+  document.getElementById('s-save').addEventListener('click', async () => {
+    const utilisationLignes = document.getElementById('s-utilisation').value
+      .split('\n').map(s => s.trim()).filter(Boolean);
+    const data = {
+      destinataire: document.getElementById('s-destinataire').value.trim(),
+      institution:  document.getElementById('s-institution').value.trim(),
+      objet:        document.getElementById('s-objet').value.trim(),
+      projet:       document.getElementById('s-projet').value.trim(),
+      montant:      parseFloat(document.getElementById('s-montant').value) || 0,
+      dateDemande:  document.getElementById('s-date').valueAsDate?.toISOString() || null,
+      contexte:     document.getElementById('s-contexte').value.trim(),
+      utilisation:  utilisationLignes,
+      engagements:  document.getElementById('s-engagements').value.trim(),
+      statut:       'envoyee',
+      reponseInstitution: null,
+      montantAccorde: null,
+      dateReponse: null
+    };
+    const err = document.getElementById('s-err');
+    err.textContent = '';
+    if (!data.destinataire) { err.textContent = 'Destinataire requis.'; return; }
+    if (!data.objet) { err.textContent = 'Objet de la demande requis.'; return; }
+    if (!data.montant || data.montant <= 0) { err.textContent = 'Montant > 0 requis.'; return; }
+    if (!data.contexte) { err.textContent = 'Contexte/motivation requis.'; return; }
+    if (utilisationLignes.length === 0) { err.textContent = 'Au moins un poste d\'utilisation requis.'; return; }
+    const btn = document.getElementById('s-save');
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const r = await createDocument(DOC_TYPES.SUBVENTION, data);
+      modalSubv.classList.remove('active');
       window.location.href = `document-view.html?id=${r.id}`;
     } catch (e) { err.textContent = e.message || 'Erreur.'; }
     finally { btn.disabled = false; btn.textContent = 'Créer & archiver'; }
