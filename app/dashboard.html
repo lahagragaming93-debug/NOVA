@@ -26,7 +26,7 @@
     <div class="spacer"></div>
     <a href="../index.html" class="back-to-site">← Site public</a>
     <div class="user-info">
-      <img class="user-avatar" id="header-avatar" src="" alt=""><span class="username" id="header-username">—</span>
+      <a class="header-msg-badge" href="messages.html" title="Messagerie"><span class="msg-icon">&#9993;</span><span class="msg-count" id="header-msg-count"></span></a><img class="user-avatar" id="header-avatar" src="" alt=""><span class="username" id="header-username">—</span>
       <span class="role-badge" id="header-role">…</span>
     </div>
     <button type="button" class="logout" id="btn-logout">Déconnexion</button>
@@ -89,6 +89,7 @@
 
 <script type="module">
   import { onAuthChange, logout, getUserProfile, defaultAvatarDataUrl } from './js/auth.js';
+  import { attachHeaderNotif } from './js/header-notif.js';
   import { ROLE_LABELS, hasPermission } from './js/roles.js';
 
   const shell  = document.getElementById('app-shell');
@@ -216,6 +217,7 @@
       window.location.href = 'login.html';
       return;
     }
+    attachHeaderNotif(user.uid);
     try {
       const profile = await getUserProfile(user.uid);
       renderProfile(profile, user);

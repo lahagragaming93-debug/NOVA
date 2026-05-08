@@ -314,6 +314,58 @@ a:hover { color: var(--gold-soft); text-decoration: underline; }
   flex-shrink: 0;
 }
 
+.app-header .header-msg-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--paper);
+  text-decoration: none;
+  font-size: 16px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.app-header .header-msg-badge:hover {
+  background: rgba(184, 156, 94, 0.15);
+  border-color: var(--gold-soft);
+}
+.app-header .header-msg-badge .msg-icon {
+  font-family: 'EB Garamond', serif;
+  line-height: 1;
+}
+.app-header .header-msg-badge .msg-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--red, #8b3a3a);
+  color: var(--paper);
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'EB Garamond', serif;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+  text-transform: none;
+  font-variant: normal;
+  border: 1.5px solid var(--navy);
+  box-sizing: border-box;
+}
+.app-header .header-msg-badge.has-unread .msg-count {
+  display: inline-flex;
+}
+.app-header .header-msg-badge.has-unread .msg-icon {
+  color: var(--gold-warm, #C9AE6F);
+}
+
 .app-header .user-info .username {
   color: var(--paper);
   font-weight: 500;
