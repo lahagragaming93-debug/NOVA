@@ -154,6 +154,7 @@
 <script type="module">
   import { onAuthChange, logout, getUserProfile, updateMyProfile, compressImage, defaultAvatarDataUrl } from './js/auth.js';
   import { ROLE_LABELS } from './js/roles.js';
+  import { confirmDialog } from './js/ui-dialog.js';
 
   const shell = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -215,7 +216,11 @@
   });
 
   document.getElementById('btn-remove-avatar').addEventListener('click', async () => {
-    if (!confirm('Supprimer votre photo de profil ?')) return;
+    const ok = await confirmDialog(
+      'Votre photo de profil sera remplacée par les initiales par défaut.',
+      { title: 'Retirer la photo ?', danger: true, confirmLabel: 'Retirer' }
+    );
+    if (!ok) return;
     try {
       await updateMyProfile(me.uid, { avatar: null });
       profile.avatar = null;

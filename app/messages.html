@@ -472,6 +472,7 @@
   } from './js/messages.js';
   import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
   import { db } from './js/firebase-init.js';
+  import { alertDialog } from './js/ui-dialog.js';
 
   const shell  = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -595,7 +596,7 @@
         await sendMessage(tid, text);
         replyBody.value = '';
       } catch (err) {
-        alert('Erreur : ' + (err.message || err));
+        await alertDialog(err.message || String(err), { type: 'error' });
       } finally {
         btnReply.disabled = false;
         replyBody.focus();

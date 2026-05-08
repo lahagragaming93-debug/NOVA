@@ -497,3 +497,138 @@ a:hover { color: var(--gold-soft); text-decoration: underline; }
 }
 
 .app-footer a { color: var(--muted); }
+
+/* ============================================================
+   DIALOGS NOVA (confirm, alert, prompt)
+   Remplace les popups natives du navigateur par des modals stylés
+   ============================================================ */
+#nova-dialog-root { position: relative; z-index: 9999; }
+
+.nova-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 45, 74, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.nova-dialog-overlay.open { opacity: 1; }
+.nova-dialog-overlay.closing { opacity: 0; }
+
+.nova-dialog {
+  background: var(--paper);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 32px 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.35), 0 4px 14px rgba(0,0,0,0.15);
+  border-top: 4px solid var(--gold);
+  text-align: center;
+  transform: scale(0.94);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nova-dialog-overlay.open .nova-dialog { transform: scale(1); }
+.nova-dialog.danger { border-top-color: var(--red); }
+
+.nova-dialog-icon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--gold-bg);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-weight: 700;
+}
+.nova-dialog-icon.danger {
+  background: rgba(139, 58, 58, 0.12);
+  color: var(--red);
+}
+
+.nova-dialog-title {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--navy);
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.nova-dialog.danger .nova-dialog-title { color: var(--red); }
+
+.nova-dialog-msg {
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.nova-dialog-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+}
+.nova-dialog-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-bg);
+}
+
+.nova-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.nova-dialog-btn {
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 1.2px;
+  font-variant: small-caps;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+  min-width: 100px;
+}
+.nova-dialog-btn.cancel {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--rule);
+}
+.nova-dialog-btn.cancel:hover {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+.nova-dialog-btn.confirm {
+  background: var(--navy);
+  color: var(--paper);
+}
+.nova-dialog-btn.confirm:hover {
+  background: var(--gold);
+}
+.nova-dialog-btn.confirm.danger {
+  background: var(--red);
+}
+.nova-dialog-btn.confirm.danger:hover {
+  background: #6b2828;
+}

@@ -284,6 +284,7 @@
   import { onAuthChange, logout, getUserProfile } from './js/auth.js';
   import { subscribeToUsers, updateUserRole, formatDate } from './js/admin.js';
   import { ROLES, ROLE_LABELS } from './js/roles.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
   const shell  = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -398,7 +399,11 @@
         btn.addEventListener('click', async () => {
           const newRole = sel.value;
           if (newRole === sel.dataset.original) return;
-          if (!confirm(`Confirmer le changement de rôle de ${u.displayName || u.username} en « ${ROLE_LABELS[newRole]} » ?`)) return;
+          const ok = await confirmDialog(
+            `Changer le rôle de ${u.displayName || u.username} en « ${ROLE_LABELS[newRole]} » ?`,
+            { title: 'Changement de rôle', confirmLabel: 'Confirmer' }
+          );
+          if (!ok) return;
           btn.disabled = true;
           btn.textContent = '…';
           try {

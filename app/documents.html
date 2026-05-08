@@ -187,6 +187,7 @@
   import { onAuthChange, logout, getUserProfile } from './js/auth.js';
   import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
   import { DOC_TYPES, TYPE_META, subscribeToDocuments, createDocument, deleteDocument, formatDate, fmt } from './js/documents.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
   const shell = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -254,8 +255,8 @@
 
   // ===== Modal Don =====
   const modalDon = document.getElementById('modal-don');
-  function openModal(type) {
-    if (!canWrite) { alert('Lecture seule pour votre rôle.'); return; }
+  async function openModal(type) {
+    if (!canWrite) { await alertDialog('Lecture seule pour votre rôle.', { type: 'warning' }); return; }
     if (type === 'recu_don') {
       ['d-donateur','d-qualite','d-adresse','d-description'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('d-nature').value = 'numeraire';
@@ -299,9 +300,13 @@
   async function onDelete(id) {
     const d = current.find(x => x.id === id);
     if (!d) return;
-    if (!confirm(`Supprimer le document ${d.reference} ?`)) return;
+    const ok = await confirmDialog(
+      `Document : ${d.reference}\n\nCette suppression est définitive et ne peut être annulée.`,
+      { title: 'Supprimer ce document ?', danger: true, confirmLabel: 'Supprimer' }
+    );
+    if (!ok) return;
     try { await deleteDocument(id); }
-    catch (e) { alert('Erreur : ' + e.message); }
+    catch (e) { await alertDialog(e.message || String(e), { type: 'error' }); }
   }
 
   document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });

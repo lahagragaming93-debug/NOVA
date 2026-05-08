@@ -168,6 +168,7 @@
   import { subscribeToPartenaires, addPartenaire, updatePartenaire, deletePartenaire,
            TYPE_LABELS, SECTEURS, formatDate } from './js/partenaires.js';
   import { logEvent } from './js/journal.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
   const shell = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -276,11 +277,15 @@
   async function onDelete(id) {
     const p = current.find(x => x.id === id);
     if (!p) return;
-    if (!confirm(`Supprimer ${p.raisonSociale} ?`)) return;
+    const ok = await confirmDialog(
+      `${p.raisonSociale}\n\nCette suppression est définitive.`,
+      { title: 'Supprimer ce partenaire ?', danger: true, confirmLabel: 'Supprimer' }
+    );
+    if (!ok) return;
     try {
       await deletePartenaire(id);
       await logEvent('partenaire_deleted', { target: id, details: { name: p.raisonSociale }, actorName: myProfile.displayName, actorRole: myProfile.role });
-    } catch (e) { alert('Erreur : ' + e.message); }
+    } catch (e) { await alertDialog(e.message || String(e), { type: 'error' }); }
   }
 
   document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });

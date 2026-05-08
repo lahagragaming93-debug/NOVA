@@ -173,6 +173,7 @@
   import { subscribeToMembres, addMembre, updateMembre, deleteMembre,
            STATUT_LABELS, STATUT_COLORS, formatDate } from './js/membres.js';
   import { logEvent } from './js/journal.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
   const shell = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -275,11 +276,15 @@
   async function onDelete(id) {
     const m = current.find(x => x.id === id);
     if (!m) return;
-    if (!confirm(`Supprimer ${m.displayName} du registre ?`)) return;
+    const ok = await confirmDialog(
+      `${m.displayName}\n\nCette suppression est définitive.`,
+      { title: 'Retirer du registre ?', danger: true, confirmLabel: 'Supprimer' }
+    );
+    if (!ok) return;
     try {
       await deleteMembre(id);
       await logEvent('membre_deleted', { target: id, details: { name: m.displayName }, actorName: myProfile.displayName, actorRole: myProfile.role });
-    } catch (e) { alert('Erreur : ' + e.message); }
+    } catch (e) { await alertDialog(e.message || String(e), { type: 'error' }); }
   }
 
   document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });

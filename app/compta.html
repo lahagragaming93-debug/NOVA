@@ -411,6 +411,7 @@
     aggregateByWeek, computeRollingCumul, sumByType,
     formatDate, fmt
   } from './js/compta.js';
+  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
 
   const shell  = document.getElementById('app-shell');
   const loader = document.getElementById('loader');
@@ -620,11 +621,15 @@
   async function onDelete(id) {
     const tx = currentTransactions.find(t => t.id === id);
     if (!tx) return;
-    if (!confirm(`Supprimer cette opération ?\n\n${tx.libelle} — ${fmt(tx.montant)}`)) return;
+    const ok = await confirmDialog(
+      `${tx.libelle} — ${fmt(tx.montant)}\n\nCette suppression est définitive.`,
+      { title: 'Supprimer cette opération ?', danger: true, confirmLabel: 'Supprimer' }
+    );
+    if (!ok) return;
     try {
       await deleteTransaction(id);
     } catch (err) {
-      alert('Erreur : ' + (err.message || err));
+      await alertDialog(err.message || String(err), { type: 'error' });
     }
   }
 
