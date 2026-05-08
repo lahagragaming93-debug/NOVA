@@ -134,6 +134,73 @@ export async function getUserProfile(uid) {
 }
 
 /**
+ * Met à jour le profil utilisateur (champs autorisés à l'utilisateur lui-même).
+ * @param {string} uid
+ * @param {{ displayName?, avatar? }} updates
+ */
+export async function updateMyProfile(uid, updates) {
+  const me = auth.currentUser;
+  if (!me || me.uid !== uid) throw new Error('Non autorisé.');
+  const data = { updatedAt: serverTimestamp() };
+  if (updates.displayName !== undefined) data.displayName = String(updates.displayName).trim();
+  if (updates.avatar !== undefined) data.avatar = updates.avatar; // base64 ou null
+
+  // Met à jour le doc Firestore
+  await setDoc(doc(db, 'users', uid), data, { merge: true });
+
+  // Met aussi à jour Firebase Auth pour displayName (utile pour les badges/threads)
+  if (updates.displayName !== undefined) {
+    await updateProfile(me, { displayName: data.displayName });
+  }
+}
+
+/**
+ * Resize + compresse une image (File) en base64 JPEG de taille maxSize.
+ * Retourne une Promise<string> avec le data URL.
+ */
+export function compressImage(file, maxSize = 256, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type?.startsWith('image/')) return reject(new Error('Le fichier doit être une image.'));
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e) => { img.src = e.target.result; };
+    reader.onerror = () => reject(new Error('Erreur de lecture du fichier.'));
+    img.onload = () => {
+      // ratio de redimensionnement (max maxSize sur la plus grande dimension)
+      const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      const w = Math.round(img.width * ratio);
+      const h = Math.round(img.height * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      try {
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        if (dataUrl.length > 950 * 1024) {
+          return reject(new Error('Image trop lourde après compression. Choisis une image plus petite.'));
+        }
+        resolve(dataUrl);
+      } catch (err) { reject(err); }
+    };
+    img.onerror = () => reject(new Error('Image invalide.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Génère un avatar SVG par défaut (initiales sur fond doré ou navy) en data-URL.
+ */
+export function defaultAvatarDataUrl(name) {
+  const initials = String(name || '?').trim().split(/\s+/).map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+    <rect width="128" height="128" fill="#1F2D4A"/>
+    <circle cx="64" cy="64" r="58" fill="none" stroke="#8B7340" stroke-width="2"/>
+    <text x="64" y="80" text-anchor="middle" font-family="Cormorant Garamond, Garamond, serif" font-weight="700" font-size="50" fill="#FBF9F3">${initials || '?'}</text>
+  </svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+/**
  * Traduit les codes d'erreur Firebase Auth en messages français.
  */
 export function authErrorMessage(error) {

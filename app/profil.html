@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Mon profil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  .profile-grid {
+    display: grid; grid-template-columns: 220px 1fr; gap: 32px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 28px; margin-top: 16px;
+  }
+  .avatar-block { text-align: center; }
+  .avatar-img {
+    width: 180px; height: 180px; border-radius: 50%;
+    object-fit: cover; border: 3px solid var(--gold);
+    background: var(--paper-alt);
+    display: block; margin: 0 auto 14px;
+  }
+  .avatar-actions { display: flex; flex-direction: column; gap: 8px; }
+  .avatar-actions button, .avatar-actions label {
+    background: var(--navy); color: var(--paper); border: none;
+    padding: 8px 14px; font-family: inherit; font-size: 12px;
+    letter-spacing: 1px; border-radius: 3px; cursor: pointer;
+    text-align: center; font-variant: small-caps;
+    transition: background 0.2s;
+  }
+  .avatar-actions button:hover, .avatar-actions label:hover { background: var(--gold); }
+  .avatar-actions .remove {
+    background: transparent; color: var(--muted); border: 1px solid var(--rule);
+  }
+  .avatar-actions .remove:hover { border-color: var(--red); color: var(--red); background: transparent; }
+  .avatar-hint { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 8px; }
+
+  .info-block .field {
+    margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--rule);
+  }
+  .info-block .field:last-child { border-bottom: none; }
+  .info-block .label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    font-variant: small-caps; color: var(--muted); margin-bottom: 4px;
+  }
+  .info-block .value {
+    font-size: 16px; color: var(--ink); font-family: 'EB Garamond', serif;
+  }
+  .info-block .value.editable { display: flex; align-items: center; gap: 12px; }
+  .info-block .value input {
+    flex: 1; font-family: inherit; font-size: 16px;
+    padding: 8px 10px; border: 1px solid var(--rule); background: var(--paper);
+    border-radius: 3px; color: var(--ink);
+  }
+  .info-block .value input:focus { outline: none; border-color: var(--gold); }
+  .info-block .value button {
+    background: var(--navy); color: var(--paper); border: none;
+    padding: 8px 14px; font-family: inherit; font-size: 12px;
+    letter-spacing: 1px; border-radius: 3px; cursor: pointer; font-variant: small-caps;
+  }
+  .info-block .value button:hover { background: var(--gold); }
+  .info-block .value button:disabled { background: var(--muted); cursor: not-allowed; }
+
+  .info-block .immutable {
+    font-family: 'Consolas', monospace; font-size: 13.5px; color: var(--ink-soft);
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--navy); color: var(--paper); padding: 12px 18px;
+    border-radius: 3px; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    border-left: 3px solid var(--gold); z-index: 1000;
+    opacity: 0; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s;
+  }
+  .toast.visible { opacity: 1; transform: translateY(0); }
+  .toast.error { border-left-color: var(--red); }
+
+  @media (max-width: 700px) { .profile-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div><div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div><div class="brand-sub">Mon profil</div></div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+    <div class="welcome-card">
+      <h1>Mon profil</h1>
+      <p class="subtitle">Personnalisez votre photo de profil et votre nom affiché.</p>
+    </div>
+
+    <div class="profile-grid">
+      <div class="avatar-block">
+        <img id="avatar-img" class="avatar-img" src="" alt="Avatar">
+        <div class="avatar-actions">
+          <label for="avatar-file">Changer la photo</label>
+          <input id="avatar-file" type="file" accept="image/*" style="display:none;">
+          <button type="button" class="remove" id="btn-remove-avatar">Retirer</button>
+        </div>
+        <div class="avatar-hint">JPG, PNG ou WebP.<br>Redimensionné automatiquement à 256×256.</div>
+      </div>
+
+      <div class="info-block">
+        <div class="field">
+          <div class="label">Nom affiché</div>
+          <div class="value editable">
+            <input id="dn-input" type="text" maxlength="60">
+            <button type="button" id="btn-save-dn">Enregistrer</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="label">Identifiant</div>
+          <div class="value immutable" id="info-username">—</div>
+        </div>
+        <div class="field">
+          <div class="label">Email (Firebase)</div>
+          <div class="value immutable" id="info-email">—</div>
+        </div>
+        <div class="field">
+          <div class="label">Rôle</div>
+          <div class="value" id="info-role">—</div>
+        </div>
+        <div class="field">
+          <div class="label">Date d'inscription</div>
+          <div class="value" id="info-created">—</div>
+        </div>
+        <div class="field">
+          <div class="label">UID Firebase</div>
+          <div class="value immutable" style="font-size:11px;color:var(--muted);" id="info-uid">—</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">NOVA — Espace membre — Mon profil</footer>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile, updateMyProfile, compressImage, defaultAvatarDataUrl } from './js/auth.js';
+  import { ROLE_LABELS } from './js/roles.js';
+
+  const shell = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const toast = document.getElementById('toast');
+  let me = null, profile = null;
+
+  function showToast(msg, isErr) {
+    toast.textContent = msg;
+    toast.classList.toggle('error', !!isErr);
+    toast.classList.add('visible');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('visible'), 2400);
+  }
+
+  function refreshAvatar() {
+    const img = document.getElementById('avatar-img');
+    img.src = profile.avatar || defaultAvatarDataUrl(profile.displayName);
+  }
+
+  function refreshHeader() {
+    document.getElementById('header-username').textContent = profile.displayName || me.displayName;
+    const badge = document.getElementById('header-role');
+    badge.textContent = ROLE_LABELS[profile.role] || profile.role;
+    badge.className = 'role-badge role-' + profile.role;
+  }
+
+  function refreshAll() {
+    refreshAvatar();
+    refreshHeader();
+    document.getElementById('dn-input').value = profile.displayName || '';
+    document.getElementById('info-username').textContent = profile.username || '—';
+    document.getElementById('info-email').textContent = profile.email || me.email || '—';
+    const badge = document.getElementById('info-role');
+    badge.innerHTML = `<span class="role-badge role-${profile.role}">${ROLE_LABELS[profile.role] || profile.role}</span>`;
+    if (profile.createdAt?.toDate) {
+      document.getElementById('info-created').textContent = profile.createdAt.toDate().toLocaleString('fr-FR', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    }
+    document.getElementById('info-uid').textContent = me.uid;
+  }
+
+  // === Avatar upload ===
+  document.getElementById('avatar-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      showToast('Compression de l\'image…');
+      const dataUrl = await compressImage(file, 256, 0.85);
+      await updateMyProfile(me.uid, { avatar: dataUrl });
+      profile.avatar = dataUrl;
+      refreshAvatar();
+      showToast('Photo de profil mise à jour.');
+    } catch (err) {
+      showToast(err.message || 'Erreur upload', true);
+    } finally {
+      e.target.value = '';
+    }
+  });
+
+  document.getElementById('btn-remove-avatar').addEventListener('click', async () => {
+    if (!confirm('Supprimer votre photo de profil ?')) return;
+    try {
+      await updateMyProfile(me.uid, { avatar: null });
+      profile.avatar = null;
+      refreshAvatar();
+      showToast('Photo retirée.');
+    } catch (err) {
+      showToast(err.message || 'Erreur', true);
+    }
+  });
+
+  // === Display name ===
+  document.getElementById('btn-save-dn').addEventListener('click', async () => {
+    const newName = document.getElementById('dn-input').value.trim();
+    if (!newName) { showToast('Le nom ne peut pas être vide.', true); return; }
+    if (newName === profile.displayName) return;
+    const btn = document.getElementById('btn-save-dn');
+    btn.disabled = true;
+    try {
+      await updateMyProfile(me.uid, { displayName: newName });
+      profile.displayName = newName;
+      refreshAll();
+      showToast('Nom mis à jour.');
+    } catch (err) {
+      showToast(err.message || 'Erreur', true);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('btn-logout').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });
+
+  onAuthChange(async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      profile = await getUserProfile(user.uid);
+      if (!profile) { loader.innerHTML = '<div style="color:#8b3a3a;">Profil introuvable.</div>'; return; }
+      refreshAll();
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (e) {
+      loader.innerHTML = '<div style="color:#8b3a3a;">Erreur : ' + e.message + '</div>';
+    }
+  });
+</script>
+</body>
+</html>

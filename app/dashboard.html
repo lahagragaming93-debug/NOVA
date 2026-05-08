@@ -97,6 +97,14 @@
   // Définition des modules de l'app et leurs permissions requises
   const MODULES = [
     {
+      title: 'Mon profil',
+      icon:  '☉',
+      description: 'Photo de profil, nom affiché, informations personnelles.',
+      href:  'profil.html',
+      perm:  'documents:read', // tout connecté peut accéder à son profil
+      ready: true
+    },
+    {
       title: 'Messagerie',
       icon:  '✉',
       description: 'Boîte de réception interne. Échangez avec le Bureau ou avec d\'autres membres.',
