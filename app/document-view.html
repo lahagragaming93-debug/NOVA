@@ -164,6 +164,212 @@
     `;
   }
 
+  // ===== FACTURE =====
+  function renderFacture(d) {
+    const data = d.data || {};
+    const dateEm = data.dateEmission ? formatDateLong(new Date(data.dateEmission)) : '—';
+    const echeance = data.echeance ? formatDateLong(new Date(data.echeance)) : '—';
+    window.exportFilename = d.reference || 'NOVA-Facture';
+    const lignesHtml = (data.lignes || []).map(l => `
+      <tr>
+        <td>${escapeHtml(l.designation)}</td>
+        <td style="text-align:center;">${l.qte}</td>
+        <td style="text-align:right;">${fmt(l.pu)}</td>
+        <td style="text-align:right;font-weight:600;">${fmt(l.total)}</td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official"><strong>État de San Andreas</strong><br>Facture officielle</div>
+        </header>
+        <div class="recu-num">
+          Facture N°<br><span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+        <div class="doc-title">
+          <h1>Facture</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">Prestation de partenariat — Imposable au titre de l'Article 4-2.2 du T.T.E.</div>
+        </div>
+
+        <table class="info-table" style="width:100%;border-collapse:collapse;margin-top:6mm;">
+          <tr><td>Émetteur</td><td><strong>Association NOVA</strong> — Représentée par Andrew BEAUCHAMP, Président</td></tr>
+          <tr><td>Client</td><td><strong>${escapeHtml(data.client || '—')}</strong></td></tr>
+          <tr><td>Représentant client</td><td>${escapeHtml(data.representant || '—')}</td></tr>
+          <tr><td>Adresse client</td><td>${escapeHtml(data.adresse || '—')}</td></tr>
+          ${data.conventionRef ? `<tr><td>Référence convention</td><td>${escapeHtml(data.conventionRef)}</td></tr>` : ''}
+          <tr><td>Date d'émission</td><td>${dateEm}</td></tr>
+        </table>
+
+        <h3 class="article" style="margin-top:8mm;"><span class="num">Détail.</span> Prestations facturées</h3>
+        <table style="width:100%;border-collapse:collapse;margin-top:3mm;font-size:11pt;">
+          <thead>
+            <tr style="background:var(--navy);color:var(--paper);">
+              <th style="padding:3mm 4mm;text-align:left;">Désignation</th>
+              <th style="padding:3mm 4mm;text-align:center;width:18mm;">Qté</th>
+              <th style="padding:3mm 4mm;text-align:right;width:28mm;">P.U.</th>
+              <th style="padding:3mm 4mm;text-align:right;width:30mm;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lignesHtml || '<tr><td colspan="4" style="padding:5mm;text-align:center;color:var(--muted);">Aucune ligne</td></tr>'}
+            <tr style="background:var(--paper-alt);border-top:2px solid var(--gold);font-weight:700;">
+              <td colspan="3" style="padding:3.5mm 4mm;text-align:right;">TOTAL DÛ</td>
+              <td style="padding:3.5mm 4mm;text-align:right;color:var(--navy);">${fmt(data.total)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert" style="margin-top:6mm;">
+          <strong>Conditions de paiement :</strong> Échéance : ${echeance}. Modalité : virement bancaire au compte de l'Association NOVA.
+        </div>
+
+        <div class="signature-block">
+          <div style="font-style: italic; color: var(--muted); margin-bottom: 12mm;">Pour l'Association NOVA, émettrice :</div>
+          <div class="nom">Jeff TAYLOR</div>
+          <div class="fonction">Trésorier — Association NOVA</div>
+        </div>
+
+        <p style="text-align:center;margin-top:6mm;font-size:9.5pt;color:var(--muted);font-style:italic;">
+          Facture créée le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.<br>
+          Document archivé — référence ${escapeHtml(d.reference)}.
+        </p>
+
+        <footer class="footer"><span>NOVA — Facture</span><span>Page 1 / 1</span></footer>
+      </section>
+    `;
+  }
+
+  // ===== CONVENTION =====
+  function renderConvention(d) {
+    const data = d.data || {};
+    const dateConv = data.dateConv ? formatDateLong(new Date(data.dateConv)) : '—';
+    window.exportFilename = d.reference || 'NOVA-Convention';
+    const TYPES_LBL = { recompenses: 'Récompenses', questions: 'Questions', experiences: 'Expériences', visuel: 'Visuel' };
+    const typesHtml = (data.types || []).map(t => `<li>${TYPES_LBL[t] || t}</li>`).join('');
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official"><strong>État de San Andreas</strong><br>Convention de partenariat</div>
+        </header>
+        <div class="recu-num">
+          Convention N°<br><span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+        <div class="doc-title">
+          <h1>Convention de Partenariat</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">Encadrement formel de l'apport partenaire à un événement de l'Association NOVA</div>
+        </div>
+
+        <h3 class="article"><span class="num">Article 1.</span> Identification des parties</h3>
+        <table class="info-table" style="width:100%;border-collapse:collapse;margin-top:3mm;">
+          <tr><td>L'Association</td><td><strong>NOVA</strong> — Représentée par Andrew BEAUCHAMP, Président</td></tr>
+          <tr><td>Le Partenaire</td><td><strong>${escapeHtml(data.partenaire || '—')}</strong></td></tr>
+          <tr><td>Secteur</td><td>${escapeHtml(data.secteur || '—')}</td></tr>
+          <tr><td>Représentant</td><td>${escapeHtml(data.representant || '—')}</td></tr>
+          <tr><td>Email contact</td><td>${escapeHtml(data.email || '—')}</td></tr>
+          <tr><td>Adresse</td><td>${escapeHtml(data.adresse || '—')}</td></tr>
+        </table>
+
+        <h3 class="article" style="margin-top:6mm;"><span class="num">Article 2.</span> Type(s) de partenariat</h3>
+        <ul style="margin-top:2mm;">${typesHtml}</ul>
+
+        <h3 class="article"><span class="num">Article 3.</span> Contribution du Partenaire</h3>
+        <blockquote>${escapeHtml(data.contribution || '—').replace(/\n/g,'<br>')}</blockquote>
+        <p><strong>Valeur estimée :</strong> ${fmt(data.valeur)}</p>
+        <p><strong>Date de signature :</strong> ${dateConv}</p>
+
+        <h3 class="article" style="margin-top:6mm;"><span class="num">Article 4.</span> Engagements de l'Association</h3>
+        <p>L'Association NOVA s'engage à mentionner le Partenaire dans toute communication officielle relative à l'événement, à fournir un bilan de visibilité post-événement sur demande, et à respecter l'image du Partenaire en toutes circonstances.</p>
+
+        <p style="font-size:9.5pt;color:var(--muted);font-style:italic;text-align:justify;margin-top:6mm;">Convention enregistrée dans la base NOVA — réf. ${escapeHtml(d.reference)} — créée le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.</p>
+
+        <table class="signatures" style="margin-top:8mm;width:100%;border-collapse:collapse;">
+          <tr><th style="width:35%">Partie</th><th style="width:30%">Nom et qualité</th><th>Signature</th></tr>
+          <tr><td><strong>Pour l'Association NOVA</strong></td><td>Andrew BEAUCHAMP, Président</td><td class="signature-line"></td></tr>
+          <tr><td><strong>Pour le Partenaire</strong></td><td>${escapeHtml(data.representant || '—')}</td><td class="signature-line"></td></tr>
+        </table>
+
+        <footer class="footer"><span>NOVA — Convention de partenariat</span><span>Page 1 / 1</span></footer>
+      </section>
+    `;
+  }
+
+  // ===== CONTRAT D'ENGAGEMENT BÉNÉVOLE =====
+  function renderContratEngagement(d) {
+    const data = d.data || {};
+    const dateDebut = data.dateDebut ? formatDateLong(new Date(data.dateDebut)) : '—';
+    const dateFin = data.dateFin ? formatDateLong(new Date(data.dateFin)) : '—';
+    window.exportFilename = d.reference || 'NOVA-Contrat-Engagement';
+
+    container.innerHTML = `
+      <section class="page">
+        <header class="header">
+          <div class="title-block">
+            <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+            <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+          </div>
+          <div class="official"><strong>État de San Andreas</strong><br>Contrat d'engagement associatif<br>Conforme à l'Article 8-1.5 du T.T.E.</div>
+        </header>
+        <div class="recu-num">
+          Contrat N°<br><span class="num-value">${escapeHtml(d.reference)}</span>
+        </div>
+        <div class="doc-title">
+          <h1>Contrat d'Engagement Associatif</h1>
+          <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+          <div class="sub">Engagement bénévole gratuit — Article 8-1.5 du T.T.E.</div>
+        </div>
+
+        <h3 class="article"><span class="num">Article 1.</span> Identification des parties</h3>
+        <table class="info-table" style="width:100%;border-collapse:collapse;">
+          <tr><td>L'Association</td><td><strong>NOVA</strong> — Représentée par Andrew BEAUCHAMP, Président</td></tr>
+          <tr><td>Le bénévole</td><td><strong>${escapeHtml(data.nom || '—')}</strong></td></tr>
+          <tr><td>Identité in-game</td><td>${escapeHtml(data.inGameName || '—')}</td></tr>
+          <tr><td>Adresse / Contact</td><td>${escapeHtml(data.adresse || '—')}</td></tr>
+        </table>
+
+        <h3 class="article"><span class="num">Article 2.</span> Mission confiée</h3>
+        <blockquote>${escapeHtml(data.mission || '—').replace(/\n/g,'<br>')}</blockquote>
+
+        <h3 class="article"><span class="num">Article 3.</span> Durée et lieu</h3>
+        <ul>
+          <li><strong>Date de début :</strong> ${dateDebut}</li>
+          <li><strong>Date de fin :</strong> ${dateFin}</li>
+          <li><strong>Lieu(x) d'exécution :</strong> ${escapeHtml(data.lieu || '—')}</li>
+        </ul>
+
+        <h3 class="article"><span class="num">Article 4.</span> Gratuité de l'engagement</h3>
+        <p>Conformément à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span>, l'engagement est <strong>strictement gratuit</strong>. Aucune rémunération ne sera versée au titre du présent engagement.</p>
+
+        <h3 class="article"><span class="num">Article 5.</span> Défraiement éventuel</h3>
+        <blockquote>${escapeHtml(data.defraiement || 'Aucun.').replace(/\n/g,'<br>')}</blockquote>
+
+        <h3 class="article"><span class="num">Article 6.</span> Confidentialité</h3>
+        <p>Le bénévole s'engage à ne divulguer à aucun tiers les informations sensibles auxquelles il pourrait accéder dans le cadre de sa mission. Cette obligation perdure pendant un (1) an après la fin de l'engagement.</p>
+
+        <p style="font-size:9.5pt;color:var(--muted);font-style:italic;text-align:justify;margin-top:6mm;">Contrat enregistré — réf. ${escapeHtml(d.reference)} — créé le ${formatDateLong(d.createdAt)} par ${escapeHtml(d.createdByName || '—')}.</p>
+
+        <table class="signatures" style="margin-top:8mm;width:100%;border-collapse:collapse;">
+          <tr><th style="width:35%">Partie</th><th style="width:30%">Nom</th><th>Signature</th></tr>
+          <tr><td><strong>Pour l'Association NOVA</strong></td><td>Andrew BEAUCHAMP, Président</td><td class="signature-line"></td></tr>
+          <tr><td><strong>Le bénévole</strong></td><td>${escapeHtml(data.nom || '—')}</td><td class="signature-line"></td></tr>
+        </table>
+
+        <footer class="footer"><span>NOVA — Contrat d'engagement associatif</span><span>Page 1 / 1</span></footer>
+      </section>
+    `;
+  }
+
   function renderError(msg) {
     container.innerHTML = `
       <div class="loading-state" style="color:#8b3a3a;flex-direction:column;gap:14px;">
@@ -179,8 +385,15 @@
     try {
       const d = await getDocument(docId);
       if (!d) { renderError('Document introuvable.'); return; }
-      if (d.type === 'recu_don') {
-        renderRecuDon(d);
+      const renderers = {
+        recu_don: renderRecuDon,
+        facture: renderFacture,
+        convention: renderConvention,
+        contrat_engagement: renderContratEngagement
+      };
+      const renderer = renderers[d.type];
+      if (renderer) {
+        renderer(d);
         toolbar.style.display = 'flex';
       } else {
         renderError(`Type "${d.type}" non encore pris en charge par le viewer.`);
