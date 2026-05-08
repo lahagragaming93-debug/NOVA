@@ -90,7 +90,7 @@
     </a>
     <div class="spacer"></div>
     <a href="../index.html" class="back-to-site">← Site public</a>
-    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <div class="user-info"><img class="user-avatar" id="header-avatar" src="" alt=""><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
     <button type="button" class="logout" id="btn-logout">Déconnexion</button>
   </header>
 
@@ -176,6 +176,7 @@
 
   function refreshHeader() {
     document.getElementById('header-username').textContent = profile.displayName || me.displayName;
+    document.getElementById('header-avatar').src = profile?.avatar || defaultAvatarDataUrl(profile?.displayName || '');
     const badge = document.getElementById('header-role');
     badge.textContent = ROLE_LABELS[profile.role] || profile.role;
     badge.className = 'role-badge role-' + profile.role;

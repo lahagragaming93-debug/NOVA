@@ -26,7 +26,7 @@
     <div class="spacer"></div>
     <a href="../index.html" class="back-to-site">← Site public</a>
     <div class="user-info">
-      <span class="username" id="header-username">—</span>
+      <img class="user-avatar" id="header-avatar" src="" alt=""><span class="username" id="header-username">—</span>
       <span class="role-badge" id="header-role">…</span>
     </div>
     <button type="button" class="logout" id="btn-logout">Déconnexion</button>
@@ -88,7 +88,7 @@
 </div>
 
 <script type="module">
-  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { onAuthChange, logout, getUserProfile, defaultAvatarDataUrl } from './js/auth.js';
   import { ROLE_LABELS, hasPermission } from './js/roles.js';
 
   const shell  = document.getElementById('app-shell');
@@ -194,6 +194,7 @@
     const roleLabel   = ROLE_LABELS[role] || role;
 
     document.getElementById('header-username').textContent = displayName;
+    document.getElementById('header-avatar').src = profile?.avatar || defaultAvatarDataUrl(profile?.displayName || '');
     const badge = document.getElementById('header-role');
     badge.textContent = roleLabel;
     badge.className = 'role-badge role-' + role;

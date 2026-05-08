@@ -43,7 +43,7 @@
     </a>
     <div class="spacer"></div>
     <a href="../index.html" class="back-to-site">← Site public</a>
-    <div class="user-info"><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
+    <div class="user-info"><img class="user-avatar" id="header-avatar" src="" alt=""><span class="username" id="header-username">—</span><span class="role-badge" id="header-role">…</span></div>
     <button type="button" class="logout" id="btn-logout">Déconnexion</button>
   </header>
 
@@ -80,7 +80,7 @@
 <div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">Chargement&nbsp;<span style="color:#8b7340;">…</span></div>
 
 <script type="module">
-  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { onAuthChange, logout, getUserProfile, defaultAvatarDataUrl } from './js/auth.js';
   import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
   import { subscribeToJournal, ACTION_LABELS, formatDateTime } from './js/journal.js';
 
@@ -126,6 +126,7 @@
         return;
       }
       document.getElementById('header-username').textContent = myProfile.displayName;
+      document.getElementById('header-avatar').src = myProfile?.avatar || defaultAvatarDataUrl(myProfile?.displayName || '');
       const badge = document.getElementById('header-role');
       badge.textContent = ROLE_LABELS[myProfile.role];
       badge.className = 'role-badge role-' + myProfile.role;

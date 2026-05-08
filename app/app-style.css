@@ -299,8 +299,19 @@ a:hover { color: var(--gold-soft); text-decoration: underline; }
 .app-header .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-size: 14px;
+}
+
+.app-header .user-info .user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--gold);
+  background: var(--paper-alt);
+  display: block;
+  flex-shrink: 0;
 }
 
 .app-header .user-info .username {
