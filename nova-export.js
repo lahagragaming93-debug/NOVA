@@ -225,6 +225,33 @@
     },
 
     /**
+     * Injecte un bouton "← Retour" en première position de toutes les .toolbar
+     * du document. Si l'historique est vide, redirige vers le dashboard NOVA.
+     * Auto-appelé au DOMContentLoaded.
+     */
+    injectBackButton: function () {
+      document.querySelectorAll('.toolbar').forEach(function (tb) {
+        if (tb.querySelector('.nova-back-btn')) return; // déjà injecté
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'nova-back-btn';
+        btn.textContent = '← Retour';
+        btn.title = 'Revenir à la page précédente';
+        btn.style.cssText = 'background:transparent;color:#fbf9f3;border:1px solid #b89c5e;padding:9px 16px;font-family:inherit;font-size:11pt;letter-spacing:1px;cursor:pointer;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,0.2);';
+        btn.onmouseover = function () { btn.style.background = '#b89c5e'; btn.style.color = '#1f2d4a'; };
+        btn.onmouseout  = function () { btn.style.background = 'transparent'; btn.style.color = '#fbf9f3'; };
+        btn.onclick = function () {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = 'index.html';
+          }
+        };
+        tb.insertBefore(btn, tb.firstChild);
+      });
+    },
+
+    /**
      * Formatte un nombre en monnaie.
      */
     fmt: function (n) {
@@ -258,4 +285,11 @@
   };
 
   window.NovaExport = NovaExport;
+
+  // Auto-injection du bouton "← Retour" sur toutes les pages avec .toolbar
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', NovaExport.injectBackButton);
+  } else {
+    NovaExport.injectBackButton();
+  }
 })(window);
