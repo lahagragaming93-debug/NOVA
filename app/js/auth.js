@@ -54,21 +54,46 @@ export async function register(username, password, displayName) {
   const finalDisplayName = displayName?.trim() || cleanUsername;
   await updateProfile(userCred.user, { displayName: finalDisplayName });
 
+  // ⚠ Force le refresh du token Firebase pour que .email soit dispo dans
+  // request.auth.token côté Firestore Security Rules. Sans ça, lors du tout
+  // premier setDoc juste après inscription, le token peut ne pas avoir d'email
+  // → la règle bootstrap-admin (isPresidentEmail) refuse alors role='president'.
+  await userCred.user.getIdToken(true);
+
   // Détermine le rôle initial : président si email président, sinon utilisateur
   const role = (email === PRESIDENT_EMAIL) ? ROLES.PRESIDENT : ROLES.UTILISATEUR;
 
   // Crée le profil dans Firestore (collection "users", id = uid)
-  await setDoc(doc(db, 'users', userCred.user.uid), {
-    uid:         userCred.user.uid,
-    username:    cleanUsername,
-    email,
-    displayName: finalDisplayName,
-    role,
-    createdAt:   serverTimestamp(),
-    updatedAt:   serverTimestamp()
-  });
-
-  return { uid: userCred.user.uid, role, displayName: finalDisplayName };
+  // Si l'écriture en role='president' est refusée par les règles (cas extrême
+  // où le token n'a toujours pas l'email malgré le refresh), on retombe sur
+  // role='utilisateur' pour ne pas bloquer la création du profil.
+  try {
+    await setDoc(doc(db, 'users', userCred.user.uid), {
+      uid:         userCred.user.uid,
+      username:    cleanUsername,
+      email,
+      displayName: finalDisplayName,
+      role,
+      createdAt:   serverTimestamp(),
+      updatedAt:   serverTimestamp()
+    });
+    return { uid: userCred.user.uid, role, displayName: finalDisplayName };
+  } catch (err) {
+    if (role === ROLES.PRESIDENT) {
+      console.warn('Création président refusée, fallback utilisateur :', err);
+      await setDoc(doc(db, 'users', userCred.user.uid), {
+        uid:         userCred.user.uid,
+        username:    cleanUsername,
+        email,
+        displayName: finalDisplayName,
+        role:        ROLES.UTILISATEUR,
+        createdAt:   serverTimestamp(),
+        updatedAt:   serverTimestamp()
+      });
+      return { uid: userCred.user.uid, role: ROLES.UTILISATEUR, displayName: finalDisplayName };
+    }
+    throw err;
+  }
 }
 
 /**
