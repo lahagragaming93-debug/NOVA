@@ -124,13 +124,58 @@ export function onAuthChange(cb) {
 
 /**
  * Récupère le profil complet de l'utilisateur depuis Firestore.
+ * Si le profil n'existe pas (cas de bug d'inscription : Auth créé mais doc manquant),
+ * on tente de le créer à la volée à partir des informations Firebase Auth.
  * @param {string} uid
  * @returns {Promise<object|null>}
  */
 export async function getUserProfile(uid) {
   if (!uid) return null;
   const snap = await getDoc(doc(db, 'users', uid));
-  return snap.exists() ? snap.data() : null;
+  if (snap.exists()) return snap.data();
+
+  // ===== FALLBACK : doc manquant — on tente de le créer =====
+  const me = auth.currentUser;
+  if (me && me.uid === uid && me.email) {
+    try {
+      const username    = emailToUsername(me.email);
+      const displayName = me.displayName || username;
+      const role        = (me.email === PRESIDENT_EMAIL) ? ROLES.PRESIDENT : ROLES.UTILISATEUR;
+      await setDoc(doc(db, 'users', uid), {
+        uid,
+        username,
+        email:       me.email,
+        displayName,
+        role,
+        createdAt:   serverTimestamp(),
+        updatedAt:   serverTimestamp()
+      });
+      console.info('Profil Firestore créé à la volée pour', me.email);
+      // Re-fetch le doc fraîchement créé
+      const newSnap = await getDoc(doc(db, 'users', uid));
+      return newSnap.exists() ? newSnap.data() : null;
+    } catch (err) {
+      console.warn('Échec auto-création profil :', err);
+      // Si la création en president échoue (token sans email), retombe sur utilisateur
+      try {
+        await setDoc(doc(db, 'users', uid), {
+          uid,
+          username:    emailToUsername(me.email),
+          email:       me.email,
+          displayName: me.displayName || emailToUsername(me.email),
+          role:        ROLES.UTILISATEUR,
+          createdAt:   serverTimestamp(),
+          updatedAt:   serverTimestamp()
+        });
+        const fbSnap = await getDoc(doc(db, 'users', uid));
+        return fbSnap.exists() ? fbSnap.data() : null;
+      } catch (err2) {
+        console.error('Auto-création profil totalement échouée :', err2);
+        return null;
+      }
+    }
+  }
+  return null;
 }
 
 /**
