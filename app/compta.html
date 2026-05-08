@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Comptabilité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+  /* === KPI CARDS === */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0 28px 0;
+  }
+  .kpi {
+    background: var(--paper-alt);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--gold);
+    padding: 14px 18px;
+    border-radius: 3px;
+  }
+  .kpi.danger { border-left-color: var(--red); }
+  .kpi.warn { border-left-color: var(--yellow); }
+  .kpi.success { border-left-color: var(--green); }
+  .kpi .label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    font-variant: small-caps;
+  }
+  .kpi .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi.danger .value { color: var(--red); }
+  .kpi.warn .value { color: var(--yellow); }
+  .kpi.success .value { color: var(--green); }
+  .kpi .sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  /* === TOOLBAR === */
+  .compta-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .compta-toolbar .left { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .compta-toolbar select,
+  .compta-toolbar input {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 7px 10px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    border-radius: 3px;
+  }
+  .compta-toolbar select:focus, .compta-toolbar input:focus {
+    outline: none; border-color: var(--gold);
+  }
+  .compta-toolbar .add-btn {
+    background: var(--navy);
+    color: var(--paper);
+    border: none;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-variant: small-caps;
+  }
+  .compta-toolbar .add-btn:hover { background: var(--gold); }
+  .compta-toolbar .add-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+  /* === Tabs === */
+  .compta-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 18px;
+  }
+  .compta-tabs button {
+    background: transparent;
+    border: none;
+    padding: 10px 22px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+  }
+  .compta-tabs button.active {
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* === Tableau transactions === */
+  table.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  table.tx-table th {
+    background: var(--navy);
+    color: var(--paper);
+    text-align: left;
+    padding: 9px 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    font-variant: small-caps;
+    font-weight: 600;
+  }
+  table.tx-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  table.tx-table tr:last-child td { border-bottom: none; }
+  table.tx-table tr:hover td { background: var(--gold-bg); }
+  table.tx-table .amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  table.tx-table .actions { text-align: right; white-space: nowrap; }
+  table.tx-table .actions button {
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: 4px;
+    color: var(--muted);
+  }
+  table.tx-table .actions button:hover { border-color: var(--gold); color: var(--ink); }
+  table.tx-table .actions .del:hover { border-color: var(--red); color: var(--red); }
+
+  .type-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 10.5px;
+    letter-spacing: 0.8px;
+    font-variant: small-caps;
+    font-weight: 600;
+  }
+
+  .empty { padding: 30px; text-align: center; color: var(--muted); font-style: italic; }
+
+  /* === Tableau hebdo === */
+  table.weekly-table th, table.weekly-table td {
+    padding: 8px 10px;
+    font-size: 12.5px;
+    text-align: right;
+  }
+  table.weekly-table th:first-child, table.weekly-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  table.weekly-table tfoot td {
+    background: var(--paper-alt);
+    border-top: 2px solid var(--gold);
+    font-weight: 700;
+  }
+  .plafond-cell.depassement { color: var(--red); font-weight: 700; }
+  .plafond-cell.vigilance { color: var(--yellow); font-weight: 700; }
+  .plafond-cell.ok { color: var(--green); }
+
+  /* === Modal === */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(31, 45, 74, 0.55);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--paper);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 520px;
+    padding: 24px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border-top: 4px solid var(--gold);
+  }
+  .modal h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--navy);
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+  .modal .field { margin-bottom: 12px; }
+  .modal label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-variant: small-caps;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .modal select, .modal input, .modal textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    border-radius: 3px;
+  }
+  .modal select:focus, .modal input:focus, .modal textarea:focus {
+    outline: none; border-color: var(--gold);
+  }
+  .modal .field-hint { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 2px; }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .modal-actions button {
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .modal-actions .cancel { background: transparent; color: var(--muted); border-color: var(--rule); }
+  .modal-actions .save { background: var(--navy); color: var(--paper); }
+  .modal-actions .save:hover { background: var(--gold); }
+  .modal-error { color: var(--red); font-size: 12.5px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+
+  <header class="app-header">
+    <a href="../index.html" class="brand-link" title="Retour au site public NOVA">
+      <img class="logo" src="../logo-nova.png" alt="NOVA" onerror="this.style.display='none'">
+      <div>
+        <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
+        <div class="brand-sub">Comptabilité</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <a href="../index.html" class="back-to-site">← Site public</a>
+    <div class="user-info">
+      <span class="username" id="header-username">—</span>
+      <span class="role-badge" id="header-role">…</span>
+    </div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <main class="app-main">
+
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;text-decoration:none;font-style:italic;margin-bottom:14px;">← Retour au tableau de bord</a>
+
+    <div class="welcome-card">
+      <h1>Comptabilité associative</h1>
+      <p class="subtitle">Saisie des opérations, suivi hebdomadaire, calcul fiscal automatique conforme T.T.E. Chap. IV.</p>
+    </div>
+
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="compta-toolbar">
+      <div class="left">
+        <label for="year-select" style="font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-variant:small-caps;color:var(--muted);">Année :</label>
+        <select id="year-select"></select>
+      </div>
+      <button type="button" class="add-btn" id="btn-add" disabled>+ Nouvelle opération</button>
+    </div>
+
+    <div class="compta-tabs">
+      <button type="button" class="tab-btn active" data-tab="weekly">Suivi hebdomadaire</button>
+      <button type="button" class="tab-btn" data-tab="all">Toutes les opérations</button>
+    </div>
+
+    <!-- Tab : Suivi hebdo -->
+    <div class="tab-panel active" id="tab-weekly">
+      <table class="tx-table weekly-table" id="weekly-table">
+        <thead>
+          <tr>
+            <th>Sem.</th>
+            <th>Dons</th>
+            <th>Subv.</th>
+            <th>Prest.</th>
+            <th>Autres</th>
+            <th>Ch. déduct.</th>
+            <th>CA hebdo</th>
+            <th>Résultat</th>
+            <th>Tranche</th>
+            <th>Impôt</th>
+            <th>Cumul 4 sem.</th>
+            <th>Plafond</th>
+          </tr>
+        </thead>
+        <tbody id="weekly-tbody">
+          <tr><td colspan="12" class="empty">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab : Toutes les opérations -->
+    <div class="tab-panel" id="tab-all">
+      <table class="tx-table" id="all-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Catégorie</th>
+            <th>Libellé</th>
+            <th class="amount">Montant</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody id="all-tbody">
+          <tr><td colspan="6" class="empty">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    NOVA — Comptabilité multi-utilisateur · Conforme T.T.E. Chap. IV (calcul fiscal hebdomadaire) et Chap. VIII Art. 8-1.4 (plafond 50 000 $).<br>
+    Tenue rigoureuse obligatoire — sanctions Art. 4-5.2 en cas d'irrégularité.
+  </footer>
+
+</div>
+
+<!-- Modal saisie -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2 id="modal-title">Nouvelle opération</h2>
+    <p style="color:var(--muted);font-style:italic;margin:0 0 16px;font-size:13px;" id="modal-sub">Toutes les opérations sont immédiatement répliquées en temps réel pour le Bureau.</p>
+    <div class="field">
+      <label for="m-date">Date de l'opération</label>
+      <input type="date" id="m-date">
+    </div>
+    <div class="field">
+      <label for="m-type">Type</label>
+      <select id="m-type">
+        <option value="">—</option>
+      </select>
+      <div class="field-hint" id="type-hint">Sélectionnez un type pour voir sa description.</div>
+    </div>
+    <div class="field">
+      <label for="m-categorie">Catégorie</label>
+      <input type="text" id="m-categorie" placeholder="ex. Avocat, Bons coiffure, Sponsor visuel…">
+    </div>
+    <div class="field">
+      <label for="m-libelle">Libellé</label>
+      <input type="text" id="m-libelle" placeholder="Description courte de l'opération">
+    </div>
+    <div class="field">
+      <label for="m-montant">Montant ($)</label>
+      <input type="number" id="m-montant" step="0.01" min="0" placeholder="0.00">
+      <div class="field-hint">Toujours positif. C'est le « type » qui indique recette ou dépense.</div>
+    </div>
+    <div class="modal-error" id="modal-err"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="btn-cancel">Annuler</button>
+      <button type="button" class="save" id="btn-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">
+  Chargement&nbsp;<span style="color:#8b7340;">…</span>
+</div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS, ROLES, hasPermission } from './js/roles.js';
+  import {
+    TX_TYPES, TYPE_LABELS, TYPE_COLORS, TYPE_DESCRIPTIONS,
+    subscribeToTransactions, addTransaction, updateTransaction, deleteTransaction,
+    aggregateByWeek, computeRollingCumul, sumByType,
+    formatDate, fmt
+  } from './js/compta.js';
+
+  const shell  = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+  const yearSelect = document.getElementById('year-select');
+  const btnAdd = document.getElementById('btn-add');
+  const modal = document.getElementById('modal');
+
+  let me = null;
+  let myProfile = null;
+  let canWrite = false;
+  let editingId = null;
+  let unsubscribe = null;
+  let currentTransactions = [];
+
+  /* ========== HEADER ========== */
+  function renderHeader() {
+    document.getElementById('header-username').textContent = myProfile.displayName || me.displayName || 'Membre';
+    const badge = document.getElementById('header-role');
+    badge.textContent = ROLE_LABELS[myProfile.role] || myProfile.role;
+    badge.className = 'role-badge role-' + myProfile.role;
+  }
+
+  /* ========== TYPE OPTIONS ========== */
+  function fillTypeSelect() {
+    const sel = document.getElementById('m-type');
+    sel.innerHTML = '<option value="">—</option>';
+    Object.entries(TYPE_LABELS).forEach(([k, label]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = label;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('m-type').addEventListener('change', (e) => {
+    const desc = TYPE_DESCRIPTIONS[e.target.value] || 'Sélectionnez un type pour voir sa description.';
+    document.getElementById('type-hint').textContent = desc;
+  });
+
+  /* ========== KPI ========== */
+  function renderKPI(transactions, weekly) {
+    const sums = sumByType(transactions);
+    const totalRecettes = sums.don + sums.subvention + sums.prestation + sums.autre;
+    const totalDepenses = sums.charge_deductible + sums.charge_non_deductible;
+    const ca = sums.prestation + sums.autre;
+
+    // Cumul 4 sem max sur l'année
+    const cumulMax = weekly.length > 0 ? Math.max(...weekly.map(w => w.cumul4 || 0)) : 0;
+    const plafondPct = (cumulMax / 50000) * 100;
+    let plafondClass = 'success', plafondLabel = '✓ OK';
+    if (cumulMax > 50000) { plafondClass = 'danger'; plafondLabel = '⚠ Dépassement'; }
+    else if (cumulMax > 40000) { plafondClass = 'warn'; plafondLabel = '⚠ Vigilance'; }
+
+    const grid = document.getElementById('kpi-grid');
+    grid.innerHTML = `
+      <div class="kpi success">
+        <div class="label">Total dons (annuel)</div>
+        <div class="value">${fmt(sums.don)}</div>
+        <div class="sub">Hors plafond — Art. 8-1.4</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Subventions</div>
+        <div class="value">${fmt(sums.subvention)}</div>
+        <div class="sub">Non imposables — Art. 4-2.16</div>
+      </div>
+      <div class="kpi">
+        <div class="label">CA annuel</div>
+        <div class="value">${fmt(ca)}</div>
+        <div class="sub">Prestations + Autres</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Total dépenses</div>
+        <div class="value">${fmt(totalDepenses)}</div>
+        <div class="sub">Déductibles + Non-déductibles</div>
+      </div>
+      <div class="kpi ${plafondClass}">
+        <div class="label">Plafond 50k$ (max sur 4 sem)</div>
+        <div class="value">${fmt(cumulMax)}</div>
+        <div class="sub">${plafondLabel} (${Math.round(plafondPct)}%)</div>
+      </div>
+    `;
+  }
+
+  /* ========== WEEKLY TABLE ========== */
+  function renderWeekly(weekly) {
+    const tbody = document.getElementById('weekly-tbody');
+    if (weekly.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="12" class="empty">Aucune opération enregistrée pour cette année.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    weekly.forEach(w => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>S${String(w.week).padStart(2,'0')}</td>
+        <td>${fmt(w.sums.don)}</td>
+        <td>${fmt(w.sums.subvention)}</td>
+        <td>${fmt(w.sums.prestation)}</td>
+        <td>${fmt(w.sums.autre)}</td>
+        <td>${fmt(w.sums.charge_deductible)}</td>
+        <td><strong>${fmt(w.ca)}</strong></td>
+        <td><strong>${fmt(w.resultat)}</strong></td>
+        <td>T${w.tranche} (${(w.taux*100).toFixed(0)}%)</td>
+        <td style="color:var(--red);">${fmt(w.impot)}</td>
+        <td><strong>${fmt(w.cumul4)}</strong></td>
+        <td class="plafond-cell ${w.plafondStatut}">${w.plafondStatut === 'depassement' ? '⚠ DÉPASSEMENT' : w.plafondStatut === 'vigilance' ? '⚠ VIGILANCE' : '✓ OK'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ========== ALL TX TABLE ========== */
+  function renderAll(transactions) {
+    const tbody = document.getElementById('all-tbody');
+    if (transactions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">Aucune opération. Cliquez sur « + Nouvelle opération » pour commencer.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    transactions.forEach(tx => {
+      const tr = document.createElement('tr');
+      const colors = TYPE_COLORS[tx.type] || { bg: '#eee', fg: '#333' };
+      tr.innerHTML = `
+        <td>${formatDate(tx.date)}</td>
+        <td><span class="type-badge" style="background:${colors.bg};color:${colors.fg};">${TYPE_LABELS[tx.type] || tx.type}</span></td>
+        <td>${escapeHtml(tx.categorie || '—')}</td>
+        <td>${escapeHtml(tx.libelle || '—')}</td>
+        <td class="amount">${fmt(tx.montant)}</td>
+        <td class="actions">
+          ${canWrite ? `<button class="edit" data-id="${tx.id}">Modifier</button><button class="del" data-id="${tx.id}">Supprimer</button>` : '<em style="color:var(--muted);font-size:11px;">Lecture seule</em>'}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Listeners
+    tbody.querySelectorAll('.edit').forEach(b => b.addEventListener('click', (e) => openEdit(e.target.dataset.id)));
+    tbody.querySelectorAll('.del').forEach(b => b.addEventListener('click', (e) => onDelete(e.target.dataset.id)));
+  }
+
+  /* ========== MODAL ========== */
+  function openAdd() {
+    if (!canWrite) return;
+    editingId = null;
+    document.getElementById('modal-title').textContent = 'Nouvelle opération';
+    document.getElementById('m-date').valueAsDate = new Date();
+    document.getElementById('m-type').value = '';
+    document.getElementById('type-hint').textContent = 'Sélectionnez un type pour voir sa description.';
+    document.getElementById('m-categorie').value = '';
+    document.getElementById('m-libelle').value = '';
+    document.getElementById('m-montant').value = '';
+    document.getElementById('modal-err').textContent = '';
+    modal.classList.add('active');
+  }
+  function openEdit(id) {
+    const tx = currentTransactions.find(t => t.id === id);
+    if (!tx) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Modifier l\'opération';
+    const d = tx.date.toDate ? tx.date.toDate() : new Date(tx.date);
+    document.getElementById('m-date').valueAsDate = d;
+    document.getElementById('m-type').value = tx.type;
+    document.getElementById('type-hint').textContent = TYPE_DESCRIPTIONS[tx.type] || '';
+    document.getElementById('m-categorie').value = tx.categorie || '';
+    document.getElementById('m-libelle').value = tx.libelle || '';
+    document.getElementById('m-montant').value = tx.montant;
+    document.getElementById('modal-err').textContent = '';
+    modal.classList.add('active');
+  }
+  function closeModal() { modal.classList.remove('active'); }
+
+  document.getElementById('btn-add').addEventListener('click', openAdd);
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const date = document.getElementById('m-date').valueAsDate;
+    const type = document.getElementById('m-type').value;
+    const categorie = document.getElementById('m-categorie').value;
+    const libelle = document.getElementById('m-libelle').value;
+    const montant = parseFloat(document.getElementById('m-montant').value);
+    const errEl = document.getElementById('modal-err');
+    errEl.textContent = '';
+
+    if (!date) { errEl.textContent = 'Date requise.'; return; }
+    if (!type) { errEl.textContent = 'Type requis.'; return; }
+    if (!libelle?.trim()) { errEl.textContent = 'Libellé requis.'; return; }
+    if (!montant || montant <= 0) { errEl.textContent = 'Montant > 0 requis.'; return; }
+
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+    try {
+      if (editingId) {
+        await updateTransaction(editingId, { date, type, categorie, libelle, montant });
+      } else {
+        await addTransaction({ date, type, categorie, libelle, montant });
+      }
+      closeModal();
+    } catch (err) {
+      errEl.textContent = err.message || 'Erreur.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer';
+    }
+  });
+
+  async function onDelete(id) {
+    const tx = currentTransactions.find(t => t.id === id);
+    if (!tx) return;
+    if (!confirm(`Supprimer cette opération ?\n\n${tx.libelle} — ${fmt(tx.montant)}`)) return;
+    try {
+      await deleteTransaction(id);
+    } catch (err) {
+      alert('Erreur : ' + (err.message || err));
+    }
+  }
+
+  /* ========== TABS ========== */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ========== YEAR SELECT ========== */
+  function fillYearSelect() {
+    const cur = new Date().getFullYear();
+    yearSelect.innerHTML = '';
+    for (let y = cur + 1; y >= cur - 3; y--) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      if (y === cur) opt.selected = true;
+      yearSelect.appendChild(opt);
+    }
+  }
+  yearSelect.addEventListener('change', () => loadYear(parseInt(yearSelect.value, 10)));
+
+  /* ========== LOAD YEAR ========== */
+  function loadYear(year) {
+    if (unsubscribe) unsubscribe();
+    document.getElementById('weekly-tbody').innerHTML = '<tr><td colspan="12" class="empty">Chargement…</td></tr>';
+    document.getElementById('all-tbody').innerHTML = '<tr><td colspan="6" class="empty">Chargement…</td></tr>';
+    unsubscribe = subscribeToTransactions(year, (txs, err) => {
+      if (err) {
+        document.getElementById('weekly-tbody').innerHTML = `<tr><td colspan="12" class="empty" style="color:var(--red);">Erreur : ${err.message || err}</td></tr>`;
+        return;
+      }
+      currentTransactions = txs;
+      const byWeek = aggregateByWeek(txs);
+      const weekly = computeRollingCumul(byWeek);
+      renderKPI(txs, weekly);
+      renderWeekly(weekly);
+      renderAll(txs);
+    });
+  }
+
+  /* ========== LOGOUT ========== */
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  /* ========== INIT ========== */
+  onAuthChange(async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    me = user;
+    try {
+      myProfile = await getUserProfile(user.uid);
+      if (!myProfile || !hasPermission(myProfile.role, 'compta:read')) {
+        loader.innerHTML = `
+          <div style="text-align:center;color:#8b3a3a;">
+            ⛔ Accès réservé au Bureau (Président, Trésorier, Secrétaire).<br>
+            <span style="font-size:13px;color:#6b6356;font-style:italic;">Redirection vers le tableau de bord…</span>
+          </div>
+        `;
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+        return;
+      }
+
+      canWrite = hasPermission(myProfile.role, 'compta:write');
+      btnAdd.disabled = !canWrite;
+      if (!canWrite) {
+        btnAdd.title = 'Lecture seule pour votre rôle. Demandez au Président pour obtenir les droits d\'écriture.';
+      }
+
+      renderHeader();
+      fillTypeSelect();
+      fillYearSelect();
+      loadYear(parseInt(yearSelect.value, 10));
+
+      loader.style.display = 'none';
+      shell.style.display = '';
+    } catch (err) {
+      console.error(err);
+      loader.innerHTML = '<div style="color:#8b3a3a;text-align:center;">Erreur : ' + (err.message || err) + '</div>';
+    }
+  });
+</script>
+
+</body>
+</html>
