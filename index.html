@@ -133,6 +133,25 @@
     color: var(--paper);
   }
 
+  /* Affichage du nom utilisateur connecté dans le header */
+  .nv-nav .nv-greeting {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gold);
+    letter-spacing: 1px;
+    padding: 4px 0;
+    margin-right: 4px;
+    border-right: 1px solid var(--rule);
+    padding-right: 14px;
+  }
+  .nv-nav .nv-greeting::before {
+    content: "✓ ";
+    color: var(--green, #4a6b3a);
+    font-weight: 700;
+    margin-right: 3px;
+  }
+
   .nv-burger { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
   .nv-burger span { display: block; width: 24px; height: 1.5px; background: var(--navy); margin: 5px 0; transition: 0.3s; }
 
@@ -1343,6 +1362,57 @@
       document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
     }
   })();
+</script>
+
+<!-- ============================================================
+     AUTH-AWARE HEADER : si user connecté, le bouton "Espace membre"
+     devient "Tableau de bord" et affiche son nom.
+     ============================================================ -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+  import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+  import { firebaseConfig } from './firebase-config.js';
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    const cta = document.querySelector('.nv-member-cta');
+    if (!cta) return;
+    if (user) {
+      // Récupère le displayName depuis Firestore (plus fiable que celui d'Auth)
+      let name = user.displayName || user.email?.split('@')[0] || 'Membre';
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if (snap.exists() && snap.data().displayName) name = snap.data().displayName;
+      } catch (e) { /* silent */ }
+
+      // Transforme le bouton "Espace membre" en "Tableau de bord"
+      cta.href = 'app/dashboard.html';
+      cta.textContent = '→ Mon espace';
+      cta.title = `Connecté en tant que ${name} — accéder au tableau de bord`;
+
+      // Insère un petit "Bonjour {name}" juste avant le bouton (une seule fois)
+      if (!document.querySelector('.nv-greeting')) {
+        const greet = document.createElement('span');
+        greet.className = 'nv-greeting';
+        greet.textContent = name;
+        greet.title = 'Vous êtes connecté';
+        cta.parentNode.insertBefore(greet, cta);
+      } else {
+        document.querySelector('.nv-greeting').textContent = name;
+      }
+    } else {
+      // Non connecté : restaure le bouton "Espace membre" classique
+      cta.href = 'app/login.html';
+      cta.textContent = 'Espace membre';
+      cta.title = '';
+      const g = document.querySelector('.nv-greeting');
+      if (g) g.remove();
+    }
+  });
 </script>
 
 </body>
