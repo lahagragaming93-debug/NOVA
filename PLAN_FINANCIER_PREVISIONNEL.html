@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Plan financier prévisionnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus {
+    outline: 1px dashed var(--gold);
+    outline-offset: 2px;
+    background: var(--gold-bg);
+  }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin: 6mm 0;
+  }
+
+  .budget-table th {
+    text-align: left;
+    padding: 3mm 4mm;
+    font-size: 10pt;
+  }
+
+  .budget-table td {
+    padding: 2.5mm 4mm;
+    font-size: 10.5pt;
+    vertical-align: middle;
+  }
+
+  .budget-table td.col-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    width: 32mm;
+  }
+
+  .budget-table td.col-cat {
+    width: 32mm;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 9.5pt;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+  }
+
+  .budget-table tr.subtotal td {
+    border-top: 1px solid var(--gold);
+    background: var(--paper-alt);
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .budget-table tr.total td {
+    border-top: 2px solid var(--navy);
+    border-bottom: 2px solid var(--navy);
+    background: var(--navy);
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 11pt;
+    padding-top: 3.5mm;
+    padding-bottom: 3.5mm;
+  }
+
+  .balance-block {
+    background: var(--paper-alt);
+    border: 1px solid var(--rule);
+    padding: 5mm 6mm;
+    margin: 6mm 0;
+  }
+
+  .balance-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 2mm 0;
+    border-bottom: 0.5px dotted var(--rule);
+    font-size: 11pt;
+  }
+
+  .balance-line:last-child { border-bottom: none; }
+  .balance-line.equilibre {
+    border-top: 1px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    padding-top: 3mm;
+    padding-bottom: 3mm;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 13pt;
+  }
+
+  .balance-line .value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    font-size: 9.5pt;
+    color: var(--muted);
+    margin: 1mm 0;
+  }
+
+  .legend-dot {
+    width: 4mm; height: 4mm; border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Plan-Financier')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Plan-Financier')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-plan-financier')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-plan-financier')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Plan financier prévisionnel<br>
+      Annexe au dossier Vie Civile
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Plan Financier Prévisionnel</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Premier exercice — Projet inaugural « Master Clash »<br>Budget équilibré, conforme aux articles 4-2 et 8-1 du T.T.E.</div>
+  </div>
+
+  <div class="preamble">
+    « L'Association NOVA, à but strictement non lucratif, présente ci-après<br>la totalité des flux financiers prévus pour la mise en œuvre de son premier projet. »
+  </div>
+
+  <!-- HYPOTHÈSES RETENUES -->
+  <div class="titre">
+    <div class="label">Section I</div>
+    <div class="name">Hypothèses retenues</div>
+  </div>
+
+  <p>Le présent plan financier est établi sur la base des principes suivants :</p>
+
+  <ol>
+    <li><strong>Caractère strictement non lucratif</strong> — Aucune rémunération n'est prévue pour les responsables ou membres de l'Association, conformément à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span> Toutes les ressources sont affectées à la réalisation de l'objet social et à la couverture des frais externes (prestataires, lots, production).</li>
+
+    <li><strong>Distinction stricte entre dons et prestations</strong> — Les apports sans contrepartie commerciale sont qualifiés de <strong>dons</strong> (hors plafond, <span class="tte-ref">Art. 8-1.4</span>). Les apports avec contrepartie de visibilité sont qualifiés de <strong>prestations</strong> et étalés dans le temps pour respecter le seuil hebdomadaire de chiffre généré.</li>
+
+    <li><strong>Prestataires externes uniquement</strong> — Les services rémunérés (studio, réalisation, production technique) sont confiés à des prestataires <em>extérieurs</em> à l'Association, sans lien de membre ni de Bureau, afin d'écarter tout risque de rémunération déguisée.</li>
+
+    <li><strong>Subvention publique sollicitée</strong> — Une demande formelle est adressée au cabinet du Gouverneur de San Andreas. Les subventions étant non imposables (<span class="tte-ref">Art. 4-2.16</span>), elles constituent un levier privilégié de financement.</li>
+
+    <li><strong>Évolution statutaire éventuelle</strong> — En cas de croissance significative du chiffre généré dépassant durablement le seuil de 50 000 $ hors dons sur quatre semaines consécutives (<span class="tte-ref">Art. 8-1.4</span>), l'Association envisagerait sa conversion en entreprise classique, ce qui ouvrirait alors un cadre de rémunération salariale légal. Cette évolution n'est <strong>pas planifiée à ce stade</strong> mais reste une perspective à long terme.</li>
+  </ol>
+
+  <!-- CARTES DE SYNTHÈSE -->
+  <div class="titre">
+    <div class="label">Section II</div>
+    <div class="name">Synthèse en un coup d'œil</div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="stat-card success">
+      <div class="label">Total des recettes prévues</div>
+      <div class="value">320 000 $</div>
+      <div class="sub">Dons + Subvention + Prestations</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total des dépenses prévues</div>
+      <div class="value">320 000 $</div>
+      <div class="sub">Lots, primes, production, frais</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Résultat prévisionnel</div>
+      <div class="value">0 $</div>
+      <div class="sub">Budget équilibré</div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>NOVA — Plan financier prévisionnel</span>
+    <span>Page 1 / 4</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 — RECETTES ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Plan financier prévisionnel
+    </div>
+  </header>
+
+  <div class="titre">
+    <div class="label">Section III</div>
+    <div class="name">Recettes prévisionnelles</div>
+  </div>
+
+  <p>Les recettes anticipées se répartissent en quatre catégories distinctes, qualifiées selon les exigences du T.T.E. :</p>
+
+  <table class="budget-table" style="margin-top:4mm;">
+    <thead>
+      <tr>
+        <th style="width:10mm;">Réf.</th>
+        <th>Libellé</th>
+        <th class="col-cat">Qualification T.T.E.</th>
+        <th class="col-amount">Montant ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- DONS EN NATURE -->
+      <tr><td><strong>R1</strong></td><td>Dons partenaires en nature — Manche 1 (30 éliminés × 3 bons : coiffure, réparation, repas)</td><td class="col-cat">Don nature — hors plafond</td><td class="col-amount">61 500,00</td></tr>
+      <tr><td><strong>R2</strong></td><td>Dons partenaires en nature — Manche 2 (8 éliminés × 4 bons : repas, réparation, esthétique, pilotage)</td><td class="col-cat">Don nature — hors plafond</td><td class="col-amount">28 400,00</td></tr>
+      <tr><td><strong>R3</strong></td><td>Dons partenaires en nature — Voiture PDM Grand Vainqueur (à négocier auprès d'un concessionnaire)</td><td class="col-cat">Don nature — hors plafond</td><td class="col-amount">à confirmer</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Dons en nature (R1 + R2 + R3)</td><td class="col-amount">89 900,00 $</td></tr>
+
+      <!-- DONS NUMÉRAIRE -->
+      <tr><td><strong>R4</strong></td><td>Dons numéraire de citoyens et donateurs privés (estimation prudente)</td><td class="col-cat">Don numéraire — hors plafond</td><td class="col-amount">30 000,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Dons numéraire (R4)</td><td class="col-amount">30 000,00 $</td></tr>
+
+      <!-- SUBVENTION -->
+      <tr><td><strong>R5</strong></td><td>Subvention publique sollicitée auprès du Gouverneur de San Andreas (Art. 4-2.16)</td><td class="col-cat">Subvention — non imposable</td><td class="col-amount">100 000,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Subvention publique (R5)</td><td class="col-amount">100 000,00 $</td></tr>
+
+      <!-- PRESTATIONS -->
+      <tr><td><strong>R6</strong></td><td>Prestations sponsoring visuel (logo écrans, supports officiels) — étalées sur la période</td><td class="col-cat">Prestation — chiffre généré</td><td class="col-amount">60 000,00</td></tr>
+      <tr><td><strong>R7</strong></td><td>Prestations sponsoring questions (questions sponsorisées dans la banque)</td><td class="col-cat">Prestation — chiffre généré</td><td class="col-amount">25 000,00</td></tr>
+      <tr><td><strong>R8</strong></td><td>Prestations sponsoring expérience (accès VIP, expériences exclusives finalistes)</td><td class="col-cat">Prestation — chiffre généré</td><td class="col-amount">15 100,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Prestations partenariat (R6 + R7 + R8)</td><td class="col-amount">100 100,00 $</td></tr>
+
+      <tr class="total"><td></td><td colspan="2">TOTAL RECETTES PRÉVISIONNELLES</td><td class="col-amount">320 000,00 $</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:5mm;font-size:10pt;color:var(--muted);font-style:italic;">⚠ Les prestations partenariat (R6 à R8) seront réparties dans le temps pour respecter le plafond de 50 000 $ hors dons sur quatre semaines consécutives (<span class="tte-ref">Art. 8-1.4</span>). La subvention publique étant comptabilisée au titre du chiffre généré, elle est intégrée à ce suivi.</p>
+
+  <footer class="footer">
+    <span>NOVA — Plan financier prévisionnel</span>
+    <span>Page 2 / 4</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 3 — DÉPENSES ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Plan financier prévisionnel
+    </div>
+  </header>
+
+  <div class="titre">
+    <div class="label">Section IV</div>
+    <div class="name">Dépenses prévisionnelles</div>
+  </div>
+
+  <p>Les dépenses anticipées se répartissent en deux grandes catégories : <strong>récompenses aux participants</strong> (cœur de l'objet associatif) et <strong>frais de production et administratifs</strong>.</p>
+
+  <table class="budget-table" style="margin-top:4mm;">
+    <thead>
+      <tr>
+        <th style="width:10mm;">Réf.</th>
+        <th>Libellé</th>
+        <th class="col-cat">Catégorie T.T.E.</th>
+        <th class="col-amount">Montant ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- RÉCOMPENSES PARTICIPANTS -->
+      <tr><td><strong>D1</strong></td><td>Récompenses Manche 1 — distribution des bons partenaires aux 30 éliminés</td><td class="col-cat">Charge déductible</td><td class="col-amount">61 500,00</td></tr>
+      <tr><td><strong>D2</strong></td><td>Récompenses Manche 2 — distribution des bons premium aux 8 éliminés</td><td class="col-cat">Charge déductible</td><td class="col-amount">28 400,00</td></tr>
+      <tr><td><strong>D3</strong></td><td>Récompenses Manche 3 — lots et primes aux 4 finalistes (1ᵉʳ : véhicule PDM + 40 000 $ ; 2ᵉ : 20 000 $ + lots ; 3ᵉ : 10 000 $ + lots ; 4ᵉ : lot de participation)</td><td class="col-cat">Charge déductible — prix de compétition</td><td class="col-amount">92 200,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Récompenses aux participants</td><td class="col-amount">182 100,00 $</td></tr>
+
+      <!-- PRODUCTION -->
+      <tr><td><strong>D4</strong></td><td>Location studio pour la captation et la diffusion de l'événement</td><td class="col-cat">Charge déductible (à valider IRS)</td><td class="col-amount">15 000,00</td></tr>
+      <tr><td><strong>D5</strong></td><td>Réalisation et production audiovisuelle (prestataire externe)</td><td class="col-cat">Charge déductible</td><td class="col-amount">100 000,00</td></tr>
+      <tr><td><strong>D6</strong></td><td>Frais annexes de production (régie technique, son, lumière, matériel)</td><td class="col-cat">Charge déductible</td><td class="col-amount">15 000,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Production de l'événement</td><td class="col-amount">130 000,00 $</td></tr>
+
+      <!-- FRAIS ADMINISTRATIFS -->
+      <tr><td><strong>D7</strong></td><td>Honoraires d'avocat (rédaction des contrats, suivi juridique)</td><td class="col-cat">Charge déductible (Art. 4-2.8)</td><td class="col-amount">5 000,00</td></tr>
+      <tr><td><strong>D8</strong></td><td>Restauration équipe bénévole (limite 750 $/personne, Art. 4-2.10)</td><td class="col-cat">Charge déductible</td><td class="col-amount">2 250,00</td></tr>
+      <tr><td><strong>D9</strong></td><td>Frais administratifs divers (déclarations, archivage, fournitures)</td><td class="col-cat">Charge déductible</td><td class="col-amount">650,00</td></tr>
+
+      <tr class="subtotal"><td></td><td colspan="2">Sous-total — Frais administratifs</td><td class="col-amount">7 900,00 $</td></tr>
+
+      <tr class="total"><td></td><td colspan="2">TOTAL DÉPENSES PRÉVISIONNELLES</td><td class="col-amount">320 000,00 $</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:4mm;font-size:9.5pt;color:var(--muted);font-style:italic;">⚠ Aucune ligne de rémunération n'est prévue pour les responsables ou membres de l'Association (<span class="tte-ref">Art. 8-1.1 du T.T.E.</span>). Les prestataires externes (D4 à D6) sont des structures sans lien avec le Bureau et facturent leurs services à NOVA en tant que tiers.</p>
+
+  <footer class="footer">
+    <span>NOVA — Plan financier prévisionnel</span>
+    <span>Page 3 / 4</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 4 — BILAN + CALENDRIER ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Plan financier prévisionnel
+    </div>
+  </header>
+
+  <div class="titre">
+    <div class="label">Section V</div>
+    <div class="name">Bilan d'équilibre</div>
+  </div>
+
+  <div class="balance-block">
+    <div class="balance-line">
+      <span>Total recettes prévisionnelles</span>
+      <span class="value">+ 320 000,00 $</span>
+    </div>
+    <div class="balance-line">
+      <span>Total dépenses prévisionnelles</span>
+      <span class="value">− 320 000,00 $</span>
+    </div>
+    <div class="balance-line equilibre">
+      <span>Résultat prévisionnel</span>
+      <span class="value">0,00 $</span>
+    </div>
+  </div>
+
+  <p>Le budget est <strong>strictement équilibré</strong>, conformément à la nature non lucrative de l'Association. Aucun excédent n'est anticipé. En cas d'excédent réel constaté en fin d'exercice, son affectation sera votée en Assemblée Générale Ordinaire (Article 17 des Statuts) et exclusivement allouée :</p>
+  <ul>
+    <li>au financement des éditions futures de Master Clash et des projets associatifs ultérieurs ;</li>
+    <li>à la constitution d'une réserve de fonctionnement raisonnable ;</li>
+    <li>à la dotation de matériel ou d'infrastructure utile à l'objet social.</li>
+  </ul>
+
+  <!-- CALENDRIER -->
+  <div class="titre">
+    <div class="label">Section VI</div>
+    <div class="name">Calendrier d'exécution</div>
+  </div>
+
+  <table>
+    <tr><th style="width:35%;">Phase</th><th>Période</th><th>Actions principales</th></tr>
+    <tr><td><strong>Phase 1 — Constitution</strong></td><td><span contenteditable="true">[période à fixer]</span></td><td>Déclaration Vie Civile, ouverture compte bancaire, sollicitation subvention Gouverneur.</td></tr>
+    <tr><td><strong>Phase 2 — Démarchage</strong></td><td><span contenteditable="true">[période à fixer]</span></td><td>Signature des contrats partenaires (récompenses, questions, expériences, visuel).</td></tr>
+    <tr><td><strong>Phase 3 — Production</strong></td><td><span contenteditable="true">[période à fixer]</span></td><td>Réservation studio, contractualisation prestataires externes, achats matériel.</td></tr>
+    <tr><td><strong>Phase 4 — Événement</strong></td><td><span contenteditable="true">[période à fixer]</span></td><td>Trois manches de Master Clash, captation, diffusion, remise des récompenses.</td></tr>
+    <tr><td><strong>Phase 5 — Bilan</strong></td><td><span contenteditable="true">[période à fixer]</span></td><td>Clôture comptable, rapport moral et financier en AGO, communication post-événement.</td></tr>
+  </table>
+
+  <!-- PERSPECTIVES -->
+  <div class="titre">
+    <div class="label">Section VII</div>
+    <div class="name">Perspectives d'évolution</div>
+  </div>
+
+  <p>L'Association NOVA est constituée pour une durée illimitée et a vocation à organiser plusieurs éditions de Master Clash, ainsi qu'à diversifier progressivement ses formats événementiels. À moyen terme, deux scénarios d'évolution sont envisageables :</p>
+
+  <ol>
+    <li><strong>Scénario nominal — maintien du statut associatif</strong> : les éditions ultérieures sont financées selon le même schéma équilibré (dons, subventions, prestations dans le respect du plafond). Aucune rémunération n'est versée.</li>
+
+    <li><strong>Scénario d'évolution — conversion en entreprise</strong> : si le chiffre généré hors dons venait à dépasser durablement le seuil de 50 000 $ sur quatre semaines consécutives (<span class="tte-ref">Art. 8-1.4</span>), l'Association procéderait, conformément à la procédure prévue, à sa conversion en entreprise. Ce changement de statut, conditionné à la validation de la Vie Civile, ouvrirait alors la possibilité de rémunérations salariales et d'une fiscalité d'entreprise pleine. <em>Cette évolution n'est pas planifiée à court terme et serait proposée le moment venu en Assemblée Générale Extraordinaire.</em></li>
+  </ol>
+
+  <!-- VALIDATION -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Validation</div>
+  </div>
+
+  <p style="text-align:center;font-style:italic;color:var(--muted);margin-bottom:5mm;">Plan financier prévisionnel adopté par l'Assemblée Générale Constitutive de l'Association NOVA, le <span contenteditable="true">[date à compléter]</span>.</p>
+
+  <table class="signatures">
+    <tr><th style="width:30%;">Fonction</th><th style="width:35%;">Nom</th><th>Signature</th></tr>
+    <tr><td><strong>Président</strong></td><td>Andrew BEAUCHAMP</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Trésorier</strong></td><td>Jeff TAYLOR</td><td class="signature-line"></td></tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Plan financier prévisionnel</span>
+    <span>Page 4 / 4</span>
+  </footer>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Tableau de bord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app-style.css">
+<link rel="icon" type="image/svg+xml" href="../logo-nova.svg">
+</head>
+<body>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <img class="logo" src="../logo-nova.svg" alt="NOVA" onerror="this.style.display='none'">
+    <div>
+      <div class="brand">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="brand-sub">Espace membre</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="user-info">
+      <span class="username" id="header-username">—</span>
+      <span class="role-badge" id="header-role">…</span>
+    </div>
+    <button type="button" class="logout" id="btn-logout">Déconnexion</button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="app-main">
+
+    <div class="welcome-card">
+      <h1 id="welcome-title">Bienvenue</h1>
+      <p class="subtitle" id="welcome-subtitle">Bonjour, voici votre espace personnel.</p>
+    </div>
+
+    <h2 class="section-title">Modules accessibles</h2>
+    <div class="module-grid" id="modules-grid">
+      <!-- Cartes injectées dynamiquement par le script ci-dessous -->
+    </div>
+
+    <h2 class="section-title">Documents officiels</h2>
+    <div class="module-grid">
+      <a class="module-card" href="../STATUTS_NOVA.html" target="_blank" rel="noopener">
+        <span class="badge live">Public</span>
+        <span class="icon">§</span>
+        <span class="title">Statuts</span>
+        <span class="description">Document constitutif officiel de l'association — 5 pages, 20 articles.</span>
+      </a>
+      <a class="module-card" href="../REGLEMENT_INTERIEUR.html" target="_blank" rel="noopener">
+        <span class="badge live">Public</span>
+        <span class="icon">¶</span>
+        <span class="title">Règlement intérieur</span>
+        <span class="description">Fonctionnement opérationnel détaillé — 18 articles, 7 titres.</span>
+      </a>
+      <a class="module-card" href="../PLAN_FINANCIER_PREVISIONNEL.html" target="_blank" rel="noopener">
+        <span class="badge live">Public</span>
+        <span class="icon">∑</span>
+        <span class="title">Plan financier</span>
+        <span class="description">Budget équilibré 320 000 $ — Recettes / Dépenses / Calendrier.</span>
+      </a>
+      <a class="module-card" href="../index.html" target="_blank" rel="noopener">
+        <span class="badge live">Public</span>
+        <span class="icon">❦</span>
+        <span class="title">Site public</span>
+        <span class="description">Page d'accueil officielle de l'association.</span>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    NOVA — Nouvelle Organisation Vie Associative — État de San Andreas<br>
+    Association à but non lucratif conforme au T.T.E. (Chap. VIII)
+  </footer>
+
+</div>
+
+<!-- État "chargement" pendant la vérification d'auth -->
+<div id="loader" style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:#1f2d4a;font-size:18px;letter-spacing:3px;">
+  Chargement&nbsp;<span style="color:#8b7340;">…</span>
+</div>
+
+<script type="module">
+  import { onAuthChange, logout, getUserProfile } from './js/auth.js';
+  import { ROLE_LABELS, hasPermission } from './js/roles.js';
+
+  const shell  = document.getElementById('app-shell');
+  const loader = document.getElementById('loader');
+
+  // Définition des modules de l'app et leurs permissions requises
+  const MODULES = [
+    {
+      title: 'Comptabilité',
+      icon:  '₪',
+      description: 'Saisie des opérations, suivi hebdomadaire, calcul fiscal automatique.',
+      href:  'compta.html',
+      perm:  'compta:read',
+      ready: false  // pas encore implémenté
+    },
+    {
+      title: 'Documents & Templates',
+      icon:  '✎',
+      description: 'Reçus de don, factures, contrats bénévoles, conventions de partenariat.',
+      href:  'documents.html',
+      perm:  'documents:read',
+      ready: false
+    },
+    {
+      title: 'Membres & Bénévoles',
+      icon:  '☉',
+      description: 'Registre des membres et des bénévoles sous contrat d\'engagement.',
+      href:  'membres.html',
+      perm:  'membres:read',
+      ready: false
+    },
+    {
+      title: 'Partenaires',
+      icon:  '◈',
+      description: 'Registre des partenaires et conventions signées.',
+      href:  'partenaires.html',
+      perm:  'partenaires:read',
+      ready: false
+    },
+    {
+      title: 'Journal d\'activité',
+      icon:  '⌘',
+      description: 'Audit log : qui a fait quoi, quand. Lecture seule.',
+      href:  'journal.html',
+      perm:  'journal:read',
+      ready: false
+    },
+    {
+      title: 'Administration',
+      icon:  '✦',
+      description: 'Gestion des comptes utilisateurs, rôles et permissions. Réservé Président.',
+      href:  'admin.html',
+      perm:  'admin:write',
+      ready: false
+    }
+  ];
+
+  function renderModules(role) {
+    const grid = document.getElementById('modules-grid');
+    grid.innerHTML = '';
+
+    const accessible = MODULES.filter(m => hasPermission(role, m.perm));
+
+    if (accessible.length === 0) {
+      grid.innerHTML = '<p style="color:#6b6356;font-style:italic;grid-column:1/-1;">Aucun module n\'est accessible avec votre rôle actuel. Le Président peut élargir vos accès.</p>';
+      return;
+    }
+
+    accessible.forEach(m => {
+      const a = document.createElement('a');
+      a.className = 'module-card' + (m.ready ? '' : ' disabled');
+      a.href = m.ready ? m.href : '#';
+      a.innerHTML = `
+        <span class="badge ${m.ready ? 'live' : 'coming-soon'}">${m.ready ? 'Disponible' : 'Bientôt'}</span>
+        <span class="icon">${m.icon}</span>
+        <span class="title">${m.title}</span>
+        <span class="description">${m.description}</span>
+      `;
+      if (!m.ready) a.addEventListener('click', e => e.preventDefault());
+      grid.appendChild(a);
+    });
+  }
+
+  function renderProfile(profile, firebaseUser) {
+    const displayName = profile?.displayName || firebaseUser.displayName || 'Membre';
+    const role        = profile?.role || 'utilisateur';
+    const roleLabel   = ROLE_LABELS[role] || role;
+
+    document.getElementById('header-username').textContent = displayName;
+    const badge = document.getElementById('header-role');
+    badge.textContent = roleLabel;
+    badge.className = 'role-badge role-' + role;
+
+    document.getElementById('welcome-title').textContent = `Bonjour ${displayName}.`;
+    document.getElementById('welcome-subtitle').textContent =
+      `Vous êtes connecté${role === 'utilisateur' ? '' : (role === 'tresorier' || role === 'president' ? '' : '')} en tant que ${roleLabel}. Voici les modules auxquels vous avez accès.`;
+
+    renderModules(role);
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  onAuthChange(async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    try {
+      const profile = await getUserProfile(user.uid);
+      renderProfile(profile, user);
+      loader.style.display = 'none';
+      shell.style.display  = '';
+    } catch (err) {
+      console.error('Erreur récupération profil :', err);
+      loader.innerHTML = `
+        <div style="text-align:center;color:#8b3a3a;">
+          Erreur de chargement du profil.<br>
+          <span style="font-size:13px;color:#6b6356;font-style:italic;">${err.message || ''}</span>
+          <br><br>
+          <a href="login.html" style="color:#8b7340;">Retour à la connexion</a>
+        </div>
+      `;
+    }
+  });
+</script>
+
+</body>
+</html>

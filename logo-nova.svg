@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="nova-title nova-desc">
+  <title id="nova-title">NOVA — Nouvelle Organisation Vie Associative</title>
+  <desc id="nova-desc">Sceau institutionnel de l'association NOVA : médaillon circulaire orné d'une étoile à huit branches et du monogramme NOVA.</desc>
+
+  <defs>
+    <!-- Couleurs officielles NOVA -->
+    <style>
+      .nova-paper { fill: #FBF9F3; }
+      .nova-navy  { fill: #1F2D4A; }
+      .nova-gold  { fill: #8B7340; }
+      .nova-gold-soft { fill: #B89C5E; }
+
+      .stroke-navy  { fill: none; stroke: #1F2D4A; stroke-linecap: round; stroke-linejoin: round; }
+      .stroke-gold  { fill: none; stroke: #8B7340; stroke-linecap: round; stroke-linejoin: round; }
+
+      .nova-wordmark {
+        font-family: 'Cormorant Garamond', 'EB Garamond', Garamond, 'Times New Roman', serif;
+        font-weight: 600;
+        fill: #1F2D4A;
+      }
+      .nova-tagline {
+        font-family: 'Cormorant Garamond', 'EB Garamond', Garamond, 'Times New Roman', serif;
+        font-weight: 600;
+        fill: #8B7340;
+      }
+    </style>
+
+    <!-- Chemin pour la devise circulaire haute (lisible de gauche à droite, suit l'arc supérieur) -->
+    <!-- Rayon = 154, soit la médiane entre cercle intérieur (138) et cercle extérieur (170) -->
+    <path id="nova-arc-top"
+          d="M 46,200 A 154,154 0 0 1 354,200"
+          fill="none"/>
+    <!-- Chemin pour la devise circulaire basse (lisible de gauche à droite, suit l'arc inférieur) -->
+    <path id="nova-arc-bottom"
+          d="M 354,200 A 154,154 0 0 1 46,200"
+          fill="none"/>
+  </defs>
+
+  <!-- ============================================================
+       SCEAU NOVA
+       Composition : médaillon double-cerclé, étoile à 8 branches
+       au centre (référence à la "nova" stellaire), monogramme NOVA
+       en lettrage serif sous l'étoile, devise gravée sur l'arc bas.
+       ============================================================ -->
+
+  <!-- Cercle de fond (papier crème) — utile pour fond foncé -->
+  <circle cx="200" cy="200" r="184" class="nova-paper"/>
+
+  <!-- Cerclage extérieur (navy, épais) -->
+  <circle cx="200" cy="200" r="180" class="stroke-navy" stroke-width="3"/>
+
+  <!-- Filet intermédiaire (or, fin) -->
+  <circle cx="200" cy="200" r="170" class="stroke-gold" stroke-width="0.8"/>
+
+  <!-- Cerclage intérieur (navy, fin) — délimite la chambre centrale -->
+  <circle cx="200" cy="200" r="138" class="stroke-navy" stroke-width="1"/>
+  <!-- Filet doré le long du cercle intérieur -->
+  <circle cx="200" cy="200" r="134" class="stroke-gold" stroke-width="0.5"/>
+
+  <!-- ===== ORNEMENTS ENTRE LES DEUX CERCLES ===== -->
+
+  <!-- Losange gold au sommet (point cardinal nord) -->
+  <g transform="translate(200,29) rotate(45)">
+    <rect x="-5" y="-5" width="10" height="10" class="nova-gold"/>
+  </g>
+  <!-- Losanges aux trois autres cardinaux -->
+  <g transform="translate(371,200) rotate(45)">
+    <rect x="-4" y="-4" width="8" height="8" class="nova-gold"/>
+  </g>
+  <g transform="translate(200,371) rotate(45)">
+    <rect x="-4" y="-4" width="8" height="8" class="nova-gold"/>
+  </g>
+  <g transform="translate(29,200) rotate(45)">
+    <rect x="-4" y="-4" width="8" height="8" class="nova-gold"/>
+  </g>
+
+  <!-- Petits points gold aux quatre diagonales (NE, SE, SW, NW) -->
+  <circle cx="320.92" cy="79.08" r="2.6" class="nova-gold"/>
+  <circle cx="320.92" cy="320.92" r="2.6" class="nova-gold"/>
+  <circle cx="79.08" cy="320.92" r="2.6" class="nova-gold"/>
+  <circle cx="79.08" cy="79.08" r="2.6" class="nova-gold"/>
+
+  <!-- ===== DEVISE CIRCULAIRE (bas) ===== -->
+  <text class="nova-tagline"
+        font-size="11"
+        letter-spacing="6"
+        text-anchor="middle">
+    <textPath href="#nova-arc-bottom" startOffset="50%">
+      ASSOCIATION  ·  CULTURELLE  ·  SAN  ANDREAS
+    </textPath>
+  </text>
+
+  <!-- ===== DEVISE CIRCULAIRE (haut) — étymologie ===== -->
+  <text class="nova-tagline"
+        font-size="10"
+        letter-spacing="9"
+        text-anchor="middle"
+        font-style="italic">
+    <textPath href="#nova-arc-top" startOffset="50%">
+      ·  NOVA  STELLA  ·  LUX  NOVA  ·
+    </textPath>
+  </text>
+
+  <!-- ============================================================
+       ÉTOILE À 8 BRANCHES (le cœur du sceau)
+       Référence directe à "nova" = étoile qui apparaît, éclat.
+       Construction héraldique : 4 grandes branches cardinales
+       + 4 branches diagonales plus courtes.
+       ============================================================ -->
+  <g transform="translate(200,170)">
+    <!-- Halo gold subtil derrière l'étoile -->
+    <circle cx="0" cy="0" r="62" fill="#B89C5E" opacity="0.10"/>
+
+    <!-- Branches cardinales (longues) — gold plein, contour navy -->
+    <!-- Chaque branche : un losange allongé. Construit autour de (0,0). -->
+    <g class="nova-gold">
+      <!-- Verticale (haut-bas) -->
+      <polygon points="0,-58  6,0  0,58  -6,0"/>
+      <!-- Horizontale (gauche-droite) -->
+      <polygon points="-58,0  0,-6  58,0  0,6"/>
+    </g>
+    <!-- Branches diagonales (plus courtes) — gold-soft -->
+    <g class="nova-gold-soft" transform="rotate(45)">
+      <polygon points="0,-38  4,0  0,38  -4,0"/>
+      <polygon points="-38,0  0,-4  38,0  0,4"/>
+    </g>
+
+    <!-- Contour fin navy sur les branches principales pour la définition -->
+    <g class="stroke-navy" stroke-width="0.8">
+      <polygon points="0,-58  6,0  0,58  -6,0"/>
+      <polygon points="-58,0  0,-6  58,0  0,6"/>
+    </g>
+
+    <!-- Cœur de l'étoile : disque navy + petit disque gold -->
+    <circle cx="0" cy="0" r="6.5" class="nova-navy"/>
+    <circle cx="0" cy="0" r="2.2" class="nova-gold"/>
+  </g>
+
+  <!-- ============================================================
+       FILET HORIZONTAL DE SÉPARATION (sous l'étoile)
+       ============================================================ -->
+  <line x1="120" y1="248" x2="180" y2="248" class="stroke-gold" stroke-width="0.8"/>
+  <line x1="220" y1="248" x2="280" y2="248" class="stroke-gold" stroke-width="0.8"/>
+  <!-- Petit losange central -->
+  <g transform="translate(200,248) rotate(45)">
+    <rect x="-3" y="-3" width="6" height="6" class="nova-gold"/>
+  </g>
+
+  <!-- ============================================================
+       MONOGRAMME / WORDMARK : NOVA
+       Lettrage serif espacé, navy. Centre typographique sous filet.
+       ============================================================ -->
+  <text x="200" y="288"
+        class="nova-wordmark"
+        font-size="36"
+        letter-spacing="10"
+        text-anchor="middle">N O V A</text>
+
+  <!-- Date de fondation, en chiffres romains, sous le wordmark -->
+  <text x="200" y="312"
+        class="nova-tagline"
+        font-size="9"
+        letter-spacing="6"
+        text-anchor="middle">·  ANNO  MMXXVI  ·</text>
+
+</svg>

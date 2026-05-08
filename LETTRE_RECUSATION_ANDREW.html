@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Lettre de récusation IRS — Andrew Beauchamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus {
+    outline: 1px dashed var(--gold);
+    outline-offset: 2px;
+    background: var(--gold-bg);
+  }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .lettre-corps p {
+    margin-bottom: 4mm;
+    text-indent: 8mm;
+    line-height: 1.6;
+  }
+  .lettre-corps p.no-indent { text-indent: 0; }
+
+  .doc-stamp {
+    position: absolute;
+    top: 28mm;
+    right: 24mm;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 3mm 6mm;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 10pt;
+    letter-spacing: 3px;
+    transform: rotate(-4deg);
+    text-align: center;
+    line-height: 1.2;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Recusation-Andrew')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Recusation-Andrew')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-recusation-andrew')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-recusation-andrew')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Acte de récusation officielle<br>
+      Annexe au dossier de constitution
+    </div>
+  </header>
+
+  <div class="doc-stamp">
+    DOCUMENT<br>OFFICIEL<br>DE RÉCUSATION
+  </div>
+
+  <!-- Expéditeur -->
+  <div class="expediteur">
+    <strong>Andrew BEAUCHAMP</strong><br>
+    <em>Secrétaire d'État à l'Économie et à l'Entreprenariat</em><br>
+    <em>Directeur par intérim de l'Internal Revenue Service (IRS)</em><br>
+    <span id="exp-adresse" contenteditable="true">[Adresse administrative — à compléter]</span>
+  </div>
+
+  <!-- Destinataire -->
+  <div class="destinataire">
+    <strong>Monsieur le Gouverneur</strong><br>
+    de l'État de San Andreas<br>
+    Hôtel du Gouverneur — Los Santos<br>
+    <em style="font-size: 10pt; color: var(--muted);">Copie : Département de la Vie Civile</em><br>
+    <em style="font-size: 10pt; color: var(--muted);">Copie : Internal Revenue Service</em>
+  </div>
+
+  <!-- Lieu et date -->
+  <div class="lieu-date">
+    Los Santos, le <span id="date-redaction" contenteditable="true">[date à compléter]</span>
+  </div>
+
+  <!-- Objet -->
+  <div class="objet">
+    <strong>Objet :</strong> Engagement formel de récusation sur tous dossiers fiscaux relatifs à l'Association <em>NOVA</em>
+  </div>
+  <div class="objet">
+    <strong>Référence :</strong> Article 18 des Statuts de l'Association NOVA — Principes de transparence administrative
+  </div>
+
+  <p class="salutation">Monsieur le Gouverneur,</p>
+
+  <div class="lettre-corps">
+    <p>Je soussigné, <strong>Andrew Beauchamp</strong>, citoyen de l'État de San Andreas, exerçant simultanément les fonctions publiques de <em>Secrétaire d'État à l'Économie et à l'Entreprenariat</em> et de <em>Directeur par intérim de l'Internal Revenue Service</em>, ai l'honneur de vous adresser le présent acte de récusation officielle.</p>
+
+    <p>En ma qualité de Président fondateur de l'Association à but non lucratif <strong>NOVA — Nouvelle Organisation Vie Associative</strong>, dont le dossier de constitution est concomitamment déposé au département de la Vie Civile, je me trouve en situation de potentielle dualité fonctionnelle entre :</p>
+  </div>
+
+  <ul style="margin: 2mm 0 4mm 8mm; padding-left: 4mm;">
+    <li>d'une part, mes fonctions <strong>publiques de tutelle fiscale</strong> à la tête de l'IRS et au sein du Gouvernement de l'État ;</li>
+    <li>d'autre part, ma <strong>qualité privée de fondateur et de Président</strong> d'une association nouvellement constituée, soumise par nature au contrôle de l'IRS et de la Vie Civile.</li>
+  </ul>
+
+  <div class="lettre-corps">
+    <p>Soucieux de préserver l'intégrité des contrôles publics et la confiance des citoyens dans les institutions de notre État, je m'engage formellement et solennellement, par la présente, à respecter les principes suivants :</p>
+  </div>
+
+  <ol style="margin: 2mm 0 4mm 8mm; padding-left: 4mm;">
+    <li><strong>Récusation intégrale</strong> — Je m'abstiendrai de toute intervention, instruction, décision, contrôle ou acte administratif émanant de l'IRS et concernant directement ou indirectement l'Association NOVA, ses dirigeants, ses comptes, ses déclarations fiscales, ses ressources ou ses dépenses.</li>
+    <li><strong>Délégation officielle</strong> — Je délégue, par décision interne distincte qui sera notifiée à votre cabinet et au département de la Vie Civile, l'instruction de tout dossier fiscal NOVA à un agent de l'IRS sans lien hiérarchique direct avec moi, dont l'identité sera portée à votre connaissance.</li>
+    <li><strong>Transparence absolue</strong> — Toute correspondance officielle entre l'Association NOVA et les services fiscaux mentionnera explicitement ma qualité de Président, et précisera l'identité de l'agent IRS désigné en charge du dossier.</li>
+    <li><strong>Information préalable</strong> — Toute évolution de mes fonctions publiques ou de ma fonction au sein de NOVA susceptible de modifier la portée du présent engagement vous sera notifiée sans délai.</li>
+  </ol>
+
+  <div class="lettre-corps">
+    <p>Le présent engagement <strong>prend effet à la date de signature</strong> et demeurera en vigueur tant que j'exercerai simultanément des fonctions de tutelle fiscale et la présidence ou toute fonction au sein du Bureau de l'Association NOVA. Il est annexé aux statuts de l'Association (Article 18) et au dossier déposé auprès du département de la Vie Civile.</p>
+
+    <p>Je vous prie de bien vouloir prendre acte de cet engagement et d'accepter, Monsieur le Gouverneur, l'expression de ma haute considération et de mon attachement aux principes d'impartialité et de probité publique.</p>
+  </div>
+
+  <!-- Signature -->
+  <div class="signature-block">
+    <div style="font-style: italic; color: var(--muted); margin-bottom: 12mm;">Fait à Los Santos, en double exemplaire</div>
+    <div class="nom">Andrew BEAUCHAMP</div>
+    <div class="fonction">Président fondateur — Association NOVA<br>Secrétaire d'État à l'Économie • Directeur par intérim de l'IRS</div>
+  </div>
+
+  <footer class="footer">
+    <span>NOVA — Récusation officielle (Andrew Beauchamp)</span>
+    <span>Page 1 / 1</span>
+  </footer>
+</section>
+
+</body>
+</html>

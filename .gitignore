@@ -1,0 +1,22 @@
+# Dépendances Node.js (utilisées seulement pour générer COMPTABILITE_NOVA.xlsx)
+node_modules/
+package-lock.json
+
+# Backups locaux
+backups/
+*.backup.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*~
+
+# Builds locaux éventuels
+dist/
+build/

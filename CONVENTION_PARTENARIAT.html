@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Convention de partenariat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus { outline: 1px dashed var(--gold); outline-offset: 2px; background: var(--gold-bg); }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .parties-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+    margin: 5mm 0 6mm 0;
+  }
+
+  .partie-card {
+    background: var(--paper-alt);
+    border-left: 3px solid var(--gold);
+    padding: 4mm 5mm;
+  }
+
+  .partie-card .role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10pt;
+    color: var(--gold);
+    font-variant: small-caps;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+
+  .partie-card .nom {
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin-top: 1mm;
+  }
+
+  .partie-card .details {
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin-top: 2mm;
+    line-height: 1.5;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+    padding: 1.5mm 0;
+    font-size: 10.5pt;
+  }
+
+  .check-box {
+    display: inline-block;
+    width: 5mm;
+    height: 5mm;
+    border: 1.5px solid var(--gold);
+    background: var(--paper);
+    flex-shrink: 0;
+  }
+
+  .check-box.checked {
+    background: var(--gold);
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Convention')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Convention')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-convention')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-convention')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Convention de partenariat<br>
+      Document contractuel officiel
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Convention de Partenariat</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Encadrement formel de l'apport partenaire à un événement de l'Association NOVA</div>
+  </div>
+
+  <p style="text-align:center;margin:2mm 0 6mm 0;font-size:10pt;color:var(--muted);">
+    N° de convention : <span contenteditable="true" style="font-weight:600;color:var(--navy);">NOVA-CONV-2026-0001</span>
+    &nbsp;•&nbsp; Établie à Los Santos, le <span contenteditable="true">[date]</span>
+  </p>
+
+  <!-- LES PARTIES -->
+  <div class="titre">
+    <div class="label">Article 1</div>
+    <div class="name">Identification des parties</div>
+  </div>
+
+  <div class="parties-block">
+    <div class="partie-card">
+      <div class="role">L'Association</div>
+      <div class="nom">NOVA</div>
+      <div class="details">
+        Nouvelle Organisation Vie Associative<br>
+        Association déclarée — État de San Andreas<br>
+        Siège : <span contenteditable="true">[adresse]</span><br>
+        Représentée par : <strong>Andrew BEAUCHAMP</strong>, Président
+      </div>
+    </div>
+
+    <div class="partie-card">
+      <div class="role">Le partenaire</div>
+      <div class="nom" contenteditable="true">[Raison sociale du partenaire]</div>
+      <div class="details">
+        Activité : <span contenteditable="true">[secteur d'activité]</span><br>
+        Adresse : <span contenteditable="true">[adresse]</span><br>
+        Représenté par : <span contenteditable="true">[Nom — Qualité]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBJET -->
+  <h3 class="article"><span class="num">Article 2.</span> Objet de la convention</h3>
+  <p>La présente convention a pour objet de définir les conditions d'un partenariat entre l'Association NOVA et le Partenaire, dans le cadre de l'événement suivant :</p>
+  <blockquote contenteditable="true">[Désignation de l'événement — exemple : « MASTER CLASH — 1ʳᵉ édition », ou tout autre événement organisé par NOVA]</blockquote>
+
+  <!-- TYPE DE PARTENARIAT -->
+  <h3 class="article"><span class="num">Article 3.</span> Type de partenariat</h3>
+  <p>Cocher la catégorie applicable :</p>
+
+  <div class="checkbox-row">
+    <span class="check-box" contenteditable="true">&nbsp;</span>
+    <strong>Partenaire Récompenses</strong> — Fourniture de bons d'achat, services ou produits remis aux participants à titre de récompense.
+    <em style="color:var(--green);font-size:9.5pt;">→ Don en nature (hors plafond)</em>
+  </div>
+  <div class="checkbox-row">
+    <span class="check-box" contenteditable="true">&nbsp;</span>
+    <strong>Partenaire Questions</strong> — Une ou plusieurs questions sponsorisées intégrées dans le déroulement de l'événement, avec mention de l'enseigne.
+    <em style="color:var(--gold);font-size:9.5pt;">→ Prestation (compte plafond)</em>
+  </div>
+  <div class="checkbox-row">
+    <span class="check-box" contenteditable="true">&nbsp;</span>
+    <strong>Partenaire Expériences</strong> — Mise à disposition d'une expérience exclusive (VIP, accès privilégié, activité) pour les finalistes.
+    <em style="color:var(--gold);font-size:9.5pt;">→ Don nature ou prestation selon contrepartie</em>
+  </div>
+  <div class="checkbox-row">
+    <span class="check-box" contenteditable="true">&nbsp;</span>
+    <strong>Partenaire Visuel</strong> — Présence du logo et/ou de la mention de l'enseigne sur les supports de communication officiels.
+    <em style="color:var(--gold);font-size:9.5pt;">→ Prestation (compte plafond)</em>
+  </div>
+
+  <p style="margin-top:4mm;font-size:9.5pt;color:var(--muted);font-style:italic;">⚠ La case cochée détermine la qualification fiscale de l'apport (don ou prestation), conformément aux Articles 8-1.4 et 4-2.2 du T.T.E.</p>
+
+  <!-- CONTRIBUTION DU PARTENAIRE -->
+  <h3 class="article"><span class="num">Article 4.</span> Contribution du Partenaire</h3>
+  <p>Le Partenaire s'engage à fournir à l'Association NOVA, dans le cadre de l'événement défini à l'Article 2, les éléments suivants :</p>
+  <blockquote contenteditable="true">[Description précise de la contribution : nature, quantité, valeur estimée. Exemple : « 30 bons de coiffure d'une valeur unitaire de 300 $, soit 9 000 $ au total ».]</blockquote>
+
+  <p><strong>Valeur estimée totale :</strong> <span contenteditable="true">[montant en $]</span></p>
+  <p><strong>Date / Calendrier de remise :</strong> <span contenteditable="true">[date(s)]</span></p>
+
+  <footer class="footer">
+    <span>NOVA — Convention de partenariat</span>
+    <span>Page 1 / 2</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Convention de partenariat
+    </div>
+  </header>
+
+  <!-- ENGAGEMENT NOVA -->
+  <h3 class="article"><span class="num">Article 5.</span> Engagements de l'Association</h3>
+  <p>En contrepartie de l'apport du Partenaire, l'Association NOVA s'engage à :</p>
+  <ul>
+    <li><strong>Visibilité</strong> : <span contenteditable="true">[ex. mentionner le partenaire à chaque remise de lot, afficher son logo sur les supports de communication officiels…]</span></li>
+    <li><strong>Communication</strong> : <span contenteditable="true">[ex. citer le partenaire dans le bilan post-événement, dédier une mention sur les pages officielles…]</span></li>
+    <li><strong>Bilan de visibilité</strong> : sur demande du Partenaire, l'Association fournira, dans les trente (30) jours suivant l'événement, un bilan détaillé des actions de visibilité réalisées.</li>
+  </ul>
+
+  <!-- DURÉE -->
+  <h3 class="article"><span class="num">Article 6.</span> Durée et résiliation</h3>
+  <p>La présente convention prend effet à compter de sa signature par les deux parties et expire à l'issue de l'événement, sous réserve de l'achèvement des obligations post-événement (bilan de visibilité, justificatifs comptables).</p>
+  <p>Chaque partie peut résilier la convention par notification écrite en cas de manquement grave de l'autre partie, après une mise en demeure restée sans effet pendant sept (7) jours.</p>
+
+  <!-- TRAITEMENT FISCAL -->
+  <h3 class="article"><span class="num">Article 7.</span> Traitement fiscal et comptable</h3>
+  <p>L'Association NOVA enregistre l'apport dans sa comptabilité selon la qualification cochée à l'Article 3 :</p>
+  <ul>
+    <li><strong>Si don</strong> : émission d'un <em>reçu de don</em> au Partenaire ; pas d'émission de facture ; opération hors plafond Art. 8-1.4.</li>
+    <li><strong>Si prestation</strong> : émission d'une <em>facture</em> au Partenaire avec mention de la convention ; opération imposable au titre de l'Art. 4-2.2 et comptabilisée au plafond hebdomadaire.</li>
+  </ul>
+  <p>Le Partenaire reconnaît avoir compris cette distinction et accepte la qualification choisie.</p>
+
+  <!-- CONFIDENTIALITÉ -->
+  <h3 class="article"><span class="num">Article 8.</span> Confidentialité et indépendance</h3>
+  <p>Chaque partie s'engage à conserver confidentielles les informations échangées dans le cadre de la présente convention, à ne pas s'en prévaloir au-delà de l'objet du partenariat, et à respecter l'image de l'autre partie. L'Association conserve sa pleine indépendance dans le déroulement de ses événements ; le Partenaire ne peut prétendre à aucun droit de regard sur le contenu (questions, règlement, déroulement) hors des éléments expressément concernés par le présent partenariat.</p>
+
+  <!-- LITIGES -->
+  <h3 class="article"><span class="num">Article 9.</span> Litiges</h3>
+  <p>Tout litige relatif à l'interprétation ou à l'exécution de la présente convention sera soumis à une tentative de règlement amiable entre les parties. À défaut, il pourra être porté devant les juridictions compétentes de l'État de San Andreas.</p>
+
+  <!-- CLAUSES PARTICULIÈRES -->
+  <h3 class="article"><span class="num">Article 10.</span> Clauses particulières</h3>
+  <blockquote contenteditable="true">[Clauses spécifiques éventuelles à la situation du Partenaire — sinon, indiquer « Néant ».]</blockquote>
+
+  <!-- SIGNATURES -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Signatures</div>
+  </div>
+
+  <p style="text-align:center;font-style:italic;color:var(--muted);margin-bottom:5mm;">Fait à Los Santos, le <span contenteditable="true">[date]</span>, en deux exemplaires originaux.</p>
+
+  <table class="signatures">
+    <tr><th style="width:35%;">Partie</th><th style="width:30%;">Nom et qualité</th><th>Signature</th></tr>
+    <tr><td><strong>Pour l'Association NOVA</strong></td><td>Andrew BEAUCHAMP, Président</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Pour le Partenaire</strong></td><td contenteditable="true">[Nom — Qualité]</td><td class="signature-line"></td></tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Convention de partenariat</span>
+    <span>Page 2 / 2</span>
+  </footer>
+</section>
+
+</body>
+</html>

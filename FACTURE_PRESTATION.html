@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Facture de prestation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus { outline: 1px dashed var(--gold); outline-offset: 2px; background: var(--gold-bg); }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .facture-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    margin: 5mm 0 6mm 0;
+  }
+
+  .meta-block {
+    background: var(--paper-alt);
+    padding: 4mm 5mm;
+    border-left: 3px solid var(--gold);
+  }
+
+  .meta-block .label {
+    font-size: 9pt;
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+  }
+
+  .meta-block .value {
+    font-size: 11pt;
+    color: var(--navy);
+    font-weight: 600;
+    margin-top: 1mm;
+  }
+
+  .meta-block.client .value { font-weight: normal; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+
+  table.facture {
+    margin-top: 5mm;
+  }
+
+  table.facture th {
+    font-size: 10pt;
+    font-variant: small-caps;
+  }
+
+  table.facture td {
+    font-size: 10.5pt;
+    padding: 3mm 4mm;
+  }
+
+  table.facture td.col-qty { text-align: center; width: 18mm; }
+  table.facture td.col-pu, table.facture td.col-total {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    width: 28mm;
+  }
+
+  table.facture tr.total td {
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--navy);
+    background: var(--paper-alt);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 12pt;
+    padding: 3.5mm 4mm;
+  }
+
+  .conditions {
+    background: var(--gold-bg);
+    border-left: 3px solid var(--gold);
+    padding: 4mm 5mm;
+    margin: 6mm 0;
+    font-size: 10pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Facture')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Facture')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-facture')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-facture')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Facture de prestation<br>
+      Document comptable officiel
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Facture</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Prestation de partenariat — Contrepartie commerciale<br>Imposable au titre de l'Article 4-2.2 du T.T.E.</div>
+  </div>
+
+  <!-- META : Numéro / Date / Émetteur / Client -->
+  <div class="facture-meta">
+    <div class="meta-block">
+      <div class="label">Numéro de facture</div>
+      <div class="value" contenteditable="true">NOVA-FACT-2026-0001</div>
+    </div>
+    <div class="meta-block">
+      <div class="label">Date d'émission</div>
+      <div class="value" contenteditable="true">[jj/mm/aaaa]</div>
+    </div>
+  </div>
+
+  <div class="facture-meta">
+    <div class="meta-block">
+      <div class="label">Émetteur</div>
+      <div class="value">
+        <strong>Association NOVA</strong><br>
+        Nouvelle Organisation Vie Associative<br>
+        Représentée par Andrew BEAUCHAMP, Président<br>
+        Siège : <span contenteditable="true">[adresse Vie Civile]</span>
+      </div>
+    </div>
+    <div class="meta-block client">
+      <div class="label">Client (partenaire)</div>
+      <div class="value">
+        <strong contenteditable="true">[Raison sociale du partenaire]</strong><br>
+        Représenté par : <span contenteditable="true">[Nom du représentant]</span><br>
+        Adresse : <span contenteditable="true">[adresse]</span><br>
+        Référence convention : <span contenteditable="true">[NOVA-CONV-XXXX]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉTAIL DES PRESTATIONS -->
+  <h3 class="article"><span class="num">Détail.</span> Prestations facturées</h3>
+
+  <table class="facture">
+    <thead>
+      <tr>
+        <th>Désignation de la prestation</th>
+        <th class="col-qty">Quantité</th>
+        <th class="col-pu">P.U. ($)</th>
+        <th class="col-total">Total ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td contenteditable="true">[Prestation 1 — ex. Visibilité du logo sur supports écrans pendant la Manche 1 de Master Clash]</td>
+        <td class="col-qty" contenteditable="true">1</td>
+        <td class="col-pu" contenteditable="true">0,00</td>
+        <td class="col-total" contenteditable="true">0,00</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">[Prestation 2 — ex. Mention sponsor pendant 3 questions parrainées]</td>
+        <td class="col-qty" contenteditable="true">3</td>
+        <td class="col-pu" contenteditable="true">0,00</td>
+        <td class="col-total" contenteditable="true">0,00</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">[Prestation 3 — optionnelle]</td>
+        <td class="col-qty" contenteditable="true"></td>
+        <td class="col-pu" contenteditable="true"></td>
+        <td class="col-total" contenteditable="true"></td>
+      </tr>
+      <tr class="total">
+        <td colspan="3" style="text-align:right;">TOTAL DÛ</td>
+        <td class="col-total" contenteditable="true">0,00 $</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CONDITIONS DE PAIEMENT -->
+  <div class="conditions">
+    <strong style="color:var(--navy);font-variant:small-caps;letter-spacing:1px;">Conditions de paiement</strong><br>
+    <span style="color:var(--ink-soft);">
+      <strong>Échéance :</strong> <span contenteditable="true">[date limite de paiement]</span><br>
+      <strong>Modalité :</strong> <span contenteditable="true">virement bancaire au compte de l'Association NOVA</span><br>
+      <strong>Référence à indiquer :</strong> <span contenteditable="true">[N° de la facture]</span><br>
+      <strong>Pénalité de retard :</strong> à compter de J+5, indemnité forfaitaire de 10 % de la somme due, sauf accord écrit préalable.
+    </span>
+  </div>
+
+  <!-- MENTIONS LÉGALES -->
+  <p style="font-size:9.5pt;color:var(--muted);font-style:italic;text-align:justify;margin-top:6mm;">
+    Le présent document constitue une facture émise par l'Association NOVA au titre d'une prestation de partenariat, conformément à l'Article 15-3 de ses Statuts. Cette opération est qualifiée de <strong>« chiffre généré par la vie associative »</strong> au sens de l'<span class="tte-ref">Article 8-1.4 du T.T.E.</span> et est suivie dans le cadre du plafond hebdomadaire de 50 000 $. Elle est imposable au titre de l'<span class="tte-ref">Article 4-2.2</span>. La présente facture sera enregistrée dans la comptabilité de l'Association sous la catégorie « prestation ».
+  </p>
+
+  <!-- VISA ÉMETTEUR -->
+  <div class="signature-block">
+    <div style="font-style: italic; color: var(--muted); margin-bottom: 12mm;">Pour l'Association NOVA, émettrice de la facture :</div>
+    <div class="nom">Jeff TAYLOR</div>
+    <div class="fonction">Trésorier — Association NOVA</div>
+  </div>
+
+  <footer class="footer">
+    <span>NOVA — Facture de prestation</span>
+    <span>Page 1 / 1</span>
+  </footer>
+</section>
+
+</body>
+</html>

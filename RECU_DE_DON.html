@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Reçu de don</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus { outline: 1px dashed var(--gold); outline-offset: 2px; background: var(--gold-bg); }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .recu-num {
+    position: absolute;
+    top: 22mm;
+    right: 24mm;
+    text-align: right;
+    font-size: 10pt;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .recu-num .num-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 2px;
+  }
+
+  .montant-block {
+    text-align: center;
+    margin: 8mm 0;
+    padding: 6mm 8mm;
+    background: var(--paper-alt);
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .montant-block .label {
+    font-size: 10pt;
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 2px;
+  }
+
+  .montant-block .montant {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin-top: 2mm;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .montant-block .lettres {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-top: 2mm;
+    font-size: 11pt;
+  }
+
+  .info-table td {
+    padding: 3mm 4mm;
+    border-bottom: 0.5px dotted var(--rule);
+    font-size: 10.5pt;
+  }
+
+  .info-table td:first-child {
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    font-size: 9.5pt;
+    width: 50mm;
+  }
+
+  .official-stamp {
+    margin-top: 12mm;
+    text-align: right;
+  }
+
+  .official-stamp .seal {
+    display: inline-block;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 4mm 10mm;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 10pt;
+    letter-spacing: 3px;
+    transform: rotate(-3deg);
+    text-align: center;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Recu-Don')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Recu-Don')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-recu-don')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-recu-don')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Reçu de don associatif<br>
+      Document officiel
+    </div>
+  </header>
+
+  <div class="recu-num">
+    Reçu N°<br>
+    <span class="num-value" contenteditable="true">NOVA-DON-2026-0001</span>
+  </div>
+
+  <div class="doc-title">
+    <h1>Reçu de Don</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Délivré au titre d'un don sans contrepartie commerciale<br>conformément à l'Article 8-1.4 du T.T.E.</div>
+  </div>
+
+  <p style="text-align:center;margin-top:6mm;">L'Association <strong>NOVA</strong>, déclarée auprès du département de la Vie Civile de l'État de San Andreas,<br>certifie avoir reçu le don suivant :</p>
+
+  <!-- DONATEUR -->
+  <table class="info-table" style="margin-top:6mm;">
+    <tr>
+      <td>Donateur</td>
+      <td><strong contenteditable="true">[Nom complet ou raison sociale]</strong></td>
+    </tr>
+    <tr>
+      <td>Qualité / Statut</td>
+      <td><span contenteditable="true">[citoyen / entreprise / institution]</span></td>
+    </tr>
+    <tr>
+      <td>Adresse</td>
+      <td><span contenteditable="true">[adresse complète]</span></td>
+    </tr>
+    <tr>
+      <td>Date du don</td>
+      <td><span contenteditable="true">[jj/mm/aaaa]</span></td>
+    </tr>
+    <tr>
+      <td>Nature du don</td>
+      <td><span contenteditable="true">Numéraire / Nature (préciser)</span></td>
+    </tr>
+  </table>
+
+  <!-- MONTANT -->
+  <div class="montant-block">
+    <div class="label">Montant du don</div>
+    <div class="montant" contenteditable="true">0,00 $</div>
+    <div class="lettres" contenteditable="true">[Montant en toutes lettres]</div>
+  </div>
+
+  <!-- DESCRIPTION (pour dons en nature) -->
+  <table class="info-table">
+    <tr>
+      <td>Description détaillée<br><span style="font-size:8pt;font-style:italic;">(pour les dons en nature)</span></td>
+      <td contenteditable="true">[Description précise des biens, bons ou services apportés ; pour les dons numéraires, indiquer « sans objet »]</td>
+    </tr>
+    <tr>
+      <td>Affectation</td>
+      <td>Réalisation de l'objet social de l'Association NOVA, conformément à ses Statuts.</td>
+    </tr>
+  </table>
+
+  <!-- MENTIONS LÉGALES -->
+  <div class="alert" style="margin-top:6mm;">
+    <strong>Mentions légales :</strong> Le présent reçu atteste que le don décrit ci-dessus a été effectué <strong>sans contrepartie commerciale</strong> et qu'il relève à ce titre du régime des dons défini par l'<span class="tte-ref">Article 8-1.4 du T.T.E.</span>, hors plafond hebdomadaire de chiffre généré. La mention publique éventuelle du donateur, à titre de remerciement, ne constitue pas une contrepartie au sens fiscal.
+  </div>
+
+  <!-- TAMPON & SIGNATURE -->
+  <div class="official-stamp">
+    <div class="seal">ASSOCIATION<br>NOVA<br>N°<span contenteditable="true">[XXXX]</span></div>
+  </div>
+
+  <table class="signatures" style="margin-top:6mm;">
+    <tr><th style="width:35%;">Pour l'Association</th><th style="width:35%;">Nom</th><th>Signature</th></tr>
+    <tr><td><strong>Trésorier</strong></td><td>Jeff TAYLOR</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Président</strong></td><td>Andrew BEAUCHAMP</td><td class="signature-line"></td></tr>
+  </table>
+
+  <p style="text-align:center;margin-top:6mm;font-size:9.5pt;color:var(--muted);font-style:italic;">Reçu établi en deux exemplaires originaux : un pour le donateur, un conservé au siège de l'Association.<br>Ce document est enregistré dans la comptabilité de NOVA, ligne « don », et conservé conformément à l'Article 4-5.2 du T.T.E.</p>
+
+  <footer class="footer">
+    <span>NOVA — Reçu de don</span>
+    <span>Page 1 / 1</span>
+  </footer>
+</section>
+
+</body>
+</html>

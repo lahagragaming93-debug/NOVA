@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Statuts de l'Association NOVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fbf9f3;
+    --ink: #1a1a1a;
+    --ink-soft: #3a3a3a;
+    --navy: #1f2d4a;
+    --gold: #8b7340;
+    --gold-soft: #b89c5e;
+    --rule: #d4c8a8;
+    --muted: #6b6356;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #e8e4d8;
+    color: var(--ink);
+    font-family: 'EB Garamond', 'Garamond', 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.55;
+  }
+
+  /* === PAGE A4 === */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 22mm 24mm 22mm 24mm;
+    margin: 14mm auto;
+    background: var(--paper);
+    box-shadow: 0 4px 28px rgba(0,0,0,0.18);
+    position: relative;
+    page-break-after: always;
+  }
+
+  .page:last-of-type {
+    page-break-after: auto;
+  }
+
+  /* === HEADER & FOOTER === */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1.5px solid var(--gold);
+    padding-bottom: 6mm;
+    margin-bottom: 10mm;
+  }
+
+  .header .title-block .nova {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 22pt;
+    letter-spacing: 4px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .header .title-block .subtitle {
+    font-size: 9.5pt;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2mm;
+  }
+
+  .header .official {
+    text-align: right;
+    font-size: 9pt;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .header .official strong {
+    color: var(--ink-soft);
+    font-style: normal;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 8.5pt;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 12mm;
+    left: 24mm;
+    right: 24mm;
+    border-top: 0.5px solid var(--rule);
+    padding-top: 3mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 1px;
+  }
+
+  /* === TITRE DOCUMENT === */
+  .doc-title {
+    text-align: center;
+    margin: 8mm 0 4mm 0;
+  }
+
+  .doc-title h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 26pt;
+    letter-spacing: 6px;
+    color: var(--navy);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .doc-title .sub {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 11pt;
+    margin-top: 3mm;
+  }
+
+  .doc-title .ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 14pt;
+    letter-spacing: 8px;
+    margin: 5mm 0 8mm 0;
+  }
+
+  .preamble {
+    font-style: italic;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 10.5pt;
+    border-top: 0.5px solid var(--rule);
+    border-bottom: 0.5px solid var(--rule);
+    padding: 4mm 8mm;
+    margin: 4mm 0 10mm 0;
+    line-height: 1.5;
+  }
+
+  .place-date {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10pt;
+    margin-bottom: 8mm;
+    letter-spacing: 1px;
+  }
+
+  /* === TITRES DE PARTIES === */
+  .titre {
+    text-align: center;
+    margin: 10mm 0 6mm 0;
+    page-break-after: avoid;
+  }
+
+  .titre .label {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 13pt;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .titre .name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 16pt;
+    color: var(--navy);
+    margin-top: 1.5mm;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .titre::after {
+    content: "";
+    display: block;
+    width: 30mm;
+    height: 1px;
+    background: var(--gold);
+    margin: 4mm auto 0;
+  }
+
+  /* === ARTICLES === */
+  h3.article {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 12.5pt;
+    color: var(--navy);
+    margin: 7mm 0 2mm 0;
+    text-transform: none;
+    border-left: 3px solid var(--gold);
+    padding-left: 4mm;
+    page-break-after: avoid;
+  }
+
+  h3.article .num {
+    color: var(--gold);
+    font-weight: 700;
+    margin-right: 2mm;
+  }
+
+  /* === CORPS === */
+  p {
+    margin: 0 0 3mm 0;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  p.lead {
+    text-align: justify;
+  }
+
+  blockquote {
+    margin: 4mm 8mm;
+    padding: 3mm 6mm;
+    border-left: 2px solid var(--gold);
+    font-style: italic;
+    color: var(--ink-soft);
+    background: rgba(139, 115, 64, 0.04);
+  }
+
+  ul, ol {
+    margin: 2mm 0 4mm 0;
+    padding-left: 8mm;
+  }
+
+  li {
+    margin-bottom: 1.5mm;
+    text-align: justify;
+  }
+
+  ul li::marker {
+    color: var(--gold);
+  }
+
+  ol li::marker {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  em.placeholder {
+    background: rgba(184, 156, 94, 0.18);
+    border: 1px dashed var(--gold-soft);
+    padding: 0.5mm 2mm;
+    border-radius: 1mm;
+    font-style: normal;
+    font-size: 0.92em;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+  }
+
+  /* === TABLEAUX === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4mm 0;
+    font-size: 11pt;
+  }
+
+  table th {
+    background: var(--navy);
+    color: var(--paper);
+    text-align: left;
+    padding: 3mm 4mm;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-variant: small-caps;
+    font-size: 10pt;
+  }
+
+  table td {
+    padding: 3mm 4mm;
+    border-bottom: 0.5px solid var(--rule);
+    vertical-align: top;
+  }
+
+  table tr:last-child td {
+    border-bottom: none;
+  }
+
+  table.signatures td {
+    padding: 5mm 4mm;
+    border-bottom: 0.5px solid var(--rule);
+    vertical-align: bottom;
+  }
+
+  table.signatures td.signature-line {
+    height: 18mm;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  /* === RÉFÉRENCE T.T.E. === */
+  .tte-ref {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 10pt;
+  }
+
+  /* === ANNEXES === */
+  .annexe-list {
+    counter-reset: annexe;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .annexe-list li {
+    counter-increment: annexe;
+    padding: 2mm 0 2mm 12mm;
+    position: relative;
+    border-bottom: 0.5px dotted var(--rule);
+  }
+
+  .annexe-list li::before {
+    content: "ANNEXE " counter(annexe, upper-roman);
+    position: absolute;
+    left: 0;
+    top: 2mm;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: 1px;
+  }
+
+  /* === IMPRESSION === */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  @media print {
+    html, body { background: white; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      width: 210mm;
+      min-height: 297mm;
+    }
+  }
+
+  /* === PRINT BUTTON === */
+  .print-bar {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 100;
+  }
+
+  .print-bar button {
+    background: var(--navy);
+    color: var(--paper);
+    border: none;
+    padding: 10px 18px;
+    font-family: 'EB Garamond', serif;
+    font-size: 12pt;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .print-bar button:hover { background: #2a3a5a; }
+
+  @media print { .print-bar { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Statuts')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Statuts')">Télécharger PNG</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document officiel — Statuts de constitution<br>
+      Soumis à la Vie Civile
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Statuts de l'Association</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Association à but non lucratif régie par le Chapitre VIII<br>du Code des Taxes, du Travail et des Entreprises (T.T.E.)</div>
+  </div>
+
+  <div class="preamble">
+    « L'union des volontés au service de la culture,<br>dans le respect de la loi et l'intérêt de la communauté. »
+  </div>
+
+  <div class="place-date">
+    Fait à Los Santos — État de San Andreas<br>
+    Date d'adoption : <em class="placeholder">[DATE_AG_CONSTITUTIVE — à fixer]</em>
+  </div>
+
+  <!-- TITRE I -->
+  <div class="titre">
+    <div class="label">Titre I</div>
+    <div class="name">Constitution et Objet</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 1.</span> Constitution et dénomination</h3>
+  <p>Il est constitué entre les soussignés une association à but non lucratif, régie par le <strong>Chapitre VIII du Code des Taxes, du Travail et des Entreprises (T.T.E.)</strong> de l'État de San Andreas, et notamment ses articles VIII-I, dénommée :</p>
+  <blockquote><strong>NOVA</strong> — Nouvelle Organisation Vie Associative</blockquote>
+  <p>Désignée ci-après par les termes « <em>l'Association</em> » ou « <em>NOVA</em> ».</p>
+
+  <h3 class="article"><span class="num">Article 2.</span> Objet social</h3>
+  <p>L'Association NOVA a pour objet la <strong>promotion, l'organisation et la production d'événements culturels, festifs et compétitifs</strong> à but non lucratif sur le territoire de l'État de San Andreas, à destination de l'ensemble des citoyens.</p>
+  <p>Elle peut notamment :</p>
+  <ul>
+    <li>organiser des compétitions de culture générale (quiz, tournois, concours) ;</li>
+    <li>organiser des soirées thématiques et animations communautaires ;</li>
+    <li>produire et diffuser des contenus à vocation culturelle et éducative ;</li>
+    <li>s'associer avec des partenaires privés ou institutionnels pour mener ses missions ;</li>
+    <li>solliciter dons, subventions et soutiens publics ou privés conformément au T.T.E.</li>
+  </ul>
+  <p>L'Association exerce ses activités dans le respect strict du caractère non lucratif défini à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span> : aucune rémunération ne peut être versée à ses responsables ou à ses membres au titre de leur engagement associatif.</p>
+
+  <footer class="footer">
+    <span>NOVA — Statuts officiels</span>
+    <span>Page 1 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document officiel — Statuts de constitution
+    </div>
+  </header>
+
+  <h3 class="article"><span class="num">Article 3.</span> Siège social</h3>
+  <p>Le siège social de l'Association est fixé à l'adresse suivante :</p>
+  <blockquote><em class="placeholder">[ADRESSE POSTALE ADMINISTRATIVE — à valider et confirmer par la Vie Civile lors de l'instruction du dossier]</em></blockquote>
+  <p>Le siège pourra être transféré par simple décision du Bureau, ratifiée à la prochaine Assemblée Générale.</p>
+
+  <h3 class="article"><span class="num">Article 4.</span> Durée</h3>
+  <p>L'Association est constituée pour une <strong>durée illimitée</strong>, à compter de sa déclaration officielle auprès du département de la Vie Civile et de son officialisation par le Gouvernement de San Andreas, conformément à l'<span class="tte-ref">Article 8-1.2 du T.T.E.</span></p>
+
+  <!-- TITRE II -->
+  <div class="titre">
+    <div class="label">Titre II</div>
+    <div class="name">Membres</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 5.</span> Composition</h3>
+  <p>L'Association se compose des catégories suivantes :</p>
+  <ul>
+    <li><strong>Membres fondateurs</strong> — personnes ayant participé à l'Assemblée Générale Constitutive et signé les présents statuts. Ils sont membres de droit du Bureau.</li>
+    <li><strong>Membres actifs</strong> — personnes admises sur décision du Bureau, qui contribuent régulièrement à la vie de l'Association.</li>
+    <li><strong>Membres bénévoles</strong> — volontaires engagés ponctuellement sur les événements, sous <strong>contrat d'engagement associatif</strong> conformément à l'<span class="tte-ref">Article 8-1.5 du T.T.E.</span></li>
+    <li><strong>Membres d'honneur</strong> — personnalités ayant rendu des services notables à l'Association ; ils sont dispensés de toute cotisation.</li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 6.</span> Adhésion</h3>
+  <p>Pour être membre, il faut :</p>
+  <ul>
+    <li>être citoyen en règle de l'État de San Andreas ;</li>
+    <li>adresser une demande écrite au Bureau ;</li>
+    <li>obtenir l'accord du Bureau, qui statue souverainement.</li>
+  </ul>
+  <p>L'adhésion est gratuite. Aucune cotisation obligatoire n'est demandée aux membres, conformément au caractère non lucratif de l'Association.</p>
+
+  <h3 class="article"><span class="num">Article 7.</span> Perte de la qualité de membre</h3>
+  <p>La qualité de membre se perd par :</p>
+  <ul>
+    <li>démission adressée par écrit au Président ;</li>
+    <li>décès ou disparition du citoyen ;</li>
+    <li>radiation prononcée par le Bureau pour motif grave (manquement aux statuts, comportement préjudiciable à l'Association, atteinte à son objet ou à son image), l'intéressé ayant été préalablement invité à fournir ses explications.</li>
+  </ul>
+
+  <footer class="footer">
+    <span>NOVA — Statuts officiels</span>
+    <span>Page 2 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 3 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document officiel — Statuts de constitution
+    </div>
+  </header>
+
+  <!-- TITRE III -->
+  <div class="titre">
+    <div class="label">Titre III</div>
+    <div class="name">Organisation et Fonctionnement</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 8.</span> Bureau</h3>
+  <p>L'Association est administrée par un <strong>Bureau</strong> composé de trois membres au minimum :</p>
+  <ul>
+    <li>un <strong>Président</strong> ;</li>
+    <li>un <strong>Trésorier</strong> ;</li>
+    <li>un <strong>Secrétaire</strong>.</li>
+  </ul>
+  <p>Les membres fondateurs constituent le premier Bureau, désigné lors de l'Assemblée Générale Constitutive. Le Bureau est ensuite élu par l'Assemblée Générale Ordinaire pour une durée d'<strong>un an</strong>, renouvelable.</p>
+
+  <p style="margin-top:5mm;"><strong>Composition du premier Bureau :</strong></p>
+  <table>
+    <tr><th style="width:35%">Fonction</th><th>Personnage in-game</th></tr>
+    <tr><td><strong>Président</strong></td><td>Andrew Beauchamp</td></tr>
+    <tr><td><strong>Trésorier</strong></td><td>Jeff Taylor <span class="tte-ref">— Adjoint au Secrétaire d'État à l'Économie & Second du Directeur de l'IRS</span></td></tr>
+    <tr><td><strong>Secrétaire</strong></td><td><em class="placeholder">[COFONDATEUR_2 — à compléter]</em></td></tr>
+  </table>
+
+  <h3 class="article"><span class="num">Article 9.</span> Président</h3>
+  <p>Le Président :</p>
+  <ul>
+    <li>représente légalement l'Association dans tous les actes de la vie civile ;</li>
+    <li>préside les réunions du Bureau et les Assemblées Générales ;</li>
+    <li>ordonnance les dépenses dans la limite du budget voté ;</li>
+    <li>signe les conventions, contrats et partenariats engageant l'Association ;</li>
+    <li>veille au respect des statuts et de la réglementation T.T.E.</li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 10.</span> Trésorier</h3>
+  <p>Le Trésorier :</p>
+  <ul>
+    <li>tient la comptabilité de l'Association ;</li>
+    <li>procède aux <strong>déclarations fiscales hebdomadaires</strong> auprès de l'IRS, conformément aux <span class="tte-ref">Articles 4-3.3 et 4-3.4 du T.T.E.</span> (déclaration avant Mardi 21 h, paiement avant Mercredi 21 h) ;</li>
+    <li>gère le compte bancaire de l'Association sous le contrôle du Bureau ;</li>
+    <li>présente le bilan financier à l'Assemblée Générale Ordinaire annuelle ;</li>
+    <li>assure la traçabilité de l'ensemble des recettes et dépenses, en distinguant clairement <strong>dons</strong> (hors plafond — <span class="tte-ref">Art. 8-1.4</span>) et <strong>autres entrées</strong> (incluant les bénéfices liés aux évènements — <span class="tte-ref">Art. 4-2.2</span>).</li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 11.</span> Secrétaire</h3>
+  <p>Le Secrétaire :</p>
+  <ul>
+    <li>rédige les procès-verbaux des réunions du Bureau et des Assemblées Générales ;</li>
+    <li>tient le registre des membres et des décisions ;</li>
+    <li>assure la correspondance officielle avec la Vie Civile, le Gouvernement et les partenaires.</li>
+  </ul>
+
+  <footer class="footer">
+    <span>NOVA — Statuts officiels</span>
+    <span>Page 3 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 4 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document officiel — Statuts de constitution
+    </div>
+  </header>
+
+  <h3 class="article"><span class="num">Article 12.</span> Assemblée Générale Ordinaire</h3>
+  <p>L'Assemblée Générale Ordinaire (AGO) réunit l'ensemble des membres actifs au moins <strong>une fois par an</strong>. Elle :</p>
+  <ul>
+    <li>entend les rapports moral et financier du Bureau ;</li>
+    <li>approuve les comptes de l'exercice écoulé ;</li>
+    <li>vote le budget prévisionnel de l'exercice à venir ;</li>
+    <li>élit ou renouvelle le Bureau ;</li>
+    <li>statue sur toute question inscrite à l'ordre du jour.</li>
+  </ul>
+  <p>Les décisions sont prises à la <strong>majorité simple</strong> des membres présents. Le quorum est fixé à la moitié des membres actifs.</p>
+
+  <h3 class="article"><span class="num">Article 13.</span> Assemblée Générale Extraordinaire</h3>
+  <p>Une Assemblée Générale Extraordinaire (AGE) peut être convoquée à la demande du Président, du Bureau, ou d'un tiers des membres actifs, pour statuer sur :</p>
+  <ul>
+    <li>la modification des statuts ;</li>
+    <li>la dissolution de l'Association ;</li>
+    <li>toute question excédant les pouvoirs ordinaires du Bureau.</li>
+  </ul>
+  <p>Les décisions y sont prises à la <strong>majorité des deux tiers</strong> des membres présents.</p>
+
+  <h3 class="article"><span class="num">Article 14.</span> Procès-verbaux</h3>
+  <p>Toutes les délibérations du Bureau et des Assemblées Générales font l'objet de procès-verbaux signés par le Président et le Secrétaire, et conservés au siège social.</p>
+
+  <!-- TITRE IV -->
+  <div class="titre">
+    <div class="label">Titre IV</div>
+    <div class="name">Ressources et Comptabilité</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 15.</span> Ressources de l'Association</h3>
+  <p>Les ressources de l'Association comprennent :</p>
+  <ol>
+    <li>les <strong>dons</strong> en numéraire ou en nature consentis sans contrepartie commerciale (hors plafond de chiffre généré — <span class="tte-ref">Art. 8-1.4 du T.T.E.</span>) ;</li>
+    <li>les <strong>subventions publiques</strong> sollicitées auprès du Gouvernement de San Andreas ou de toute autre institution (non imposables — <span class="tte-ref">Art. 4-2.16 du T.T.E.</span>) ;</li>
+    <li>les <strong>prestations de partenariat</strong> rémunérées (mentions, visibilité, présence visuelle), considérées comme chiffre généré au titre de l'<span class="tte-ref">Art. 8-1.4</span> ;</li>
+    <li>le produit des événements organisés, dans la mesure où ce produit est exclusivement réinvesti dans l'objet social de l'Association ;</li>
+    <li>tout autre apport autorisé par la législation en vigueur.</li>
+  </ol>
+
+  <h3 class="article"><span class="num">Article 16.</span> Tenue des comptes</h3>
+  <p>L'Association tient une comptabilité régulière conforme aux <span class="tte-ref">Articles 8-1.3, 8-1.6 et au Chapitre IV du T.T.E.</span> À ce titre :</p>
+  <ul>
+    <li>le <strong>chiffre d'affaires hebdomadaire</strong> est calculé du Lundi 00 h 00 au Dimanche 23 h 59 (<span class="tte-ref">Art. 4-2.1</span>) ;</li>
+    <li>les <strong>déclarations fiscales</strong> sont soumises à l'IRS avant le Mardi 21 h, et les impôts éventuels acquittés avant le Mercredi 21 h (<span class="tte-ref">Art. 4-3.3 et 4-3.4</span>) ;</li>
+    <li>toute <strong>dépense non-déductible</strong> est enregistrée et déclarée conformément à l'<span class="tte-ref">Art. 4-2.17</span> ;</li>
+    <li>les <strong>pièces justificatives</strong> de toutes recettes et dépenses sont conservées et tenues à disposition de l'IRS (<span class="tte-ref">Art. 4-5.2</span>).</li>
+  </ul>
+  <p>L'Association s'engage à respecter strictement le plafond de <strong>50 000 $ hors dons</strong> sur quatre déclarations consécutives prévu à l'<span class="tte-ref">Art. 8-1.4 du T.T.E.</span> En cas de risque de dépassement, le Bureau prend toutes mesures utiles, y compris la saisine préventive de la Vie Civile pour examen de la situation.</p>
+
+  <footer class="footer">
+    <span>NOVA — Statuts officiels</span>
+    <span>Page 4 / 5</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 5 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document officiel — Statuts de constitution
+    </div>
+  </header>
+
+  <h3 class="article"><span class="num">Article 17.</span> Affectation des excédents</h3>
+  <p>Conformément à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span>, aucun excédent ne peut être distribué aux membres ou responsables de l'Association sous quelque forme que ce soit. L'intégralité des excédents éventuels est exclusivement affectée :</p>
+  <ul>
+    <li>au financement des événements futurs de l'Association ;</li>
+    <li>à la constitution d'une réserve de fonctionnement raisonnable ;</li>
+    <li>à la dotation de matériel ou d'infrastructure utile à l'objet social.</li>
+  </ul>
+
+  <!-- TITRE V -->
+  <div class="titre">
+    <div class="label">Titre V</div>
+    <div class="name">Dispositions Particulières</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 18.</span> Récusation et conflit d'intérêts</h3>
+  <p>Plusieurs membres du Bureau de l'Association exercent par ailleurs des fonctions publiques en lien avec la fiscalité de l'État de San Andreas :</p>
+  <ul>
+    <li>le <strong>Président</strong>, <strong>Andrew Beauchamp</strong>, occupe les fonctions de <em>Secrétaire d'État à l'Économie et à l'Entreprenariat</em> et de <em>Directeur par intérim de l'Internal Revenue Service (IRS)</em> ;</li>
+    <li>le <strong>Trésorier</strong>, <strong>Jeff Taylor</strong>, occupe les fonctions d'<em>Adjoint au Secrétaire d'État à l'Économie</em> et de <em>Second du Directeur de l'IRS</em>.</li>
+  </ul>
+  <p>Afin de préserver l'impartialité du contrôle fiscal exercé sur l'Association, et conformément aux principes de transparence administrative, le Président et le Trésorier s'engagent formellement, chacun en ce qui le concerne, à :</p>
+  <ol>
+    <li><strong>se récuser</strong> de tout dossier fiscal, de tout contrôle ou de toute décision de l'IRS concernant directement ou indirectement l'Association NOVA ;</li>
+    <li><strong>déléguer officiellement</strong> ces dossiers à un agent de l'IRS sans lien hiérarchique direct avec eux, désigné par décision interne distincte et notifiée à la Vie Civile ;</li>
+    <li><strong>mentionner publiquement</strong> leur qualité dans toute correspondance officielle entre l'Association et l'IRS ;</li>
+    <li><strong>transmettre</strong> copie de leurs lettres de récusation respectives, annexées aux présents statuts, au département de la Vie Civile lors du dépôt du dossier de constitution.</li>
+  </ol>
+  <p>Cette double récusation reste en vigueur tant qu'Andrew Beauchamp ou Jeff Taylor exercent simultanément des fonctions de tutelle fiscale et des fonctions au sein du Bureau de l'Association NOVA.</p>
+
+  <h3 class="article"><span class="num">Article 19.</span> Modifications statutaires</h3>
+  <p>Toute modification des présents statuts requiert :</p>
+  <ul>
+    <li>une délibération de l'Assemblée Générale Extraordinaire votée à la majorité des deux tiers ;</li>
+    <li>la transmission du procès-verbal modificatif à la Vie Civile pour validation, conformément à l'<span class="tte-ref">Art. 8-1.2 du T.T.E.</span></li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 20.</span> Dissolution</h3>
+  <p>La dissolution de l'Association ne peut être prononcée que par une Assemblée Générale Extraordinaire convoquée à cet effet, statuant à la majorité des deux tiers des membres actifs.</p>
+  <p>En cas de dissolution, le boni de liquidation éventuel est dévolu, par décision de l'Assemblée Générale Extraordinaire :</p>
+  <ul>
+    <li>soit à une autre association poursuivant un objet similaire sur le territoire de San Andreas ;</li>
+    <li>soit à l'État de San Andreas, à charge pour celui-ci de l'affecter à des actions culturelles ou sociales d'intérêt général.</li>
+  </ul>
+  <p>En aucun cas le boni ne peut être réparti entre les membres ou responsables de l'Association.</p>
+
+  <!-- SIGNATURES -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Signatures</div>
+  </div>
+
+  <p style="text-align:center; margin-bottom:6mm;">Fait à Los Santos, le <em class="placeholder">[DATE_AG_CONSTITUTIVE]</em>, en autant d'exemplaires que de membres fondateurs, plus un exemplaire destiné à la Vie Civile et un exemplaire conservé au siège social.</p>
+
+  <table class="signatures">
+    <tr>
+      <th style="width:25%">Fonction</th>
+      <th style="width:35%">Nom</th>
+      <th>Signature</th>
+    </tr>
+    <tr>
+      <td><strong>Président</strong></td>
+      <td>Andrew Beauchamp</td>
+      <td class="signature-line"></td>
+    </tr>
+    <tr>
+      <td><strong>Trésorier</strong></td>
+      <td>Jeff Taylor</td>
+      <td class="signature-line"></td>
+    </tr>
+    <tr>
+      <td><strong>Secrétaire</strong></td>
+      <td><em class="placeholder">[COFONDATEUR_2]</em></td>
+      <td class="signature-line"></td>
+    </tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Statuts officiels</span>
+    <span>Page 5 / 5</span>
+  </footer>
+</section>
+
+</body>
+</html>

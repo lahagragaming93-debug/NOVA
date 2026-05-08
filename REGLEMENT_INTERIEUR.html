@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Règlement intérieur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus { outline: 1px dashed var(--gold); outline-offset: 2px; background: var(--gold-bg); }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Reglement-Interieur')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Reglement-Interieur')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-reglement-interieur')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-reglement-interieur')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Règlement intérieur<br>
+      Annexe complémentaire aux Statuts
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Règlement Intérieur</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Document complémentaire aux Statuts de l'Association NOVA<br>Précisant le fonctionnement opérationnel quotidien</div>
+  </div>
+
+  <div class="preamble">
+    « Le présent règlement intérieur a pour objet de préciser le fonctionnement<br>de l'Association NOVA dans le respect strict de ses Statuts<br>et du Code des Taxes, du Travail et des Entreprises. »
+  </div>
+
+  <div class="place-date">
+    Adopté par l'Assemblée Générale Constitutive de l'Association,<br>
+    à Los Santos, le <span contenteditable="true">[date à compléter]</span>
+  </div>
+
+  <!-- TITRE I -->
+  <div class="titre">
+    <div class="label">Titre I</div>
+    <div class="name">Adhésion et qualité de membre</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 1.</span> Procédure d'adhésion</h3>
+  <p>Toute personne souhaitant rejoindre l'Association NOVA en qualité de membre actif adresse une demande écrite au Bureau, comportant :</p>
+  <ul>
+    <li>son identité complète (nom, prénom, qualité in-game) ;</li>
+    <li>une lettre exposant les motivations de sa demande ;</li>
+    <li>l'engagement de respecter les Statuts et le présent règlement intérieur.</li>
+  </ul>
+  <p>Le Bureau statue souverainement, dans un délai d'un (1) mois, à la majorité simple. Sa décision est notifiée par écrit au demandeur. En cas de refus, aucune motivation n'est légalement requise.</p>
+
+  <h3 class="article"><span class="num">Article 2.</span> Registre des membres</h3>
+  <p>Le Secrétaire de l'Association tient à jour un registre des membres, mentionnant pour chacun : la date d'adhésion, la qualité (fondateur, actif, bénévole, honneur) et, le cas échéant, la date de perte de cette qualité. Ce registre est conservé au siège social et tenu à disposition des autorités compétentes en cas de contrôle.</p>
+
+  <h3 class="article"><span class="num">Article 3.</span> Devoirs des membres</h3>
+  <p>Tout membre s'engage à :</p>
+  <ul>
+    <li>respecter les Statuts, le présent règlement et l'objet social de l'Association ;</li>
+    <li>contribuer, dans la mesure de ses moyens, à la bonne marche de l'Association ;</li>
+    <li>s'abstenir de tout comportement préjudiciable à l'image de NOVA ;</li>
+    <li>signaler sans délai au Bureau toute situation pouvant générer un conflit d'intérêt.</li>
+  </ul>
+
+  <!-- TITRE II -->
+  <div class="titre">
+    <div class="label">Titre II</div>
+    <div class="name">Bénévolat et engagement associatif</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 4.</span> Contrat d'engagement associatif</h3>
+  <p>Conformément à l'<span class="tte-ref">Article 8-1.5 du T.T.E.</span>, tout volontaire engagé sur un événement ou une mission de l'Association fait l'objet d'un <strong>contrat d'engagement associatif</strong>. Ce contrat précise :</p>
+  <ul>
+    <li>l'identité du bénévole ;</li>
+    <li>la nature et la durée de la mission confiée ;</li>
+    <li>l'absence de rémunération (le bénévolat étant gratuit par nature) ;</li>
+    <li>les éventuels défraiements ponctuels prévus (restauration dans la limite de 750 $/personne, <span class="tte-ref">Art. 4-2.10</span>) ;</li>
+    <li>l'engagement de respecter la confidentialité des informations sensibles (notamment la banque de questions et les listes de partenaires) ;</li>
+    <li>la signature des deux parties.</li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 5.</span> Distinction bénévole / prestataire</h3>
+  <p>Une distinction stricte est opérée entre :</p>
+  <ul>
+    <li>le <strong>bénévole</strong> — membre ou non de l'Association, qui contribue gratuitement à un événement sous contrat d'engagement associatif ;</li>
+    <li>le <strong>prestataire externe</strong> — personne physique ou morale, sans qualité de membre, fournissant un service contre rémunération via une facture en bonne et due forme.</li>
+  </ul>
+  <p>Aucun membre du Bureau ne peut intervenir simultanément en qualité de prestataire rémunéré, conformément à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span></p>
+
+  <footer class="footer">
+    <span>NOVA — Règlement intérieur</span>
+    <span>Page 1 / 3</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Règlement intérieur
+    </div>
+  </header>
+
+  <!-- TITRE III -->
+  <div class="titre">
+    <div class="label">Titre III</div>
+    <div class="name">Partenariats et apports financiers</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 6.</span> Qualification des apports</h3>
+  <p>Tout apport financier ou en nature reçu par l'Association est obligatoirement qualifié, dès son enregistrement comptable, dans l'une des catégories suivantes :</p>
+  <ul>
+    <li><strong>Don</strong> — apport sans contrepartie commerciale, hors plafond <span class="tte-ref">Art. 8-1.4</span>. Un reçu de don est établi pour le donateur ;</li>
+    <li><strong>Subvention</strong> — apport public, non imposable <span class="tte-ref">Art. 4-2.16</span>, sollicité formellement auprès de l'autorité publique compétente ;</li>
+    <li><strong>Prestation de partenariat</strong> — apport assorti d'une contrepartie (visibilité, mention, logo). Une convention de partenariat formalise la prestation et une facture est émise.</li>
+  </ul>
+
+  <h3 class="article"><span class="num">Article 7.</span> Conventions de partenariat</h3>
+  <p>Toute relation de partenariat impliquant une contrepartie commerciale fait l'objet d'une <strong>convention écrite</strong> précisant : l'identité des parties, la nature de la contrepartie, le montant et le calendrier de versement, la durée du partenariat, et les obligations de chaque partie. La convention est cosignée par le Président et le partenaire.</p>
+
+  <h3 class="article"><span class="num">Article 8.</span> Surveillance du plafond</h3>
+  <p>Le Trésorier surveille, semaine par semaine, le cumul du chiffre généré hors dons sur les quatre déclarations consécutives les plus récentes. Si ce cumul atteint <strong>40 000 $ (état de vigilance)</strong>, le Trésorier alerte sans délai le Président. Si le cumul atteint <strong>50 000 $ (dépassement)</strong>, l'encaissement de toute nouvelle prestation est immédiatement suspendu jusqu'à la réunion d'un Bureau extraordinaire qui décide des mesures de régularisation.</p>
+
+  <!-- TITRE IV -->
+  <div class="titre">
+    <div class="label">Titre IV</div>
+    <div class="name">Comptabilité et déclarations fiscales</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 9.</span> Tenue de la comptabilité</h3>
+  <p>La comptabilité est tenue par le Trésorier dans le registre comptable hebdomadaire interne (fichier <em>COMPTABILITE_NOVA.xlsx</em>). Chaque opération est enregistrée au plus tard le jour suivant son intervention, avec date, type, catégorie, libellé et montant. Toutes les pièces justificatives (factures, reçus, conventions, bordereaux de bons) sont archivées au siège social et conservées à disposition de l'IRS.</p>
+
+  <h3 class="article"><span class="num">Article 10.</span> Calendrier fiscal hebdomadaire</h3>
+  <p>Le Trésorier respecte impérativement le calendrier suivant :</p>
+  <ul>
+    <li><strong>Du Lundi au Dimanche</strong> — saisie quotidienne des opérations ;</li>
+    <li><strong>Mardi avant 21 h 00</strong> — déclaration fiscale sur le site officiel de l'IRS (<span class="tte-ref">Art. 4-3.3</span>) ;</li>
+    <li><strong>Mercredi avant 21 h 00</strong> — paiement de l'impôt dû (<span class="tte-ref">Art. 4-3.4</span>).</li>
+  </ul>
+  <p>Tout manquement expose l'Association à des pénalités de retard pouvant atteindre 40 % de la somme due (<span class="tte-ref">Art. 4-4.1</span>).</p>
+
+  <h3 class="article"><span class="num">Article 11.</span> Compte bancaire de l'Association</h3>
+  <p>Le compte bancaire de l'Association est ouvert au nom de NOVA, géré par le Trésorier sous la surveillance du Bureau. Les retraits et virements sont autorisés conformément aux pouvoirs délégués par l'Assemblée Générale Constitutive (Résolution n° 7 du procès-verbal). Aucune opération sur le compte ne peut être effectuée à des fins personnelles ou non liées à l'objet social.</p>
+
+  <footer class="footer">
+    <span>NOVA — Règlement intérieur</span>
+    <span>Page 2 / 3</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 3 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Règlement intérieur
+    </div>
+  </header>
+
+  <!-- TITRE V -->
+  <div class="titre">
+    <div class="label">Titre V</div>
+    <div class="name">Conduite des événements</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 12.</span> Préparation des événements</h3>
+  <p>Chaque événement organisé par l'Association fait l'objet d'une fiche projet validée en réunion de Bureau, comportant : objet, calendrier, budget prévisionnel détaillé, liste des prestataires, liste des partenaires sollicités, plan de communication. Aucune dépense significative ne peut être engagée avant validation de cette fiche.</p>
+
+  <h3 class="article"><span class="num">Article 13.</span> Sécurité et intégrité des contenus</h3>
+  <p>Pour les événements de type compétitif (notamment Master Clash), la banque de questions et les éléments confidentiels sont strictement réservés à l'animateur et aux membres du Bureau. Tout bénévole accédant à des informations sensibles signe, en plus de son contrat d'engagement associatif, une <strong>clause de confidentialité</strong>.</p>
+
+  <h3 class="article"><span class="num">Article 14.</span> Distribution des récompenses</h3>
+  <p>La distribution des bons et lots aux participants est tracée individuellement : numéro du bon, identité du bénéficiaire, signature de remise. Les bons officiels sont numérotés et non duplicables ; ils sont émis sous l'autorité de l'Association et restent sa propriété jusqu'à la remise effective.</p>
+
+  <!-- TITRE VI -->
+  <div class="titre">
+    <div class="label">Titre VI</div>
+    <div class="name">Conflits d'intérêts et déontologie</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 15.</span> Application de l'Article 18 des Statuts</h3>
+  <p>Les engagements de récusation pris par le Président et le Trésorier (Article 18 des Statuts) sont d'application immédiate et permanente. Le Secrétaire tient un registre des décisions IRS concernant l'Association, mentionnant systématiquement l'identité de l'agent IRS instructeur et l'absence d'intervention des deux récusants.</p>
+
+  <h3 class="article"><span class="num">Article 16.</span> Signalement</h3>
+  <p>Tout membre constatant une situation susceptible d'entraîner un conflit d'intérêt, une rémunération déguisée ou une irrégularité comptable a l'obligation de le signaler au Bureau dans un délai maximal de 72 heures, conformément aux exigences de l'<span class="tte-ref">Art. 4-5.3 du T.T.E.</span> sur la prévention du blanchiment.</p>
+
+  <!-- TITRE VII -->
+  <div class="titre">
+    <div class="label">Titre VII</div>
+    <div class="name">Modifications et entrée en vigueur</div>
+  </div>
+
+  <h3 class="article"><span class="num">Article 17.</span> Révision du règlement intérieur</h3>
+  <p>Le présent règlement intérieur peut être modifié à la majorité simple du Bureau, sous réserve de validation à la prochaine Assemblée Générale Ordinaire. Toute modification est notifiée par écrit aux membres dans les quinze (15) jours suivant son adoption.</p>
+
+  <h3 class="article"><span class="num">Article 18.</span> Entrée en vigueur</h3>
+  <p>Le présent règlement intérieur entre en vigueur dès son adoption par l'Assemblée Générale Constitutive et accompagne les Statuts dans le dossier de déclaration officielle déposé auprès du département de la Vie Civile.</p>
+
+  <!-- VALIDATION -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Validation</div>
+  </div>
+
+  <p style="text-align:center;font-style:italic;color:var(--muted);margin-bottom:5mm;">Adopté à l'unanimité par l'Assemblée Générale Constitutive de l'Association NOVA, le <span contenteditable="true">[date à compléter]</span>.</p>
+
+  <table class="signatures">
+    <tr><th style="width:30%;">Fonction</th><th style="width:35%;">Nom</th><th>Signature</th></tr>
+    <tr><td><strong>Président</strong></td><td>Andrew BEAUCHAMP</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Trésorier</strong></td><td>Jeff TAYLOR</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Secrétaire</strong></td><td><span contenteditable="true">[SECRÉTAIRE — nom à compléter]</span></td><td class="signature-line"></td></tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Règlement intérieur</span>
+    <span>Page 3 / 3</span>
+  </footer>
+</section>
+
+</body>
+</html>

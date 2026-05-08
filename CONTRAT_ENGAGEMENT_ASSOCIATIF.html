@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Contrat d'engagement associatif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus { outline: 1px dashed var(--gold); outline-offset: 2px; background: var(--gold-bg); }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .parties-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+    margin: 5mm 0 8mm 0;
+  }
+
+  .partie-card {
+    background: var(--paper-alt);
+    border-left: 3px solid var(--gold);
+    padding: 4mm 5mm;
+  }
+
+  .partie-card .role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10pt;
+    color: var(--gold);
+    font-variant: small-caps;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+
+  .partie-card .nom {
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin-top: 1mm;
+  }
+
+  .partie-card .details {
+    font-size: 10pt;
+    color: var(--ink-soft);
+    margin-top: 2mm;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Contrat-Engagement')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Contrat-Engagement')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-engagement')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-engagement')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Contrat d'engagement associatif<br>
+      Conforme à l'Article 8-1.5 du T.T.E.
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Contrat d'Engagement Associatif</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Engagement bénévole gratuit — Article 8-1.5 du T.T.E.</div>
+  </div>
+
+  <p style="text-align:center;margin:2mm 0 6mm 0;font-size:10pt;color:var(--muted);">
+    N° d'enregistrement : <span contenteditable="true" style="font-weight:600;color:var(--navy);">[NOVA-ENG-XXXX]</span>
+    &nbsp;•&nbsp; Établi à Los Santos, le <span contenteditable="true">[date]</span>
+  </p>
+
+  <!-- LES PARTIES -->
+  <div class="titre">
+    <div class="label">Article 1</div>
+    <div class="name">Identification des parties</div>
+  </div>
+
+  <div class="parties-block">
+    <div class="partie-card">
+      <div class="role">L'Association</div>
+      <div class="nom">NOVA</div>
+      <div class="details">
+        Nouvelle Organisation Vie Associative<br>
+        Représentée par : <strong>Andrew BEAUCHAMP</strong>, Président<br>
+        Siège : <span contenteditable="true">[adresse Vie Civile]</span>
+      </div>
+    </div>
+
+    <div class="partie-card">
+      <div class="role">Le bénévole</div>
+      <div class="nom" contenteditable="true">[Nom Prénom du bénévole]</div>
+      <div class="details">
+        Qualité in-game : <span contenteditable="true">[qualité]</span><br>
+        Domicile : <span contenteditable="true">[adresse]</span><br>
+        Contact : <span contenteditable="true">[contact in-game]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSION -->
+  <h3 class="article"><span class="num">Article 2.</span> Mission confiée</h3>
+  <p>Le bénévole accepte de prêter son concours à l'Association pour la mission suivante :</p>
+  <blockquote contenteditable="true">[Description précise de la mission : exemple — animation de la Manche 1 de Master Clash, régie technique, accueil du public, arbitrage, etc.]</blockquote>
+
+  <!-- DURÉE -->
+  <h3 class="article"><span class="num">Article 3.</span> Durée et lieu de l'engagement</h3>
+  <p>Le présent engagement est conclu pour la période suivante :</p>
+  <ul>
+    <li><strong>Date de début :</strong> <span contenteditable="true">[date]</span></li>
+    <li><strong>Date de fin :</strong> <span contenteditable="true">[date]</span></li>
+    <li><strong>Lieu(x) d'exécution :</strong> <span contenteditable="true">[lieu(x) — Los Santos, État de San Andreas]</span></li>
+  </ul>
+
+  <!-- GRATUITÉ -->
+  <h3 class="article"><span class="num">Article 4.</span> Gratuité de l'engagement</h3>
+  <p>Conformément à l'<span class="tte-ref">Article 8-1.1 du T.T.E.</span>, l'engagement du bénévole est <strong>strictement gratuit</strong>. Aucune rémunération, salaire, prime ou avantage en nature au titre du présent engagement ne lui sera versé par l'Association.</p>
+
+  <h3 class="article"><span class="num">Article 5.</span> Défraiements éventuels</h3>
+  <p>Dans le cadre strict de la mission, l'Association peut prendre en charge les frais suivants, sur justificatifs et dans les limites prévues par le T.T.E. :</p>
+  <ul>
+    <li><strong>Restauration</strong> — limite de 750 $ par personne (<span class="tte-ref">Art. 4-2.10</span>) ;</li>
+    <li><strong>Fournitures spécifiques à la mission</strong> — sur accord préalable du Trésorier ;</li>
+    <li><strong>Petits matériels consommables</strong> nécessaires à l'exécution.</li>
+  </ul>
+  <p>Tout autre type de défraiement requiert une décision préalable et formelle du Bureau.</p>
+
+  <!-- CONFIDENTIALITÉ -->
+  <h3 class="article"><span class="num">Article 6.</span> Obligation de confidentialité</h3>
+  <p>Le bénévole s'engage à ne divulguer à aucun tiers les informations sensibles auxquelles il pourrait accéder dans le cadre de sa mission, notamment :</p>
+  <ul>
+    <li>la <strong>banque de questions</strong> de l'événement Master Clash ;</li>
+    <li>la liste des partenaires et le contenu des conventions ;</li>
+    <li>les éléments de comptabilité de l'Association ;</li>
+    <li>l'identité des donateurs ayant souhaité conserver l'anonymat.</li>
+  </ul>
+  <p>Cette obligation perdure pendant un (1) an après la fin de l'engagement.</p>
+
+  <!-- ENGAGEMENT MUTUEL -->
+  <h3 class="article"><span class="num">Article 7.</span> Engagements mutuels</h3>
+  <p>Le bénévole s'engage à respecter les Statuts et le Règlement Intérieur de l'Association, à exécuter sa mission avec sérieux et loyauté, et à signaler sans délai toute difficulté d'exécution.</p>
+  <p>L'Association s'engage à fournir au bénévole les conditions matérielles nécessaires à l'accomplissement de sa mission, à l'informer des règles applicables et à reconnaître publiquement sa contribution.</p>
+
+  <!-- RÉSILIATION -->
+  <h3 class="article"><span class="num">Article 8.</span> Résiliation</h3>
+  <p>Chaque partie peut mettre fin au présent engagement, sans préavis ni indemnité, par notification écrite. En cas de manquement grave (atteinte à l'image de l'Association, divulgation d'informations confidentielles, comportement préjudiciable), la rupture est immédiate et peut entraîner la radiation du bénévole en qualité de membre, le cas échéant.</p>
+
+  <!-- SIGNATURES -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Signatures</div>
+  </div>
+
+  <p style="text-align:center;font-style:italic;color:var(--muted);margin-bottom:5mm;">Fait à Los Santos, le <span contenteditable="true">[date]</span>, en deux exemplaires originaux.</p>
+
+  <table class="signatures">
+    <tr><th style="width:35%;">Partie</th><th style="width:30%;">Nom</th><th>Signature</th></tr>
+    <tr><td><strong>Pour l'Association NOVA</strong></td><td>Andrew BEAUCHAMP, Président</td><td class="signature-line"></td></tr>
+    <tr><td><strong>Le bénévole</strong></td><td contenteditable="true">[Nom Prénom]</td><td class="signature-line"></td></tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Contrat d'engagement associatif</span>
+    <span>Page 1 / 1</span>
+  </footer>
+</section>
+
+</body>
+</html>

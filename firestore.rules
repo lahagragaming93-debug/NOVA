@@ -1,0 +1,130 @@
+// ============================================================================
+// NOVA — Règles de sécurité Firestore
+// À copier dans Firebase Console → Firestore Database → onglet "Règles"
+// → puis cliquer "Publier"
+//
+// Stratégie :
+//   - Le président (rôle "president") = tous les droits
+//   - Les autres rôles = droits selon DEFAULT_PERMISSIONS (côté serveur strict)
+//   - Personne ne peut s'auto-élever en président (sauf email président bootstrap)
+//   - Email président bootstrap : a.beauchamp@nova-association.com
+// ============================================================================
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== HELPERS =====
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function userDoc(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function myRole() {
+      return userDoc(request.auth.uid).role;
+    }
+
+    function isPresident() {
+      return isAuth() && myRole() == 'president';
+    }
+
+    function isTresorier() {
+      return isAuth() && myRole() == 'tresorier';
+    }
+
+    function isSecretaire() {
+      return isAuth() && myRole() == 'secretaire';
+    }
+
+    function isBureau() {
+      return isPresident() || isTresorier() || isSecretaire();
+    }
+
+    function isPresidentEmail() {
+      return isAuth() && request.auth.token.email == 'a.beauchamp@nova-association.com';
+    }
+
+    // ===== USERS =====
+    // Profils utilisateurs (un doc par utilisateur, id = uid)
+    match /users/{uid} {
+
+      // Lecture : tout authentifié peut lire la liste des membres
+      allow read: if isAuth();
+
+      // Création :
+      //   - L'utilisateur ne peut créer QUE son propre doc
+      //   - Le rôle initial doit être "utilisateur" (ou "president" si c'est l'email président)
+      allow create: if isOwner(uid)
+        && (
+          request.resource.data.role == 'utilisateur'
+          || (request.resource.data.role == 'president' && isPresidentEmail())
+        );
+
+      // Update :
+      //   - Le président peut tout modifier
+      //   - Le propriétaire peut modifier son displayName uniquement (pas son rôle, ni son email)
+      allow update: if isPresident()
+        || (isOwner(uid)
+            && request.resource.data.role == resource.data.role
+            && request.resource.data.email == resource.data.email
+            && request.resource.data.username == resource.data.username);
+
+      // Delete : président only
+      allow delete: if isPresident();
+    }
+
+    // ===== TRANSACTIONS (compta) — module à venir =====
+    match /transactions/{txId} {
+      allow read:   if isBureau();
+      allow create: if isBureau();
+      allow update: if isPresident() || isTresorier();
+      allow delete: if isPresident();
+    }
+
+    // ===== DOCUMENTS (instances de templates : reçus, factures, conventions, contrats) =====
+    match /documents/{docId} {
+      allow read:   if isBureau()
+        || (isAuth() && resource.data.targetUid == request.auth.uid);  // l'intéressé peut voir son doc
+      allow create: if isBureau();
+      allow update: if isBureau();
+      allow delete: if isPresident();
+    }
+
+    // ===== MEMBRES (registre des membres et bénévoles) =====
+    match /membres/{memberId} {
+      allow read:   if isBureau();
+      allow create: if isBureau();
+      allow update: if isPresident() || isSecretaire();
+      allow delete: if isPresident();
+    }
+
+    // ===== PARTENAIRES =====
+    match /partenaires/{partenaireId} {
+      allow read:   if isBureau()
+        || (isAuth() && myRole() == 'partenaire' && resource.data.userUid == request.auth.uid);
+      allow create: if isBureau();
+      allow update: if isPresident() || isSecretaire();
+      allow delete: if isPresident();
+    }
+
+    // ===== JOURNAL D'ACTIVITÉ (audit log, lecture seule pour Bureau) =====
+    match /journal/{entryId} {
+      allow read:   if isBureau();
+      allow create: if isAuth();   // tout utilisateur authentifié peut générer une entrée (logged automatiquement)
+      allow update: if false;       // un journal ne se modifie pas
+      allow delete: if false;       // un journal ne se supprime pas
+    }
+
+    // ===== CATCH-ALL : tout le reste bloqué =====
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

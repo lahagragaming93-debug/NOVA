@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Déclaration de constitution à la Vie Civile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  /* === Style spécifique à la lettre === */
+  [contenteditable="true"]:focus {
+    outline: 1px dashed var(--gold);
+    outline-offset: 2px;
+    background: var(--gold-bg);
+  }
+
+  [contenteditable="true"]:hover:not(:focus) {
+    background: rgba(184, 156, 94, 0.05);
+  }
+
+  .editable-hint {
+    display: block;
+    font-size: 8.5pt;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.5mm;
+    letter-spacing: 0.5px;
+  }
+
+  .lettre-corps p {
+    margin-bottom: 4mm;
+    text-indent: 8mm;
+    line-height: 1.6;
+  }
+
+  .lettre-corps p.no-indent { text-indent: 0; }
+
+  .annexe-detailed {
+    list-style: none;
+    counter-reset: pj;
+    padding: 0;
+    margin: 4mm 0 6mm 0;
+  }
+
+  .annexe-detailed li {
+    counter-increment: pj;
+    padding: 2mm 0 2mm 18mm;
+    position: relative;
+    border-bottom: 0.5px dotted var(--rule);
+    font-size: 10.5pt;
+  }
+
+  .annexe-detailed li::before {
+    content: "PJ " counter(pj, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 2mm;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: 1px;
+  }
+
+  .annexe-detailed li .titre-pj {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .annexe-detailed li .desc-pj {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 10pt;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-Declaration-Vie-Civile')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-Declaration-Vie-Civile')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-declaration-vc')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-declaration-vc')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Demande de constitution<br>
+      Adressée au département de la Vie Civile
+    </div>
+  </header>
+
+  <!-- Expéditeur -->
+  <div class="expediteur">
+    <strong>Andrew BEAUCHAMP</strong><br>
+    Citoyen de l'État de San Andreas<br>
+    <span id="exp-adresse" contenteditable="true">[Adresse personnelle — à compléter]</span><br>
+    <span id="exp-contact" contenteditable="true">[Coordonnées de contact in-game]</span>
+  </div>
+
+  <!-- Destinataire -->
+  <div class="destinataire">
+    <strong>Département de la Vie Civile</strong><br>
+    Gouvernement de l'État de San Andreas<br>
+    <span id="dest-adresse" contenteditable="true">[Adresse officielle de la Vie Civile]</span><br>
+    Los Santos, San Andreas
+  </div>
+
+  <!-- Lieu et date -->
+  <div class="lieu-date">
+    Los Santos, le <span id="date-redaction" contenteditable="true">[date à compléter]</span>
+  </div>
+
+  <!-- Objet -->
+  <div class="objet">
+    <strong>Objet :</strong> Demande de déclaration officielle d'une association à but non lucratif —<br>
+    <em>Association NOVA (Nouvelle Organisation Vie Associative)</em>
+  </div>
+  <div class="objet">
+    <strong>Référence :</strong> Article 8-1.2 du Code des Taxes, du Travail et des Entreprises (T.T.E.) — Chapitre VIII : Associations.
+  </div>
+
+  <!-- Salutation -->
+  <p class="salutation">Madame, Monsieur le Directeur du département de la Vie Civile,</p>
+
+  <!-- Corps -->
+  <div class="lettre-corps">
+    <p>J'ai l'honneur de solliciter, par la présente, la déclaration officielle d'une association à but non lucratif, conformément aux dispositions de l'<span class="tte-ref">Article 8-1.2 du T.T.E.</span>, et son officialisation par le Gouvernement de l'État de San Andreas.</p>
+
+    <p>Cette association, dénommée <strong>« NOVA — Nouvelle Organisation Vie Associative »</strong>, a vocation à promouvoir, organiser et produire des événements culturels, festifs et compétitifs à but non lucratif sur le territoire de notre État, à destination de l'ensemble des citoyens. Elle s'inscrit dans une démarche de dynamisation de la vie sociale et culturelle de Los Santos, en lien direct avec les valeurs portées par les institutions de San Andreas.</p>
+
+    <p>Le premier projet phare porté par l'Association, intitulé <strong>« Master Clash »</strong>, est une compétition culturelle ouverte à 42 participants et déclinée en trois manches progressives. Ce projet a déjà fait l'objet d'un dossier de présentation transmis au cabinet du Gouverneur, en annexe duquel figurent l'ensemble des éléments de fond (règlement, banque de questions, dossier partenaires).</p>
+
+    <p>Conformément aux exigences du T.T.E., l'Association s'engage formellement à respecter les obligations suivantes :</p>
+  </div>
+
+  <ul style="margin: 2mm 0 4mm 8mm; padding-left: 4mm;">
+    <li><strong>Caractère non lucratif</strong> : aucune rémunération ne sera versée aux responsables ou membres au titre de leur engagement associatif (<span class="tte-ref">Art. 8-1.1</span>).</li>
+    <li><strong>Comptabilité régulière</strong> : tenue d'un journal hebdomadaire des recettes et dépenses, déclarations fiscales transmises à l'IRS avant chaque mardi 21 h, paiements avant chaque mercredi 21 h (<span class="tte-ref">Art. 4-3.3 et 4-3.4</span>).</li>
+    <li><strong>Plafond associatif</strong> : surveillance constante du seuil de 50 000 $ de chiffre généré hors dons sur quatre déclarations consécutives (<span class="tte-ref">Art. 8-1.4</span>) ; saisine préventive de la Vie Civile en cas de risque de dépassement.</li>
+    <li><strong>Engagement des bénévoles</strong> : tout volontaire fera l'objet d'un contrat d'engagement associatif (<span class="tte-ref">Art. 8-1.5</span>).</li>
+    <li><strong>Traçabilité</strong> : conservation de l'ensemble des pièces justificatives à disposition de l'IRS (<span class="tte-ref">Art. 4-5.2</span>).</li>
+  </ul>
+
+  <footer class="footer">
+    <span>NOVA — Demande de constitution</span>
+    <span>Page 1 / 2</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Demande de constitution
+    </div>
+  </header>
+
+  <div class="lettre-corps">
+    <p class="no-indent" style="margin-top: 4mm;"><strong>Déclaration de conflit d'intérêts et engagement de récusation</strong></p>
+
+    <p>Soucieux de la plus stricte impartialité, je porte à votre connaissance les éléments suivants :</p>
+
+    <p>J'occupe par ailleurs les fonctions publiques de <em>Secrétaire d'État à l'Économie et à l'Entreprenariat</em> et de <em>Directeur par intérim de l'Internal Revenue Service (IRS)</em>. Le Trésorier pressenti de l'Association, <strong>Monsieur Jeff Taylor</strong>, exerce les fonctions d'<em>Adjoint au Secrétaire d'État à l'Économie</em> et de <em>Second du Directeur de l'IRS</em>.</p>
+
+    <p>Cette situation susceptible de générer un conflit d'intérêts, nous nous engageons formellement, chacun en ce qui nous concerne, à <strong>nous récuser de tout dossier fiscal, de tout contrôle ou de toute décision de l'IRS concernant directement ou indirectement l'Association NOVA</strong>. Ces dossiers seront systématiquement délégués à un agent de l'IRS sans lien hiérarchique direct avec nous, désigné par décision interne distincte. Les lettres de récusation correspondantes figurent en annexe du présent dossier (PJ 04 et PJ 05) et l'engagement est inscrit à l'Article 18 des statuts.</p>
+
+    <p>Je vous demande de bien vouloir prendre acte de cette transparence dans votre instruction.</p>
+
+    <p class="no-indent" style="margin-top: 6mm;"><strong>Domiciliation administrative</strong></p>
+
+    <p>L'Association sollicite respectueusement le concours du département de la Vie Civile pour la confirmation d'une domiciliation administrative officielle, conforme aux usages applicables aux associations déclarées. Toute proposition de votre part sera examinée et formalisée par avenant aux statuts.</p>
+
+    <p class="no-indent" style="margin-top: 6mm;"><strong>Pièces jointes au présent dossier</strong></p>
+  </div>
+
+  <ol class="annexe-detailed">
+    <li>
+      <span class="titre-pj">Statuts de l'Association NOVA</span>
+      <span class="desc-pj">Document constitutif, 5 pages, 20 articles répartis en 5 titres</span>
+    </li>
+    <li>
+      <span class="titre-pj">Procès-verbal de l'Assemblée Générale Constitutive</span>
+      <span class="desc-pj">Délibérations, désignation du Bureau, adoption des statuts</span>
+    </li>
+    <li>
+      <span class="titre-pj">Liste nominative des membres fondateurs</span>
+      <span class="desc-pj">Identités complètes des trois membres fondateurs</span>
+    </li>
+    <li>
+      <span class="titre-pj">Lettre de récusation IRS — Andrew Beauchamp (Président)</span>
+      <span class="desc-pj">Engagement formel de récusation sur tous dossiers fiscaux NOVA</span>
+    </li>
+    <li>
+      <span class="titre-pj">Lettre de récusation IRS — Jeff Taylor (Trésorier)</span>
+      <span class="desc-pj">Engagement formel de récusation sur tous dossiers fiscaux NOVA</span>
+    </li>
+    <li>
+      <span class="titre-pj">Plan d'activité prévisionnel</span>
+      <span class="desc-pj">Présentation de Master Clash et perspectives d'éditions ultérieures</span>
+    </li>
+    <li>
+      <span class="titre-pj">Plan financier prévisionnel</span>
+      <span class="desc-pj">Budget équilibré : recettes (dons, subventions, prestations) et dépenses</span>
+    </li>
+    <li>
+      <span class="titre-pj">Règlement intérieur</span>
+      <span class="desc-pj">Document complémentaire détaillant le fonctionnement opérationnel</span>
+    </li>
+  </ol>
+
+  <div class="lettre-corps">
+    <p class="no-indent" style="margin-top: 6mm;">Je reste à votre entière disposition pour toute pièce complémentaire ou tout entretien que vous jugeriez utile à l'instruction de ce dossier, et vous prie de croire, Madame, Monsieur le Directeur, à l'expression de ma haute considération.</p>
+  </div>
+
+  <!-- Signature -->
+  <div class="signature-block">
+    <div style="font-style: italic; color: var(--muted); margin-bottom: 12mm;">Signé en sa qualité de citoyen et fondateur</div>
+    <div class="nom">Andrew BEAUCHAMP</div>
+    <div class="fonction">Président fondateur de l'Association NOVA</div>
+  </div>
+
+  <footer class="footer">
+    <span>NOVA — Demande de constitution</span>
+    <span>Page 2 / 2</span>
+  </footer>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Procès-verbal de l'Assemblée Générale Constitutive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nova-style.css">
+<style>
+  [contenteditable="true"]:focus {
+    outline: 1px dashed var(--gold);
+    outline-offset: 2px;
+    background: var(--gold-bg);
+  }
+  [contenteditable="true"]:hover:not(:focus) { background: rgba(184, 156, 94, 0.05); }
+
+  .resolution {
+    margin: 5mm 0 6mm 0;
+    page-break-inside: avoid;
+  }
+
+  .resolution h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12pt;
+    color: var(--navy);
+    margin: 0 0 2mm 0;
+    border-left: 3px solid var(--gold);
+    padding-left: 4mm;
+    font-weight: 600;
+  }
+
+  .resolution h4 .num {
+    color: var(--gold);
+    font-weight: 700;
+    margin-right: 2mm;
+  }
+
+  .resolution .corps {
+    padding-left: 7mm;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    text-align: justify;
+  }
+
+  .resolution .vote {
+    margin-top: 2mm;
+    padding: 2mm 4mm;
+    background: var(--paper-alt);
+    border-left: 2px solid var(--green);
+    font-size: 10pt;
+    color: var(--ink-soft);
+  }
+
+  .resolution .vote strong {
+    color: var(--green);
+    font-variant: small-caps;
+    letter-spacing: 1px;
+  }
+
+  .presents-table th, .presents-table td {
+    font-size: 10pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button type="button" onclick="NovaExport.toPDF('NOVA-PV-AG-Constitutive')">Télécharger PDF</button>
+  <button type="button" class="secondary" onclick="NovaExport.toPNG('.page', 'NOVA-PV-AG-Constitutive')">Télécharger PNG</button>
+  <button type="button" onclick="NovaExport.saveLocal('nova-pv-ag')">Sauvegarder</button>
+  <button type="button" onclick="NovaExport.loadLocal('nova-pv-ag')">Charger</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="nova-export.js"></script>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document constitutif officiel<br>
+      Annexe au dossier Vie Civile
+    </div>
+  </header>
+
+  <div class="doc-title">
+    <h1>Procès-verbal</h1>
+    <div class="ornament">❦ &nbsp; ❦ &nbsp; ❦</div>
+    <div class="sub">Assemblée Générale Constitutive de l'Association NOVA<br>Conformément à l'Article 8-1.2 du T.T.E. et aux Statuts adoptés ce jour</div>
+  </div>
+
+  <!-- Cadre date / lieu / heure -->
+  <div class="identification" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm 8mm;margin: 4mm 0 8mm 0;background: var(--paper-alt);padding:4mm 5mm;border-left:3px solid var(--gold);">
+    <div>
+      <div style="font-size:9pt;color:var(--muted);font-variant:small-caps;letter-spacing:1px;">Date</div>
+      <div style="font-size:11pt;color:var(--ink);" contenteditable="true" id="ag-date">[date à compléter]</div>
+    </div>
+    <div>
+      <div style="font-size:9pt;color:var(--muted);font-variant:small-caps;letter-spacing:1px;">Heure d'ouverture</div>
+      <div style="font-size:11pt;color:var(--ink);" contenteditable="true" id="ag-heure">[heure à compléter]</div>
+    </div>
+    <div>
+      <div style="font-size:9pt;color:var(--muted);font-variant:small-caps;letter-spacing:1px;">Lieu</div>
+      <div style="font-size:11pt;color:var(--ink);" contenteditable="true" id="ag-lieu">Los Santos, État de San Andreas</div>
+    </div>
+  </div>
+
+  <!-- TITRE I : MEMBRES PRÉSENTS -->
+  <div class="titre">
+    <div class="label">Titre I</div>
+    <div class="name">Membres présents et qualité</div>
+  </div>
+
+  <p>Se sont réunis ce jour, en qualité de membres fondateurs de l'Association à but non lucratif <strong>NOVA — Nouvelle Organisation Vie Associative</strong>, en vue de procéder à sa constitution officielle et à la désignation de son premier Bureau :</p>
+
+  <table class="presents-table" style="margin-top:4mm;">
+    <tr>
+      <th style="width:30%;">Nom et prénom</th>
+      <th style="width:30%;">Qualité in-game</th>
+      <th>Fonction proposée au Bureau</th>
+    </tr>
+    <tr>
+      <td><strong>Andrew BEAUCHAMP</strong></td>
+      <td>Citoyen — Secrétaire d'État Économie / Directeur p.i. IRS</td>
+      <td>Président fondateur</td>
+    </tr>
+    <tr>
+      <td><strong>Jeff TAYLOR</strong></td>
+      <td>Citoyen — Adjoint à l'Économie / Second IRS</td>
+      <td>Trésorier</td>
+    </tr>
+    <tr>
+      <td><strong contenteditable="true" id="sec-nom">[SECRÉTAIRE — nom à compléter]</strong></td>
+      <td><span contenteditable="true" id="sec-qualite">[qualité in-game]</span></td>
+      <td>Secrétaire</td>
+    </tr>
+  </table>
+
+  <p style="margin-top:5mm;">L'Assemblée constate que le quorum est atteint, l'ensemble des membres fondateurs étant présents. Andrew Beauchamp est désigné comme Président de séance ; <span contenteditable="true" id="sec-seance">[Secrétaire]</span> est désigné comme Secrétaire de séance.</p>
+
+  <!-- TITRE II : ORDRE DU JOUR -->
+  <div class="titre">
+    <div class="label">Titre II</div>
+    <div class="name">Ordre du jour</div>
+  </div>
+
+  <p>Le Président de séance rappelle l'ordre du jour qui sera soumis aux délibérations :</p>
+
+  <ol style="margin-top:3mm;">
+    <li>Constitution de l'Association NOVA et adoption de sa dénomination ;</li>
+    <li>Adoption des Statuts de l'Association ;</li>
+    <li>Désignation des membres du Bureau et de leurs fonctions respectives ;</li>
+    <li>Engagement de récusation IRS du Président et du Trésorier (Article 18 des Statuts) ;</li>
+    <li>Approbation du plan financier prévisionnel ;</li>
+    <li>Adoption du règlement intérieur ;</li>
+    <li>Délégation de pouvoirs pour les démarches de déclaration auprès du département de la Vie Civile et l'ouverture du compte bancaire de l'Association ;</li>
+    <li>Questions diverses et clôture.</li>
+  </ol>
+
+  <footer class="footer">
+    <span>NOVA — Procès-verbal AG Constitutive</span>
+    <span>Page 1 / 3</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document constitutif officiel
+    </div>
+  </header>
+
+  <div class="titre">
+    <div class="label">Titre III</div>
+    <div class="name">Résolutions adoptées</div>
+  </div>
+
+  <!-- Résolution 1 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 1.</span> Constitution de l'Association</h4>
+    <div class="corps">
+      <p>L'Assemblée Générale Constitutive décide la création d'une association à but non lucratif, régie par le Chapitre VIII du Code des Taxes, du Travail et des Entreprises (T.T.E.) de l'État de San Andreas, dénommée :</p>
+      <blockquote>« NOVA — Nouvelle Organisation Vie Associative »</blockquote>
+      <p>Cette association a pour objet la promotion, l'organisation et la production d'événements culturels, festifs et compétitifs à but non lucratif sur le territoire de l'État.</p>
+      <div class="vote"><strong>Adoptée à l'unanimité des membres fondateurs présents.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 2 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 2.</span> Adoption des Statuts</h4>
+    <div class="corps">
+      <p>L'Assemblée Générale Constitutive adopte, après lecture intégrale et discussion, les Statuts de l'Association NOVA, comportant 5 titres et 20 articles. Une attention particulière est portée à l'<strong>Article 18</strong> relatif à la récusation des membres exerçant des fonctions de tutelle fiscale.</p>
+      <p>Les Statuts adoptés sont annexés au présent procès-verbal et seront transmis au département de la Vie Civile dans le cadre de la déclaration officielle.</p>
+      <div class="vote"><strong>Adoptés à l'unanimité des membres fondateurs présents.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 3 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 3.</span> Désignation du Bureau</h4>
+    <div class="corps">
+      <p>L'Assemblée Générale Constitutive procède à la désignation du premier Bureau de l'Association, pour une durée d'un (1) an renouvelable :</p>
+      <table style="margin-top:2mm;">
+        <tr><th style="width:30%;">Fonction</th><th>Titulaire</th></tr>
+        <tr><td><strong>Président</strong></td><td>Andrew BEAUCHAMP</td></tr>
+        <tr><td><strong>Trésorier</strong></td><td>Jeff TAYLOR</td></tr>
+        <tr><td><strong>Secrétaire</strong></td><td><span contenteditable="true" id="sec-resol3">[SECRÉTAIRE — nom à compléter]</span></td></tr>
+      </table>
+      <div class="vote"><strong>Désignations adoptées à l'unanimité des membres fondateurs présents.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 4 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 4.</span> Engagement de récusation IRS</h4>
+    <div class="corps">
+      <p>L'Assemblée prend acte de l'engagement formel et solennel d'Andrew Beauchamp et de Jeff Taylor, en leurs qualités respectives de Président et de Trésorier, de se récuser de tout dossier fiscal, contrôle ou décision de l'IRS concernant l'Association NOVA. Les lettres de récusation correspondantes sont annexées au présent procès-verbal et seront transmises au cabinet du Gouverneur ainsi qu'au département de la Vie Civile.</p>
+      <div class="vote"><strong>Engagement acté à l'unanimité.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 5 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 5.</span> Plan financier prévisionnel</h4>
+    <div class="corps">
+      <p>L'Assemblée approuve le plan financier prévisionnel présenté par le Trésorier pressenti, équilibré entre recettes (dons, subventions, prestations de partenariat) et dépenses (lots, production, frais administratifs). Le plan financier est annexé au présent procès-verbal et sera transmis au département de la Vie Civile.</p>
+      <div class="vote"><strong>Approuvé à l'unanimité.</strong></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>NOVA — Procès-verbal AG Constitutive</span>
+    <span>Page 2 / 3</span>
+  </footer>
+</section>
+
+<!-- ============================ PAGE 3 ============================ -->
+<section class="page">
+  <header class="header">
+    <div class="title-block">
+      <div class="nova">N&thinsp;O&thinsp;V&thinsp;A</div>
+      <div class="subtitle">Nouvelle Organisation Vie Associative</div>
+    </div>
+    <div class="official">
+      <strong>État de San Andreas</strong><br>
+      Document constitutif officiel
+    </div>
+  </header>
+
+  <!-- Résolution 6 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 6.</span> Règlement intérieur</h4>
+    <div class="corps">
+      <p>L'Assemblée adopte le règlement intérieur de l'Association, document complémentaire aux Statuts, précisant le fonctionnement opérationnel, les modalités d'adhésion, l'engagement des bénévoles (conformément à l'Article 8-1.5 du T.T.E.) et la gestion des partenariats.</p>
+      <div class="vote"><strong>Adopté à l'unanimité.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 7 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 7.</span> Délégation de pouvoirs</h4>
+    <div class="corps">
+      <p>L'Assemblée donne tous pouvoirs au <strong>Président</strong>, Andrew Beauchamp, à l'effet de :</p>
+      <ul>
+        <li>déposer la déclaration officielle de l'Association auprès du département de la Vie Civile, accompagnée de l'ensemble des pièces requises ;</li>
+        <li>solliciter l'officialisation par le Gouvernement de l'État de San Andreas ;</li>
+        <li>signer toute convention, contrat ou partenariat engageant l'Association dans la limite de son objet social ;</li>
+        <li>solliciter, le cas échéant, une subvention publique auprès du Gouverneur de San Andreas conformément à l'Article 4-2.16 du T.T.E.</li>
+      </ul>
+      <p>L'Assemblée donne tous pouvoirs au <strong>Trésorier</strong>, Jeff Taylor, à l'effet de :</p>
+      <ul>
+        <li>ouvrir le compte bancaire de l'Association auprès de l'établissement bancaire qu'il déterminera ;</li>
+        <li>tenir la comptabilité hebdomadaire et procéder aux déclarations fiscales prévues aux Articles 4-3.3 et 4-3.4 du T.T.E. ;</li>
+        <li>encaisser les dons, subventions et prestations conformément aux qualifications retenues à l'Article 15 des Statuts.</li>
+      </ul>
+      <div class="vote"><strong>Délégations adoptées à l'unanimité.</strong></div>
+    </div>
+  </div>
+
+  <!-- Résolution 8 -->
+  <div class="resolution">
+    <h4><span class="num">Résolution n° 8.</span> Questions diverses</h4>
+    <div class="corps">
+      <p>Aucune question diverse n'étant soulevée, le Président de séance prononce la clôture de l'Assemblée Générale Constitutive à <span contenteditable="true" id="ag-cloture">[heure de clôture]</span>.</p>
+      <p>Le présent procès-verbal est dressé en autant d'exemplaires originaux que de membres fondateurs, plus un exemplaire destiné aux annexes des Statuts et un exemplaire destiné au dossier déposé auprès du département de la Vie Civile.</p>
+    </div>
+  </div>
+
+  <!-- Signatures -->
+  <div class="titre" style="margin-top:8mm;">
+    <div class="label">Signatures</div>
+  </div>
+
+  <p style="text-align:center;margin-bottom:5mm;font-style:italic;color:var(--muted);">Fait à Los Santos, le <span contenteditable="true">[date à compléter]</span>, en autant d'exemplaires originaux que de signataires.</p>
+
+  <table class="signatures">
+    <tr>
+      <th style="width:25%;">Fonction</th>
+      <th style="width:35%;">Nom du signataire</th>
+      <th>Signature</th>
+    </tr>
+    <tr>
+      <td><strong>Président de séance</strong></td>
+      <td>Andrew BEAUCHAMP</td>
+      <td class="signature-line"></td>
+    </tr>
+    <tr>
+      <td><strong>Trésorier</strong></td>
+      <td>Jeff TAYLOR</td>
+      <td class="signature-line"></td>
+    </tr>
+    <tr>
+      <td><strong>Secrétaire de séance</strong></td>
+      <td><span contenteditable="true" id="sec-sig">[SECRÉTAIRE — nom à compléter]</span></td>
+      <td class="signature-line"></td>
+    </tr>
+  </table>
+
+  <footer class="footer">
+    <span>NOVA — Procès-verbal AG Constitutive</span>
+    <span>Page 3 / 3</span>
+  </footer>
+</section>
+
+</body>
+</html>
