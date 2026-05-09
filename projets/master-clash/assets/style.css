@@ -738,3 +738,28 @@ body[data-page="home"] .nav{flex:0 0 auto}
   background: rgba(245,197,24,.15);
   color: #f5c518;
 }
+
+/* === CO-BRANDING NOVA × MASTER CLASH (contrats uniquement) ===
+   Les conventions sont signées par l'Association NOVA dans le cadre de son
+   projet Master Clash. Le logo NOVA prime dans le header et un filigrane NOVA
+   apparaît en arrière-plan. Le reste du site Master Clash garde son identité. */
+.contract-doc { position: relative; overflow: hidden; }
+.contract-doc::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%; height: 60%;
+  background-image: url('logo-nova.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+.contract-doc > * { position: relative; z-index: 1; }
+.cl-img-nova {
+  width: 108px !important;
+  filter: drop-shadow(0 0 6px rgba(184,156,94,.45)) !important;
+}
