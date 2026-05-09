@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget — MASTER CLASH</title>
+<title>Mon Profil — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="budget">
+<body data-page="profil">
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
     <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
     <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
@@ -52,21 +52,65 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION 5 — BUDGET ===== -->
-<section id="budget">
-  <h2 class="section-title">Budget — Prévu vs Réel</h2>
-  <div class="section-subtitle">Section 5 — Chiffrage éditable + suivi par bénéficiaire</div>
-<div class="locked-wrap" data-section="budget">
-<div class="locked-content locked">
-  <div id="budget-container"><!-- rempli dynamiquement par renderBudget() --></div>
-</div>
-<div class="lock-overlay" data-section="budget">
-  <div class="lock-big">🔒</div>
-  <div class="lock-msg">Accès restreint</div>
-  <div class="lock-sub">Code requis pour consulter le budget</div>
-  <button class="lock-btn">🔐 Voir comment accéder</button>
-</div>
-</div>
+<!-- ===== SECTION MON PROFIL (utilisateur connecté) ===== -->
+<section id="profil">
+  <h2 class="section-title">👤 Mon profil</h2>
+  <div class="section-subtitle">Gérer mes informations</div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📝 Mes informations</h3>
+    <div class="avatar-row" style="margin-bottom:14px">
+      <img id="profil-avatar-preview" class="avatar-preview" style="width:80px;height:80px" src="" alt="">
+      <input type="file" id="profil-avatar-file" accept="image/*" style="display:none" onchange="handleProfilAvatarUpload(event)">
+      <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('profil-avatar-file').click()">📷 Changer mon avatar / logo</button>
+    </div>
+    <label class="auth-label">Nom d'utilisateur (login) — non modifiable</label>
+    <input type="text" id="profil-username" class="auth-input" disabled>
+    <label class="auth-label">Nom affiché (entreprise / personne)</label>
+    <input type="text" id="profil-displayname" class="auth-input">
+    <button class="admin-btn" onclick="saveMyProfile()" style="margin-top:14px">💾 Enregistrer mes informations</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🔑 Changer mon mot de passe</h3>
+    <label class="auth-label">Mot de passe actuel</label>
+    <input type="password" id="profil-oldpwd" class="auth-input">
+    <label class="auth-label">Nouveau mot de passe</label>
+    <input type="password" id="profil-newpwd" class="auth-input">
+    <label class="auth-label">Confirmer le nouveau mot de passe</label>
+    <input type="password" id="profil-newpwd2" class="auth-input">
+    <button class="admin-btn" onclick="changeMyPassword()" style="margin-top:14px">🔑 Changer mon mot de passe</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🔐 Question secrète</h3>
+    <p>Permet de récupérer votre mot de passe en cas d'oubli.</p>
+    <label class="auth-label">Question secrète</label>
+    <select id="profil-secret-question" class="auth-input">
+      <option value="">— Choisissez une question —</option>
+      <option value="pet">Quel est le nom de votre premier animal de compagnie ?</option>
+      <option value="mother">Quel est le nom de jeune fille de votre mère ?</option>
+      <option value="city">Dans quelle ville êtes-vous né(e) ?</option>
+      <option value="friend">Quel est le nom de votre meilleur ami d'enfance ?</option>
+      <option value="color">Quelle est votre couleur préférée ?</option>
+      <option value="car">Quel est le modèle de votre première voiture ?</option>
+      <option value="school">Quel était le nom de votre école primaire ?</option>
+    </select>
+    <label class="auth-label">Réponse</label>
+    <input type="password" id="profil-secret-answer" class="auth-input">
+    <button class="admin-btn" onclick="saveMySecret()" style="margin-top:14px">💾 Enregistrer ma question secrète</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📋 Mes contrats</h3>
+    <div id="profil-mes-contrats"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📜 Mon historique d'activité</h3>
+    <p style="color:#aabbc8;font-size:13px">Les 50 dernières actions de votre compte.</p>
+    <div id="profil-mes-logs"></div>
+  </div>
 </section>
 <footer>
   MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas
@@ -335,6 +379,7 @@
       <button type="button" class="modal-btn modal-btn-primary" onclick="sendReply()">📨 Envoyer la réponse</button>
     </div>
   </div>
+</div>
 </div>
 
 <!-- ===== MODAL QR CODE ===== -->

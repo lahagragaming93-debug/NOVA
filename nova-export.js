@@ -14,12 +14,12 @@
      */
     toPDF: async function (filename) {
       if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-        alert("Librairies html2canvas ou jsPDF non chargées. Vérifie ta connexion internet.");
+        this._toast("Librairies html2canvas/jsPDF non chargées. Connexion ?", true);
         return;
       }
       const { jsPDF } = window.jspdf;
       const pages = document.querySelectorAll('.page');
-      if (pages.length === 0) { alert("Aucune page à exporter."); return; }
+      if (pages.length === 0) { this._toast("Aucune page à exporter.", true); return; }
 
       // Hide toolbar before capture
       document.querySelectorAll('.toolbar, .no-print').forEach(el => el.style.visibility = 'hidden');
@@ -42,7 +42,7 @@
         this._toast("PDF téléchargé.");
       } catch (e) {
         console.error(e);
-        alert("Erreur lors de l'export PDF : " + e.message);
+        this._toast("Erreur export PDF : " + e.message, true);
       } finally {
         document.querySelectorAll('.toolbar, .no-print').forEach(el => el.style.visibility = '');
       }
@@ -55,7 +55,7 @@
      */
     toPNG: async function (selector, filename) {
       if (typeof html2canvas === 'undefined') {
-        alert("La librairie html2canvas n'est pas chargée. Vérifie ta connexion internet.");
+        this._toast("html2canvas non chargée. Connexion ?", true);
         return;
       }
 
@@ -64,7 +64,7 @@
         : document.querySelectorAll('.page');
 
       if (targets.length === 0) {
-        alert("Aucun élément à exporter.");
+        this._toast("Aucun élément à exporter.", true);
         return;
       }
 
@@ -87,7 +87,7 @@
         }
       } catch (e) {
         console.error(e);
-        alert("Erreur lors de l'export PNG : " + e.message);
+        this._toast("Erreur export PNG : " + e.message, true);
       } finally {
         document.querySelectorAll('.toolbar, .no-print').forEach(el => el.style.visibility = '');
       }
@@ -194,7 +194,7 @@
             if (typeof callback === 'function') callback(data);
             NovaExport._toast("Données importées.");
           } catch (err) {
-            alert("Fichier JSON invalide : " + err.message);
+            NovaExport._toast("Fichier JSON invalide : " + err.message, true);
           }
         };
         reader.readAsText(file);

@@ -75,7 +75,7 @@
 <script type="module">
   import { onAuthChange, getUserProfile } from './js/auth.js';
   import { getDocument, updateDocument, numberToWords, formatDateLong, fmt } from './js/documents.js';
-  import { confirmDialog, alertDialog } from './js/ui-dialog.js';
+  import { confirmDialog, alertDialog, promptDialog } from './js/ui-dialog.js';
 
   let myProfile = null;
 
@@ -632,7 +632,10 @@
       const btnInstr = document.getElementById('btn-subv-instruction');
       if (btnInstr) btnInstr.addEventListener('click', () => setStatut('instruction'));
       document.getElementById('btn-subv-accordee').addEventListener('click', async () => {
-        const montant = window.prompt(`Montant accordé par l'institution (en $) :`, String(data.montant || 0));
+        const montant = await promptDialog(`Montant accordé par l'institution (en $) :`, String(data.montant || 0), {
+          title: 'Subvention accordée',
+          placeholder: 'Ex. 50000'
+        });
         if (montant === null) return;
         setStatut('accordee', montant);
       });

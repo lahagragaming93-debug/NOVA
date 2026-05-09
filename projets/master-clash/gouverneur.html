@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Règlement Officiel — MASTER CLASH</title>
+<title>Dossier Gouverneur — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="regl">
+<body data-page="gouv">
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
     <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
     <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
@@ -52,122 +52,94 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION 2 — RÈGLEMENT ===== -->
-<section id="regl">
-  <h2 class="section-title">Règlement Officiel</h2>
-  <div class="section-subtitle">Section 2 — 10 articles</div>
+<!-- ===== SECTION 1 — GOUVERNEUR ===== -->
+<section id="gouv">
+  <h2 class="section-title">Dossier Gouverneur</h2>
+  <div class="section-subtitle">Section 1 — Présentation officielle</div>
+<div class="locked-wrap" data-section="gouv">
+<div class="locked-content locked">
 
-  <div class="card"><h4 style="margin-top:0">Article 1 — Participation</h4>
+  <div class="card">
+    <h3 style="margin-top:0">Présentation du projet</h3>
+    <p>Master Clash est un événement compétitif et immersif alliant culture générale, rapidité et stratégie. 42 participants s'affrontent en trois manches progressives pour décrocher le titre de Grand Vainqueur et remporter la vitrine finale.</p>
+    <p>Au-delà du divertissement, Master Clash constitue une opportunité unique pour Los Santos : un événement structuré, professionnel et fédérateur, ancré dans la vie de la communauté.</p>
+  </div>
+
+  <h3>Objectifs du projet</h3>
+  <div class="card">
     <ul>
-      <li>L'événement est ouvert à tout citoyen en règle.</li>
-      <li>L'inscription préalable est obligatoire pour participer.</li>
-      <li>Un comportement exemplaire et respectueux est exigé tout au long de l'événement.</li>
+      <li>Dynamiser la vie sociale et culturelle de Los Santos.</li>
+      <li>Créer un événement fédérateur autour d'une compétition saine et ambitieuse.</li>
+      <li>Stimuler l'économie locale via la mise en valeur des entreprises partenaires.</li>
+      <li>Favoriser les interactions citoyennes et le sentiment d'appartenance.</li>
+      <li>Proposer un programme régulier, structuré et potentiellement récurrent.</li>
     </ul>
   </div>
 
-  <div class="card"><h4 style="margin-top:0">Article 2 — Déroulement général</h4>
-    <ul>
-      <li>L'événement se déroule en trois manches progressives.</li>
-      <li>Chaque participant s'engage à respecter les règles spécifiques à chaque manche.</li>
-      <li>Les décisions prises par l'animateur sont <strong>définitives et sans appel.</strong></li>
-      <li>L'organisateur se réserve le droit d'adapter les règles en cas de force majeure.</li>
-    </ul>
+  <h3>Format et déroulement</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>Participants</th><th>Mécanique</th><th>Objectif</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Manche 1 — Qualification</strong></td><td>42 → 12 (3 groupes × 14)</td><td>Buzzer — questions 1 à 3 pts selon difficulté</td><td>12 points</td></tr>
+        <tr><td><strong>Manche 2 — Sélection</strong></td><td>12 → 4 (individuel)</td><td>4 questions max (blind test possible Q4, 15s)</td><td>12 points</td></tr>
+        <tr><td><strong>Manche 3 — Finale</strong></td><td>4 → 1 Vainqueur</td><td>Chronomètre individuel 90 secondes par finaliste</td><td>Dernier avec du temps</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="card"><h4 style="margin-top:0">Article 3 — Manche 1 : Qualification (42 → 12)</h4>
-    <p>Les 42 participants sont répartis en 3 groupes de 14. Les 4 premiers à atteindre <strong>12 points</strong> dans chaque groupe accèdent à la manche suivante.</p>
-    <ul>
-      <li>Questions posées à l'ensemble du groupe via un système de buzzer.</li>
-      <li>Chaque question rapporte entre 1 et 3 points selon son niveau de difficulté.</li>
-      <li>Thèmes : culture générale, mathématiques, histoire, géographie, cinéma, musique, questions partenaires.</li>
-      <li>Seule la première réponse donnée après activation du buzzer est prise en compte.</li>
-      <li>Couper volontairement la réponse d'un adversaire est <strong>strictement interdit.</strong></li>
-      <li>La manche continue jusqu'à ce que 4 qualifiés soient désignés par groupe.</li>
-      <li>Les participants éliminés repartent avec des bons d'achat partenaires.</li>
-    </ul>
-  </div>
-
-  <div class="card"><h4 style="margin-top:0">Article 4 — Manche 2 : Sélection (12 → 4)</h4>
-    <p>Les 12 qualifiés passent un par un, avec un maximum de <strong>4 questions</strong> par participant pour atteindre 12 points.</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Format</th><th>Points</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td>Réponse directe</td><td><strong>+3 pts</strong></td><td>Le joueur répond sans aide.</td></tr>
-          <tr><td>QCM (4 choix)</td><td><strong>+1 pt</strong></td><td>4 choix proposés à l'écran.</td></tr>
-          <tr><td>Blind Test (Q4)</td><td><strong>Variable</strong></td><td>Extrait sonore — 15 secondes. S'applique uniquement à la 4ᵉ question.</td></tr>
-        </tbody>
-      </table>
+  <h3>Impact économique &amp; social</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4 style="margin-top:0">Impact économique</h4>
+      <ul>
+        <li>Valorisation des enseignes et commerces partenaires.</li>
+        <li>Bons d'achat distribués aux partenaires locaux.</li>
+        <li>Visibilité, notoriété et contact direct avec le public.</li>
+      </ul>
     </div>
-    <h4>Égalité</h4>
-    <ul>
-      <li>Duel rapide entre les ex-aequo : 3 questions, 1 point par bonne réponse.</li>
-      <li>Le premier à atteindre 2 points est qualifié.</li>
-    </ul>
-  </div>
-
-  <div class="card"><h4 style="margin-top:0">Article 5 — Manche 3 : La Grande Finale (4 → 1)</h4>
-    <p>Les 4 finalistes s'affrontent avec un capital de temps individuel. Le dernier à conserver du temps remporte la finale.</p>
-    <ul>
-      <li>Chaque finaliste dispose d'un capital de <strong>90 secondes.</strong></li>
-      <li>Les questions sont posées à tour de rôle.</li>
-      <li>Le chrono démarre dès la fin de l'énoncé de la question.</li>
-      <li>Le chrono s'arrête <strong>uniquement</strong> lors d'une bonne réponse.</li>
-      <li>Toute mauvaise réponse ou absence de réponse : le chrono continue (perte de temps).</li>
-      <li>Le dernier joueur conservant du temps est déclaré vainqueur.</li>
-    </ul>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Rang</th><th>Récompense</th></tr></thead>
-        <tbody>
-          <tr><td>🏆 1er — Grand Vainqueur</td><td>Vitrine finale exceptionnelle</td></tr>
-          <tr><td>2ᵉ place</td><td>Récompense intermédiaire premium</td></tr>
-          <tr><td>3ᵉ place</td><td>Récompense secondaire</td></tr>
-          <tr><td>4ᵉ place</td><td>Récompense de participation</td></tr>
-        </tbody>
-      </table>
+    <div class="card card-yellow">
+      <h4 style="margin-top:0;color:#f5c518">Impact social</h4>
+      <ul>
+        <li>Interaction directe entre citoyens.</li>
+        <li>Animation régulière de la vie de Los Santos.</li>
+        <li>Renforcement du lien institutions / citoyens.</li>
+      </ul>
     </div>
   </div>
 
-  <div class="card"><h4 style="margin-top:0">Article 6 — Buzzer</h4>
+  <h3>Système de récompenses</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Étape</th><th>Participants</th><th>Récompense</th></tr></thead>
+      <tbody>
+        <tr><td>Éliminés Manche 1</td><td>30</td><td>Bons d'achat partenaires</td></tr>
+        <tr><td>Éliminés Manche 2</td><td>8</td><td>Bons premium + expériences partenaires</td></tr>
+        <tr><td>Finaliste 4ᵉ place</td><td>1</td><td>Récompense de participation finaliste</td></tr>
+        <tr><td>Podium — 3ᵉ / 2ᵉ</td><td>2</td><td>Récompenses exclusives (podium)</td></tr>
+        <tr class="total-row"><td>🏆 Grand Vainqueur</td><td>1</td><td>Vitrine finale exceptionnelle</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Vision &amp; pérennité</h3>
+  <div class="card">
+    <p>Master Clash a vocation à devenir un rendez-vous régulier de la vie culturelle et sociale de Los Santos. Chaque édition peut évoluer dans ses thématiques, ses partenariats et son format, offrant une dynamique durable et renouvelée.</p>
     <ul>
-      <li>Une seule réponse est acceptée par activation du buzzer.</li>
-      <li>Il est formellement interdit d'activer le buzzer pour bloquer un adversaire.</li>
-      <li>Tout abus peut entraîner une <strong>pénalité ou une disqualification.</strong></li>
+      <li>Événement déclinable en éditions thématiques saisonnières.</li>
+      <li>Format évolutif selon les retours de la communauté.</li>
+      <li>Possibilité d'intégrer des catégories spéciales ou tournois par équipes.</li>
     </ul>
   </div>
 
-  <div class="card card-red"><h4 style="margin-top:0;color:#ff4757">Article 7 — Triche et comportement déloyal</h4>
-    <p>Est considéré comme triche : toute aide extérieure (téléphone, oreillette, document), communication entre joueurs, ou utilisation d'un outil quelconque.</p>
-    <p><strong style="color:#ff4757">Sanction : exclusion immédiate et définitive, sans compensation.</strong></p>
-  </div>
-
-  <div class="card"><h4 style="margin-top:0">Article 8 — Litiges</h4>
-    <ul>
-      <li>Tout litige est tranché par l'organisateur ou l'animateur.</li>
-      <li>Aucune contestation ne peut interrompre le cours d'une manche active.</li>
-      <li>Une procédure d'arbitrage peut être mise en place si le litige l'exige.</li>
-    </ul>
-  </div>
-
-  <div class="card"><h4 style="margin-top:0">Article 9 — Récompenses</h4>
-    <ul>
-      <li>Tous les participants reçoivent a minima des bons d'achat partenaires.</li>
-      <li>Les récompenses sont non échangeables contre de l'argent (sauf accord partenaire).</li>
-      <li>Les récompenses sont remises après validation par l'organisateur.</li>
-      <li>Tout comportement irrespectueux peut entraîner la <strong>perte des récompenses.</strong></li>
-    </ul>
-  </div>
-
-  <div class="card"><h4 style="margin-top:0">Article 10 — Comportement général</h4>
-    <ul>
-      <li>Le respect mutuel entre participants est obligatoire.</li>
-      <li>Tout comportement toxique ou agressif entraîne une <strong>exclusion immédiate.</strong></li>
-      <li>Le cadre de l'événement et ses règles doivent être respectés en toutes circonstances.</li>
-    </ul>
-  </div>
-
-  <blockquote>En participant à MASTER CLASH, chaque joueur reconnaît avoir lu et accepté l'intégralité du présent règlement.</blockquote>
+</div>
+<div class="lock-overlay" data-section="gouv">
+  <div class="lock-big">🔒</div>
+  <div class="lock-msg">Accès restreint</div>
+  <div class="lock-sub">Code requis pour consulter le dossier Gouverneur</div>
+  <button class="lock-btn">🔐 Voir comment accéder</button>
+</div>
+</div>
 </section>
 <footer>
   MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas

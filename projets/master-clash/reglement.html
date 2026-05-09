@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administration — MASTER CLASH</title>
+<title>Règlement Officiel — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="admin">
+<body data-page="regl">
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
     <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
     <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
@@ -52,86 +52,122 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION ADMIN ===== -->
-<section id="admin">
-  <h2 class="section-title">🔧 Administration</h2>
-  <div class="section-subtitle">Réservé à l'organisateur — gestion du code &amp; des archives</div>
-<div class="locked-wrap" data-section="admin">
-<div class="locked-content locked">
+<!-- ===== SECTION 2 — RÈGLEMENT ===== -->
+<section id="regl">
+  <h2 class="section-title">Règlement Officiel</h2>
+  <div class="section-subtitle">Section 2 — 10 articles</div>
 
-  <div class="card">
-    <h3 style="margin-top:0">📨 Messages reçus <span id="msg-count-badge" style="background:rgba(0,212,255,.18);color:#00d4ff;padding:3px 10px;border-radius:14px;font-size:12px;margin-left:6px;font-weight:700">0</span></h3>
-    <p>Messages envoyés par les partenaires via le bouton 📨 dans la nav.</p>
-    <div id="messages-list"></div>
+  <div class="card"><h4 style="margin-top:0">Article 1 — Participation</h4>
+    <ul>
+      <li>L'événement est ouvert à tout citoyen en règle.</li>
+      <li>L'inscription préalable est obligatoire pour participer.</li>
+      <li>Un comportement exemplaire et respectueux est exigé tout au long de l'événement.</li>
+    </ul>
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">📊 Statistiques</h3>
-    <div id="admin-stats">Chargement…</div>
-    <button class="admin-btn admin-btn-secondary" onclick="refreshAdminStats()">↻ Actualiser</button>
+  <div class="card"><h4 style="margin-top:0">Article 2 — Déroulement général</h4>
+    <ul>
+      <li>L'événement se déroule en trois manches progressives.</li>
+      <li>Chaque participant s'engage à respecter les règles spécifiques à chaque manche.</li>
+      <li>Les décisions prises par l'animateur sont <strong>définitives et sans appel.</strong></li>
+      <li>L'organisateur se réserve le droit d'adapter les règles en cas de force majeure.</li>
+    </ul>
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">🔓 Session de déblocage</h3>
-    <p>Le déblocage actuel est valide tant que le navigateur n'est pas réinitialisé.</p>
-    <button class="admin-btn admin-btn-secondary" onclick="lockAllSections()">🔒 Re-verrouiller toutes les sections</button>
+  <div class="card"><h4 style="margin-top:0">Article 3 — Manche 1 : Qualification (42 → 12)</h4>
+    <p>Les 42 participants sont répartis en 3 groupes de 14. Les 4 premiers à atteindre <strong>12 points</strong> dans chaque groupe accèdent à la manche suivante.</p>
+    <ul>
+      <li>Questions posées à l'ensemble du groupe via un système de buzzer.</li>
+      <li>Chaque question rapporte entre 1 et 3 points selon son niveau de difficulté.</li>
+      <li>Thèmes : culture générale, mathématiques, histoire, géographie, cinéma, musique, questions partenaires.</li>
+      <li>Seule la première réponse donnée après activation du buzzer est prise en compte.</li>
+      <li>Couper volontairement la réponse d'un adversaire est <strong>strictement interdit.</strong></li>
+      <li>La manche continue jusqu'à ce que 4 qualifiés soient désignés par groupe.</li>
+      <li>Les participants éliminés repartent avec des bons d'achat partenaires.</li>
+    </ul>
   </div>
 
-  <div class="card card-yellow">
-    <h3 style="margin-top:0;color:#f5c518">👥 Comptes utilisateurs <span id="users-count-badge" style="background:rgba(0,212,255,.18);color:#00d4ff;padding:3px 10px;border-radius:14px;font-size:12px;margin-left:6px;font-weight:700">0</span></h3>
-    <p>Tous les comptes créés (manuellement ou par auto-inscription). Cliquez sur <strong>✎ Modifier</strong> pour changer les permissions, l'avatar ou le mot de passe d'un compte.</p>
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="admin-btn" onclick="openUserModal()">➕ Créer un utilisateur</button>
-      <button class="admin-btn admin-btn-secondary" onclick="renderUsersList()">↻ Actualiser la liste</button>
+  <div class="card"><h4 style="margin-top:0">Article 4 — Manche 2 : Sélection (12 → 4)</h4>
+    <p>Les 12 qualifiés passent un par un, avec un maximum de <strong>4 questions</strong> par participant pour atteindre 12 points.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Format</th><th>Points</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Réponse directe</td><td><strong>+3 pts</strong></td><td>Le joueur répond sans aide.</td></tr>
+          <tr><td>QCM (4 choix)</td><td><strong>+1 pt</strong></td><td>4 choix proposés à l'écran.</td></tr>
+          <tr><td>Blind Test (Q4)</td><td><strong>Variable</strong></td><td>Extrait sonore — 15 secondes. S'applique uniquement à la 4ᵉ question.</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div id="users-list"></div>
+    <h4>Égalité</h4>
+    <ul>
+      <li>Duel rapide entre les ex-aequo : 3 questions, 1 point par bonne réponse.</li>
+      <li>Le premier à atteindre 2 points est qualifié.</li>
+    </ul>
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">📝 Templates de contrats</h3>
-    <p>Personnalisez le contenu des contrats existants ou créez de nouveaux types depuis l'éditeur visuel.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <a href="template-editor.html" class="admin-btn" style="text-decoration:none;display:inline-block">➕ Créer un nouveau template</a>
-      <button class="admin-btn admin-btn-secondary" onclick="resetTplsToDefault()">↺ Restaurer les templates par défaut</button>
+  <div class="card"><h4 style="margin-top:0">Article 5 — Manche 3 : La Grande Finale (4 → 1)</h4>
+    <p>Les 4 finalistes s'affrontent avec un capital de temps individuel. Le dernier à conserver du temps remporte la finale.</p>
+    <ul>
+      <li>Chaque finaliste dispose d'un capital de <strong>90 secondes.</strong></li>
+      <li>Les questions sont posées à tour de rôle.</li>
+      <li>Le chrono démarre dès la fin de l'énoncé de la question.</li>
+      <li>Le chrono s'arrête <strong>uniquement</strong> lors d'une bonne réponse.</li>
+      <li>Toute mauvaise réponse ou absence de réponse : le chrono continue (perte de temps).</li>
+      <li>Le dernier joueur conservant du temps est déclaré vainqueur.</li>
+    </ul>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Rang</th><th>Récompense</th></tr></thead>
+        <tbody>
+          <tr><td>🏆 1er — Grand Vainqueur</td><td>Vitrine finale exceptionnelle</td></tr>
+          <tr><td>2ᵉ place</td><td>Récompense intermédiaire premium</td></tr>
+          <tr><td>3ᵉ place</td><td>Récompense secondaire</td></tr>
+          <tr><td>4ᵉ place</td><td>Récompense de participation</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div id="templates-list"></div>
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">📜 Logs d'activité</h3>
-    <p>Historique complet des actions sur le site (connexions, modifications, validations…).</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <button class="admin-btn admin-btn-secondary" onclick="renderAdminLogs()">↻ Actualiser</button>
-      <button class="admin-btn admin-btn-secondary" onclick="clearAllLogs()">🗑 Vider l'historique</button>
-    </div>
-    <div id="admin-logs-list"></div>
+  <div class="card"><h4 style="margin-top:0">Article 6 — Buzzer</h4>
+    <ul>
+      <li>Une seule réponse est acceptée par activation du buzzer.</li>
+      <li>Il est formellement interdit d'activer le buzzer pour bloquer un adversaire.</li>
+      <li>Tout abus peut entraîner une <strong>pénalité ou une disqualification.</strong></li>
+    </ul>
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">💾 Sauvegarde &amp; restauration</h3>
-    <p>Toutes les données du site (comptes utilisateurs, contrats archivés, paramètres) sont stockées dans le navigateur. Si vous changez de PC ou videz le cache, vous perdez tout. Téléchargez régulièrement une sauvegarde !</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-      <button class="admin-btn" onclick="exportBackup()">💾 Télécharger une sauvegarde</button>
-      <input type="file" id="restore-file" accept=".json,application/json" style="display:none" onchange="importBackupFile(event)">
-      <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('restore-file').click()">📂 Restaurer depuis un fichier</button>
-    </div>
-    <div id="backup-info" style="margin-top:10px;font-size:11px;color:#6a7a8a"></div>
+  <div class="card card-red"><h4 style="margin-top:0;color:#ff4757">Article 7 — Triche et comportement déloyal</h4>
+    <p>Est considéré comme triche : toute aide extérieure (téléphone, oreillette, document), communication entre joueurs, ou utilisation d'un outil quelconque.</p>
+    <p><strong style="color:#ff4757">Sanction : exclusion immédiate et définitive, sans compensation.</strong></p>
   </div>
 
-  <div class="card card-red">
-    <h3 style="margin-top:0;color:#ff4757">⚠ Zone dangereuse</h3>
-    <p>Actions irréversibles. À utiliser avec précaution.</p>
-    <button class="admin-btn admin-btn-danger" onclick="clearAllArchives()">🗑 Effacer tous les contrats archivés</button>
+  <div class="card"><h4 style="margin-top:0">Article 8 — Litiges</h4>
+    <ul>
+      <li>Tout litige est tranché par l'organisateur ou l'animateur.</li>
+      <li>Aucune contestation ne peut interrompre le cours d'une manche active.</li>
+      <li>Une procédure d'arbitrage peut être mise en place si le litige l'exige.</li>
+    </ul>
   </div>
 
-</div>
-<div class="lock-overlay" data-section="admin">
-  <div class="lock-big">🔧</div>
-  <div class="lock-msg">Administration</div>
-  <div class="lock-sub">Code requis pour accéder à l'administration</div>
-  <button class="lock-btn">🔐 Voir comment accéder</button>
-</div>
-</div>
+  <div class="card"><h4 style="margin-top:0">Article 9 — Récompenses</h4>
+    <ul>
+      <li>Tous les participants reçoivent a minima des bons d'achat partenaires.</li>
+      <li>Les récompenses sont non échangeables contre de l'argent (sauf accord partenaire).</li>
+      <li>Les récompenses sont remises après validation par l'organisateur.</li>
+      <li>Tout comportement irrespectueux peut entraîner la <strong>perte des récompenses.</strong></li>
+    </ul>
+  </div>
+
+  <div class="card"><h4 style="margin-top:0">Article 10 — Comportement général</h4>
+    <ul>
+      <li>Le respect mutuel entre participants est obligatoire.</li>
+      <li>Tout comportement toxique ou agressif entraîne une <strong>exclusion immédiate.</strong></li>
+      <li>Le cadre de l'événement et ses règles doivent être respectés en toutes circonstances.</li>
+    </ul>
+  </div>
+
+  <blockquote>En participant à MASTER CLASH, chaque joueur reconnaît avoir lu et accepté l'intégralité du présent règlement.</blockquote>
 </section>
 <footer>
   MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas

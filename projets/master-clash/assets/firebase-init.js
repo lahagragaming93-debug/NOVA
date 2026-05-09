@@ -14,14 +14,15 @@
  * MC_FB.db et MC_FB.auth seront null et le site retombe sur le mode localStorage.
  * ============================================================================ */
 (function(){
+  // Master Clash partage le projet Firebase de NOVA (nova-association).
+  // Ses collections sont préfixées "mc_" pour cohabiter avec celles de l'asso.
   var firebaseConfig = {
-    apiKey: "AIzaSyAh7rgeztaouKZfw3Y8XrEKrJCMuj_iHy4",
-    authDomain: "master-clash-ad9ae.firebaseapp.com",
-    projectId: "master-clash-ad9ae",
-    storageBucket: "master-clash-ad9ae.firebasestorage.app",
-    messagingSenderId: "73111861947",
-    appId: "1:73111861947:web:6da9f44a91ea47322e479e",
-    measurementId: "G-HPG9SYRKE5"
+    apiKey: "AIzaSyCGli4QoC6IWXdKgnxWiVAC2zLZoDqqavM",
+    authDomain: "nova-association.firebaseapp.com",
+    projectId: "nova-association",
+    storageBucket: "nova-association.firebasestorage.app",
+    messagingSenderId: "642295385109",
+    appId: "1:642295385109:web:76804c5d6afc67c619921c"
   };
 
   window.MC_FB = { app: null, db: null, auth: null, ready: null, available: false };
@@ -74,7 +75,7 @@
         });
       }, 600);
     });
-    console.log('[MC_FB] Firebase initialisé — projet master-clash-ad9ae');
+    console.log('[MC_FB] Firebase initialisé — projet nova-association (collections mc_*)');
   } catch(e){
     console.error('[MC_FB] Erreur d\'initialisation Firebase :', e);
     window.MC_FB.available = false;

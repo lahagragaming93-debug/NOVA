@@ -3905,7 +3905,9 @@ refreshAdminStats();
 //   3. Mise à jour de la mention "demande à BoulaTV" pour citer NOVA
 // ============================================================================
 (function(){
-  var NOVA_URL = 'https://lahagragaming93-debug.github.io/NOVA/'; // URL à ajuster lors du déploiement
+  // Master Clash vit sous /projets/master-clash/ dans le portail NOVA.
+  // L'URL relative remonte au site NOVA en restant dans la même fenêtre.
+  var NOVA_URL = '../../index.html';
 
   // 1. Bouton "Retour NOVA" dans la nav
   function injectReturnNovaBtn(){
@@ -3913,8 +3915,6 @@ refreshAdminStats();
     if (!nav || nav.querySelector('.nav-back-nova')) return;
     var a = document.createElement('a');
     a.href = NOVA_URL;
-    a.target = '_blank';
-    a.rel = 'noopener';
     a.className = 'nav-back-nova';
     a.title = 'Retour vers le site officiel de l\'association NOVA';
     a.style.cssText = 'background:linear-gradient(135deg,#1f2d4a,#16223C);color:#fbf9f3;padding:6px 14px;border-radius:4px;border:1px solid #b89c5e;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;letter-spacing:0.5px;';
@@ -3938,7 +3938,7 @@ refreshAdminStats();
       + 'Association à but non lucratif déclarée auprès du département de la Vie Civile, conforme au Code des Taxes, du Travail et des Entreprises (T.T.E. — Chap. VIII).'
       + '</div>'
       + '<div style="margin:14px 0 8px 0;color:#b89c5e;font-size:11px;letter-spacing:2px;font-variant:small-caps;">État de San Andreas — Los Santos</div>'
-      + '<a href="' + NOVA_URL + '" target="_blank" rel="noopener" '
+      + '<a href="' + NOVA_URL + '" '
       +   'style="display:inline-block;margin-top:8px;background:transparent;color:#b89c5e;border:1px solid #b89c5e;padding:6px 16px;border-radius:3px;text-decoration:none;font-size:11.5px;letter-spacing:1.5px;font-variant:small-caps;transition:all 0.25s;" '
       +   'onmouseover="this.style.background=\'#b89c5e\';this.style.color=\'#1f2d4a\';" '
       +   'onmouseout="this.style.background=\'transparent\';this.style.color=\'#b89c5e\';">'

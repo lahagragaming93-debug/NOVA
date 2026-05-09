@@ -1,0 +1,13 @@
+// ============================================================================
+// FICHIER OBSOLÈTE — NE PAS UTILISER
+//
+// Master Clash partage désormais le projet Firebase nova-association avec NOVA
+// (depuis le 2026-05-09). Ses règles ont été fusionnées dans le fichier unifié :
+//
+//     ../../firestore.rules   (à la racine du dossier `site/`)
+//
+// C'est ce fichier-là qui doit être copié dans Firebase Console → Firestore →
+// onglet "Règles". Les règles MC y figurent dans la seconde moitié, sur les
+// collections préfixées "mc_*" (mc_users, mc_messages, mc_participants,
+// mc_contracts, mc_config).
+// ============================================================================

@@ -814,8 +814,8 @@
     try {
       const result = await createDocument(DOC_TYPES.RECU_DON, data);
       modalDon.classList.remove('active');
-      // Ouvre le document dans un nouvel onglet
-      window.open(`document-view.html?id=${result.id}`, '_blank');
+      // Navigation interne (compatible CEF FiveM — pas d'onglet)
+      window.location.href = `document-view.html?id=${result.id}`;
     } catch (e) {
       err.textContent = e.message || 'Erreur.';
     } finally {

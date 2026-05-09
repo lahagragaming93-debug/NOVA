@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dossier Gouverneur — MASTER CLASH</title>
+<title>Inscriptions Participants — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="gouv">
+<body data-page="participants">
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
     <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
     <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
@@ -52,94 +52,48 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION 1 — GOUVERNEUR ===== -->
-<section id="gouv">
-  <h2 class="section-title">Dossier Gouverneur</h2>
-  <div class="section-subtitle">Section 1 — Présentation officielle</div>
-<div class="locked-wrap" data-section="gouv">
-<div class="locked-content locked">
+<!-- ===== SECTION MON PROFIL (utilisateur connecté) ===== -->
+<section id="participants">
+  <h2 class="section-title">🎯 Inscriptions Master Clash</h2>
+  <div class="section-subtitle">42 participants — 3 groupes de 14 — Manche 1</div>
 
-  <div class="card">
-    <h3 style="margin-top:0">Présentation du projet</h3>
-    <p>Master Clash est un événement compétitif et immersif alliant culture générale, rapidité et stratégie. 42 participants s'affrontent en trois manches progressives pour décrocher le titre de Grand Vainqueur et remporter la vitrine finale.</p>
-    <p>Au-delà du divertissement, Master Clash constitue une opportunité unique pour Los Santos : un événement structuré, professionnel et fédérateur, ancré dans la vie de la communauté.</p>
-  </div>
-
-  <h3>Objectifs du projet</h3>
-  <div class="card">
-    <ul>
-      <li>Dynamiser la vie sociale et culturelle de Los Santos.</li>
-      <li>Créer un événement fédérateur autour d'une compétition saine et ambitieuse.</li>
-      <li>Stimuler l'économie locale via la mise en valeur des entreprises partenaires.</li>
-      <li>Favoriser les interactions citoyennes et le sentiment d'appartenance.</li>
-      <li>Proposer un programme régulier, structuré et potentiellement récurrent.</li>
-    </ul>
-  </div>
-
-  <h3>Format et déroulement</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Phase</th><th>Participants</th><th>Mécanique</th><th>Objectif</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Manche 1 — Qualification</strong></td><td>42 → 12 (3 groupes × 14)</td><td>Buzzer — questions 1 à 3 pts selon difficulté</td><td>12 points</td></tr>
-        <tr><td><strong>Manche 2 — Sélection</strong></td><td>12 → 4 (individuel)</td><td>4 questions max (blind test possible Q4, 15s)</td><td>12 points</td></tr>
-        <tr><td><strong>Manche 3 — Finale</strong></td><td>4 → 1 Vainqueur</td><td>Chronomètre individuel 90 secondes par finaliste</td><td>Dernier avec du temps</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>Impact économique &amp; social</h3>
-  <div class="grid-2">
-    <div class="card">
-      <h4 style="margin-top:0">Impact économique</h4>
-      <ul>
-        <li>Valorisation des enseignes et commerces partenaires.</li>
-        <li>Bons d'achat distribués aux partenaires locaux.</li>
-        <li>Visibilité, notoriété et contact direct avec le public.</li>
-      </ul>
+  <div class="card card-yellow">
+    <h3 style="margin-top:0">📊 Statut des inscriptions</h3>
+    <div id="part-progress-bar-wrap" style="background:#141926;height:24px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,212,255,.2);position:relative">
+      <div id="part-progress-bar" style="height:100%;background:linear-gradient(90deg,#00d4ff 0%,#f5c518 100%);width:0%;transition:width .5s"></div>
+      <div id="part-progress-text" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#dce4f0;font-weight:700;font-size:13px;letter-spacing:1px">0 / 42</div>
     </div>
-    <div class="card card-yellow">
-      <h4 style="margin-top:0;color:#f5c518">Impact social</h4>
-      <ul>
-        <li>Interaction directe entre citoyens.</li>
-        <li>Animation régulière de la vie de Los Santos.</li>
-        <li>Renforcement du lien institutions / citoyens.</li>
-      </ul>
-    </div>
+    <div id="part-buttons-bar" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"></div>
   </div>
 
-  <h3>Système de récompenses</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Étape</th><th>Participants</th><th>Récompense</th></tr></thead>
-      <tbody>
-        <tr><td>Éliminés Manche 1</td><td>30</td><td>Bons d'achat partenaires</td></tr>
-        <tr><td>Éliminés Manche 2</td><td>8</td><td>Bons premium + expériences partenaires</td></tr>
-        <tr><td>Finaliste 4ᵉ place</td><td>1</td><td>Récompense de participation finaliste</td></tr>
-        <tr><td>Podium — 3ᵉ / 2ᵉ</td><td>2</td><td>Récompenses exclusives (podium)</td></tr>
-        <tr class="total-row"><td>🏆 Grand Vainqueur</td><td>1</td><td>Vitrine finale exceptionnelle</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>Vision &amp; pérennité</h3>
   <div class="card">
-    <p>Master Clash a vocation à devenir un rendez-vous régulier de la vie culturelle et sociale de Los Santos. Chaque édition peut évoluer dans ses thématiques, ses partenariats et son format, offrant une dynamique durable et renouvelée.</p>
-    <ul>
-      <li>Événement déclinable en éditions thématiques saisonnières.</li>
-      <li>Format évolutif selon les retours de la communauté.</li>
-      <li>Possibilité d'intégrer des catégories spéciales ou tournois par équipes.</li>
-    </ul>
+    <h3 style="margin-top:0">📋 Liste des participants</h3>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+      <input type="text" id="part-search" class="auth-input" placeholder="🔍 Rechercher..." style="flex:1;min-width:200px;margin:0" oninput="renderParticipantsList()">
+      <select id="part-filter-status" class="auth-input" style="width:auto;margin:0" onchange="renderParticipantsList()">
+        <option value="">Tous statuts</option>
+        <option value="pending">⏳ En attente</option>
+        <option value="confirmed">✓ Confirmé</option>
+        <option value="absent">✕ Absent</option>
+        <option value="qualified">🏆 Qualifié</option>
+      </select>
+      <select id="part-filter-group" class="auth-input" style="width:auto;margin:0" onchange="renderParticipantsList()">
+        <option value="">Tous groupes</option>
+        <option value="none">Sans groupe</option>
+        <option value="A">Groupe A</option>
+        <option value="B">Groupe B</option>
+        <option value="C">Groupe C</option>
+      </select>
+    </div>
+    <div id="participants-list"></div>
   </div>
 
-</div>
-<div class="lock-overlay" data-section="gouv">
-  <div class="lock-big">🔒</div>
-  <div class="lock-msg">Accès restreint</div>
-  <div class="lock-sub">Code requis pour consulter le dossier Gouverneur</div>
-  <button class="lock-btn">🔐 Voir comment accéder</button>
-</div>
-</div>
+  <div class="card" id="groups-display-card" style="display:none">
+    <h3 style="margin-top:0">🎲 Tirage Manche 1 — Groupes</h3>
+    <div id="groups-display" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px"></div>
+    <button class="admin-btn admin-btn-secondary" onclick="resetDraw()" style="margin-top:14px">↺ Réinitialiser le tirage</button>
+  </div>
+
 </section>
 <footer>
   MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas

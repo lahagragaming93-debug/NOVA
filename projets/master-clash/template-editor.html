@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mon Profil — MASTER CLASH</title>
+<title>Éditeur de template — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,22 +26,15 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="profil">
+<body data-page="admin">
+
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
-    <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
-    <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
-    <a href="partenaires.html" title="Partenaires"><span class="nav-icon">🤝</span><span class="nav-text">Partenaires</span></a>
-    <a href="contrats.html" class="locked-link" data-section="contrats" title="Contrats &amp; Bons"><span class="lock-icon">🔒</span><span class="nav-icon">📋</span><span class="nav-text">Contrats</span></a>
-    <a href="questions.html" class="locked-link" data-section="ques" title="Banque de Questions"><span class="lock-icon">🔒</span><span class="nav-icon">❓</span><span class="nav-text">Questions</span></a>
-    <a href="budget.html" class="locked-link" data-section="budget" title="Budget"><span class="lock-icon">🔒</span><span class="nav-icon">💰</span><span class="nav-text">Budget</span></a>
-    <a href="participants.html" id="nav-participants-link" style="display:none" title="Participants"><span class="nav-icon">🎯</span><span class="nav-text">Participants</span></a>
-    <a href="profil.html" id="nav-profil-link" style="display:none" title="Mon profil"><span class="nav-icon">👤</span><span class="nav-text">Profil</span></a>
-    <a href="admin.html" class="locked-link" data-section="admin" title="Administration"><span class="lock-icon">🔒</span><span class="nav-icon">🔧</span><span class="nav-text">Admin</span></a>
+    <a href="admin.html">← Retour à l'admin</a>
   </div>
   <div class="nav-user" id="nav-user">
-    <button class="nav-msg-btn" id="nav-msg-btn" onclick="openMessageModal()" style="display:none" title="Contacter l'organisateur">📨</button><div class="nav-notif-wrap" id="nav-notif-wrap" style="display:none"><button class="nav-bell" id="nav-bell" onclick="toggleNotifs(event)">🔔<span class="nav-notif-count" id="nav-notif-count">0</span></button><div class="nav-notif-dropdown" id="nav-notif-dropdown"><div class="nav-notif-head"><strong>Notifications</strong><button class="nav-notif-mark" onclick="markAllNotifsRead()">✓ Tout marquer lu</button></div><div class="nav-notif-list" id="nav-notif-list"></div></div></div><button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
+    <button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
     <div class="nav-user-box" id="nav-user-box" style="display:none">
       <img class="nav-avatar" id="nav-avatar" src="" alt="">
       <div class="nav-user-text">
@@ -52,69 +45,24 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION MON PROFIL (utilisateur connecté) ===== -->
-<section id="profil">
-  <h2 class="section-title">👤 Mon profil</h2>
-  <div class="section-subtitle">Gérer mes informations</div>
 
-  <div class="card">
-    <h3 style="margin-top:0">📝 Mes informations</h3>
-    <div class="avatar-row" style="margin-bottom:14px">
-      <img id="profil-avatar-preview" class="avatar-preview" style="width:80px;height:80px" src="" alt="">
-      <input type="file" id="profil-avatar-file" accept="image/*" style="display:none" onchange="handleProfilAvatarUpload(event)">
-      <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('profil-avatar-file').click()">📷 Changer mon avatar / logo</button>
+<section id="tpl-editor-section" style="max-width:1400px;padding:80px 14px 40px">
+  <h2 class="section-title">📝 Éditeur de template <span id="tpl-editor-mode" style="font-size:13px;color:#6a7a8a;font-weight:400;letter-spacing:1px;text-transform:uppercase">— Création</span></h2>
+  <div class="section-subtitle">Modifiez les textes, métadonnées, et structure de ce contrat. Aperçu en direct à gauche.</div>
+
+  <div class="tpl-editor-actions">
+    <button class="admin-btn" onclick="saveCurrentTemplate()">💾 Sauvegarder</button>
+    <button class="admin-btn admin-btn-secondary" onclick="cancelTemplateEdit()">✕ Annuler</button>
+  </div>
+
+  <div class="tpl-editor-split">
+    <div class="tpl-editor-preview">
+      <div class="tpl-preview-label">📄 Aperçu en direct</div>
+      <div class="contract-doc" id="tpl-preview-doc"></div>
     </div>
-    <label class="auth-label">Nom d'utilisateur (login) — non modifiable</label>
-    <input type="text" id="profil-username" class="auth-input" disabled>
-    <label class="auth-label">Nom affiché (entreprise / personne)</label>
-    <input type="text" id="profil-displayname" class="auth-input">
-    <button class="admin-btn" onclick="saveMyProfile()" style="margin-top:14px">💾 Enregistrer mes informations</button>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🔑 Changer mon mot de passe</h3>
-    <label class="auth-label">Mot de passe actuel</label>
-    <input type="password" id="profil-oldpwd" class="auth-input">
-    <label class="auth-label">Nouveau mot de passe</label>
-    <input type="password" id="profil-newpwd" class="auth-input">
-    <label class="auth-label">Confirmer le nouveau mot de passe</label>
-    <input type="password" id="profil-newpwd2" class="auth-input">
-    <button class="admin-btn" onclick="changeMyPassword()" style="margin-top:14px">🔑 Changer mon mot de passe</button>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🔐 Question secrète</h3>
-    <p>Permet de récupérer votre mot de passe en cas d'oubli.</p>
-    <label class="auth-label">Question secrète</label>
-    <select id="profil-secret-question" class="auth-input">
-      <option value="">— Choisissez une question —</option>
-      <option value="pet">Quel est le nom de votre premier animal de compagnie ?</option>
-      <option value="mother">Quel est le nom de jeune fille de votre mère ?</option>
-      <option value="city">Dans quelle ville êtes-vous né(e) ?</option>
-      <option value="friend">Quel est le nom de votre meilleur ami d'enfance ?</option>
-      <option value="color">Quelle est votre couleur préférée ?</option>
-      <option value="car">Quel est le modèle de votre première voiture ?</option>
-      <option value="school">Quel était le nom de votre école primaire ?</option>
-    </select>
-    <label class="auth-label">Réponse</label>
-    <input type="password" id="profil-secret-answer" class="auth-input">
-    <button class="admin-btn" onclick="saveMySecret()" style="margin-top:14px">💾 Enregistrer ma question secrète</button>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">📋 Mes contrats</h3>
-    <div id="profil-mes-contrats"></div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">📜 Mon historique d'activité</h3>
-    <p style="color:#aabbc8;font-size:13px">Les 50 dernières actions de votre compte.</p>
-    <div id="profil-mes-logs"></div>
+    <div class="tpl-editor-form" id="tpl-editor-form"></div>
   </div>
 </section>
-<footer>
-  MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas
-</footer>
 
 <!-- ===== ZONE IMPRESSION (pour contrats validés) ===== -->
 <div id="print-area"></div>
@@ -448,7 +396,10 @@
 </div>
 
 <script src="assets/default_templates.js"></script>
+
+<script src="assets/default_templates.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/template-editor.js"></script>
 <script src="assets/sw-register.js" defer></script>
 </body>
 </html>

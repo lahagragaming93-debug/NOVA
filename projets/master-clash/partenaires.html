@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inscriptions Participants — MASTER CLASH</title>
+<title>Dossier Partenaires — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
 <script src="assets/firebase-contracts.js"></script>
 <script src="assets/firebase-budget.js"></script>
 </head>
-<body data-page="participants">
+<body data-page="part">
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
     <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
     <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
@@ -52,48 +52,57 @@
     </div>
   </div>
 </nav>
-<!-- ===== SECTION MON PROFIL (utilisateur connecté) ===== -->
-<section id="participants">
-  <h2 class="section-title">🎯 Inscriptions Master Clash</h2>
-  <div class="section-subtitle">42 participants — 3 groupes de 14 — Manche 1</div>
-
-  <div class="card card-yellow">
-    <h3 style="margin-top:0">📊 Statut des inscriptions</h3>
-    <div id="part-progress-bar-wrap" style="background:#141926;height:24px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,212,255,.2);position:relative">
-      <div id="part-progress-bar" style="height:100%;background:linear-gradient(90deg,#00d4ff 0%,#f5c518 100%);width:0%;transition:width .5s"></div>
-      <div id="part-progress-text" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#dce4f0;font-weight:700;font-size:13px;letter-spacing:1px">0 / 42</div>
-    </div>
-    <div id="part-buttons-bar" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"></div>
-  </div>
+<!-- ===== SECTION 3 — PARTENAIRES ===== -->
+<section id="part">
+  <h2 class="section-title">Dossier Partenaires</h2>
+  <div class="section-subtitle">Section 3 — Devenir partenaire de Master Clash</div>
 
   <div class="card">
-    <h3 style="margin-top:0">📋 Liste des participants</h3>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
-      <input type="text" id="part-search" class="auth-input" placeholder="🔍 Rechercher..." style="flex:1;min-width:200px;margin:0" oninput="renderParticipantsList()">
-      <select id="part-filter-status" class="auth-input" style="width:auto;margin:0" onchange="renderParticipantsList()">
-        <option value="">Tous statuts</option>
-        <option value="pending">⏳ En attente</option>
-        <option value="confirmed">✓ Confirmé</option>
-        <option value="absent">✕ Absent</option>
-        <option value="qualified">🏆 Qualifié</option>
-      </select>
-      <select id="part-filter-group" class="auth-input" style="width:auto;margin:0" onchange="renderParticipantsList()">
-        <option value="">Tous groupes</option>
-        <option value="none">Sans groupe</option>
-        <option value="A">Groupe A</option>
-        <option value="B">Groupe B</option>
-        <option value="C">Groupe C</option>
-      </select>
-    </div>
-    <div id="participants-list"></div>
+    <h3 style="margin-top:0">Qu'est-ce que Master Clash ?</h3>
+    <p>Master Clash est un événement compétitif alliant culture générale, rapidité et stratégie. 42 participants s'affrontent en trois manches progressives devant un public engagé. L'événement génère une forte interaction entre participants, public et partenaires, dans une atmosphère dynamique et professionnelle.</p>
   </div>
 
-  <div class="card" id="groups-display-card" style="display:none">
-    <h3 style="margin-top:0">🎲 Tirage Manche 1 — Groupes</h3>
-    <div id="groups-display" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px"></div>
-    <button class="admin-btn admin-btn-secondary" onclick="resetDraw()" style="margin-top:14px">↺ Réinitialiser le tirage</button>
+  <h3>Pourquoi devenir partenaire ?</h3>
+  <div class="grid-3">
+    <div class="card"><h4 style="margin-top:0">Visibilité</h4><p>Votre nom mentionné pendant les questions, sur les supports visuels et lors de chaque remise de lot.</p></div>
+    <div class="card card-yellow"><h4 style="margin-top:0;color:#f5c518">Interaction</h4><p>Contact direct avec les participants via vos récompenses, remises en mains propres lors de l'événement.</p></div>
+    <div class="card"><h4 style="margin-top:0">Image</h4><p>Association à un événement de qualité, dynamique et ancré dans la vie de la communauté.</p></div>
   </div>
 
+  <h3>Niveaux de partenariat</h3>
+  <div class="grid-2">
+    <div class="card"><h4 style="margin-top:0">Partenaire Récompenses</h4><p>Fournissez des bons d'achat ou services pour les participants éliminés. Votre nom est associé à chaque remise de lot.</p></div>
+    <div class="card card-yellow"><h4 style="margin-top:0;color:#f5c518">Partenaire Questions</h4><p>Une ou plusieurs questions sponsorisées intégrées dans le jeu. Mention explicite de votre enseigne pendant la manche.</p></div>
+    <div class="card"><h4 style="margin-top:0">Partenaire Expériences</h4><p>Proposez une expérience exclusive (VIP, activité, accès privilégié) pour les finalistes. Visibilité maximale en finale.</p></div>
+    <div class="card card-yellow"><h4 style="margin-top:0;color:#f5c518">Partenaire Visuel</h4><p>Votre logo sur tous les supports de communication officiels : affiches, écrans, documents distribués.</p></div>
+  </div>
+
+  <h3>Exemples de récompenses par secteur</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Secteur</th><th>Exemples de récompenses</th></tr></thead>
+      <tbody>
+        <tr><td>🍔 Alimentation</td><td>Bons repas, bons drive, paniers garnis, livraison à domicile</td></tr>
+        <tr><td>🚗 Automobile / Garage</td><td>Bons entretien, réparation, lavage, tuning</td></tr>
+        <tr><td>💆 Esthétique / Bien-être</td><td>Soins, coiffure, produits de beauté, spa</td></tr>
+        <tr><td>🎟️ Événementiel / VIP</td><td>Accès exclusifs, expériences privées, places événements</td></tr>
+        <tr><td>⚽ Sport / Loisirs</td><td>Stage pilotage, séances sportives, activités exclusives</td></tr>
+        <tr><td>🛍️ Commerce général</td><td>Bons d'achat polyvalents, remises, offres exclusives partenaires</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Engagement et conditions</h3>
+  <div class="card">
+    <ul>
+      <li>Les récompenses sont remises directement aux participants lors de l'événement.</li>
+      <li>Votre nom et/ou logo sont mentionnés conformément à l'offre choisie.</li>
+      <li>Un bilan de visibilité post-événement peut être fourni sur demande.</li>
+      <li>Les termes du partenariat font l'objet d'un accord préalable entre les parties.</li>
+    </ul>
+  </div>
+
+  <blockquote>Pour toute demande de partenariat : contactez directement l'équipe organisatrice de MASTER CLASH.</blockquote>
 </section>
 <footer>
   MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas

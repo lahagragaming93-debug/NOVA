@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Éditeur de template — MASTER CLASH</title>
+<title>Administration — MASTER CLASH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -27,14 +27,21 @@
 <script src="assets/firebase-budget.js"></script>
 </head>
 <body data-page="admin">
-
 <nav class="nav">
-  <a class="nav-back-nova" href="../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
+  <a class="nav-back-nova" href="../../index.html" title="Retour au site NOVA">← NOVA</a><a class="nav-logo" href="index.html"><img src="assets/logo-mc.png" alt="Master Clash" class="nav-logo-img"><span class="nav-logo-text">MASTER CLASH</span></a>
   <div class="nav-links">
-    <a href="admin.html">← Retour à l'admin</a>
+    <a href="gouverneur.html" class="locked-link" data-section="gouv" title="Dossier Gouverneur"><span class="lock-icon">🔒</span><span class="nav-icon">🏛️</span><span class="nav-text">Gouverneur</span></a>
+    <a href="reglement.html" title="Règlement Officiel"><span class="nav-icon">📜</span><span class="nav-text">Règlement</span></a>
+    <a href="partenaires.html" title="Partenaires"><span class="nav-icon">🤝</span><span class="nav-text">Partenaires</span></a>
+    <a href="contrats.html" class="locked-link" data-section="contrats" title="Contrats &amp; Bons"><span class="lock-icon">🔒</span><span class="nav-icon">📋</span><span class="nav-text">Contrats</span></a>
+    <a href="questions.html" class="locked-link" data-section="ques" title="Banque de Questions"><span class="lock-icon">🔒</span><span class="nav-icon">❓</span><span class="nav-text">Questions</span></a>
+    <a href="budget.html" class="locked-link" data-section="budget" title="Budget"><span class="lock-icon">🔒</span><span class="nav-icon">💰</span><span class="nav-text">Budget</span></a>
+    <a href="participants.html" id="nav-participants-link" style="display:none" title="Participants"><span class="nav-icon">🎯</span><span class="nav-text">Participants</span></a>
+    <a href="profil.html" id="nav-profil-link" style="display:none" title="Mon profil"><span class="nav-icon">👤</span><span class="nav-text">Profil</span></a>
+    <a href="admin.html" class="locked-link" data-section="admin" title="Administration"><span class="lock-icon">🔒</span><span class="nav-icon">🔧</span><span class="nav-text">Admin</span></a>
   </div>
   <div class="nav-user" id="nav-user">
-    <button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
+    <button class="nav-msg-btn" id="nav-msg-btn" onclick="openMessageModal()" style="display:none" title="Contacter l'organisateur">📨</button><div class="nav-notif-wrap" id="nav-notif-wrap" style="display:none"><button class="nav-bell" id="nav-bell" onclick="toggleNotifs(event)">🔔<span class="nav-notif-count" id="nav-notif-count">0</span></button><div class="nav-notif-dropdown" id="nav-notif-dropdown"><div class="nav-notif-head"><strong>Notifications</strong><button class="nav-notif-mark" onclick="markAllNotifsRead()">✓ Tout marquer lu</button></div><div class="nav-notif-list" id="nav-notif-list"></div></div></div><button class="nav-login-btn" id="nav-login-btn" onclick="openLoginModal()">🔐 Connexion</button>
     <div class="nav-user-box" id="nav-user-box" style="display:none">
       <img class="nav-avatar" id="nav-avatar" src="" alt="">
       <div class="nav-user-text">
@@ -45,24 +52,90 @@
     </div>
   </div>
 </nav>
+<!-- ===== SECTION ADMIN ===== -->
+<section id="admin">
+  <h2 class="section-title">🔧 Administration</h2>
+  <div class="section-subtitle">Réservé à l'organisateur — gestion du code &amp; des archives</div>
+<div class="locked-wrap" data-section="admin">
+<div class="locked-content locked">
 
-<section id="tpl-editor-section" style="max-width:1400px;padding:80px 14px 40px">
-  <h2 class="section-title">📝 Éditeur de template <span id="tpl-editor-mode" style="font-size:13px;color:#6a7a8a;font-weight:400;letter-spacing:1px;text-transform:uppercase">— Création</span></h2>
-  <div class="section-subtitle">Modifiez les textes, métadonnées, et structure de ce contrat. Aperçu en direct à gauche.</div>
-
-  <div class="tpl-editor-actions">
-    <button class="admin-btn" onclick="saveCurrentTemplate()">💾 Sauvegarder</button>
-    <button class="admin-btn admin-btn-secondary" onclick="cancelTemplateEdit()">✕ Annuler</button>
+  <div class="card">
+    <h3 style="margin-top:0">📨 Messages reçus <span id="msg-count-badge" style="background:rgba(0,212,255,.18);color:#00d4ff;padding:3px 10px;border-radius:14px;font-size:12px;margin-left:6px;font-weight:700">0</span></h3>
+    <p>Messages envoyés par les partenaires via le bouton 📨 dans la nav.</p>
+    <div id="messages-list"></div>
   </div>
 
-  <div class="tpl-editor-split">
-    <div class="tpl-editor-preview">
-      <div class="tpl-preview-label">📄 Aperçu en direct</div>
-      <div class="contract-doc" id="tpl-preview-doc"></div>
+  <div class="card">
+    <h3 style="margin-top:0">📊 Statistiques</h3>
+    <div id="admin-stats">Chargement…</div>
+    <button class="admin-btn admin-btn-secondary" onclick="refreshAdminStats()">↻ Actualiser</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🔓 Session de déblocage</h3>
+    <p>Le déblocage actuel est valide tant que le navigateur n'est pas réinitialisé.</p>
+    <button class="admin-btn admin-btn-secondary" onclick="lockAllSections()">🔒 Re-verrouiller toutes les sections</button>
+  </div>
+
+  <div class="card card-yellow">
+    <h3 style="margin-top:0;color:#f5c518">👥 Comptes utilisateurs <span id="users-count-badge" style="background:rgba(0,212,255,.18);color:#00d4ff;padding:3px 10px;border-radius:14px;font-size:12px;margin-left:6px;font-weight:700">0</span></h3>
+    <p>Tous les comptes créés (manuellement ou par auto-inscription). Cliquez sur <strong>✎ Modifier</strong> pour changer les permissions, l'avatar ou le mot de passe d'un compte.</p>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="admin-btn" onclick="openUserModal()">➕ Créer un utilisateur</button>
+      <button class="admin-btn admin-btn-secondary" onclick="renderUsersList()">↻ Actualiser la liste</button>
     </div>
-    <div class="tpl-editor-form" id="tpl-editor-form"></div>
+    <div id="users-list"></div>
   </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📝 Templates de contrats</h3>
+    <p>Personnalisez le contenu des contrats existants ou créez de nouveaux types depuis l'éditeur visuel.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <a href="template-editor.html" class="admin-btn" style="text-decoration:none;display:inline-block">➕ Créer un nouveau template</a>
+      <button class="admin-btn admin-btn-secondary" onclick="resetTplsToDefault()">↺ Restaurer les templates par défaut</button>
+    </div>
+    <div id="templates-list"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">📜 Logs d'activité</h3>
+    <p>Historique complet des actions sur le site (connexions, modifications, validations…).</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="admin-btn admin-btn-secondary" onclick="renderAdminLogs()">↻ Actualiser</button>
+      <button class="admin-btn admin-btn-secondary" onclick="clearAllLogs()">🗑 Vider l'historique</button>
+    </div>
+    <div id="admin-logs-list"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">💾 Sauvegarde &amp; restauration</h3>
+    <p>Toutes les données du site (comptes utilisateurs, contrats archivés, paramètres) sont stockées dans le navigateur. Si vous changez de PC ou videz le cache, vous perdez tout. Téléchargez régulièrement une sauvegarde !</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="admin-btn" onclick="exportBackup()">💾 Télécharger une sauvegarde</button>
+      <input type="file" id="restore-file" accept=".json,application/json" style="display:none" onchange="importBackupFile(event)">
+      <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('restore-file').click()">📂 Restaurer depuis un fichier</button>
+    </div>
+    <div id="backup-info" style="margin-top:10px;font-size:11px;color:#6a7a8a"></div>
+  </div>
+
+  <div class="card card-red">
+    <h3 style="margin-top:0;color:#ff4757">⚠ Zone dangereuse</h3>
+    <p>Actions irréversibles. À utiliser avec précaution.</p>
+    <button class="admin-btn admin-btn-danger" onclick="clearAllArchives()">🗑 Effacer tous les contrats archivés</button>
+  </div>
+
+</div>
+<div class="lock-overlay" data-section="admin">
+  <div class="lock-big">🔧</div>
+  <div class="lock-msg">Administration</div>
+  <div class="lock-sub">Code requis pour accéder à l'administration</div>
+  <button class="lock-btn">🔐 Voir comment accéder</button>
+</div>
+</div>
 </section>
+<footer>
+  MASTER CLASH — Document officiel — Réservé à l'animateur — État de San Andreas
+</footer>
 
 <!-- ===== ZONE IMPRESSION (pour contrats validés) ===== -->
 <div id="print-area"></div>
@@ -396,10 +469,7 @@
 </div>
 
 <script src="assets/default_templates.js"></script>
-
-<script src="assets/default_templates.js"></script>
 <script src="assets/app.js"></script>
-<script src="assets/template-editor.js"></script>
 <script src="assets/sw-register.js" defer></script>
 </body>
 </html>

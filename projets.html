@@ -58,7 +58,7 @@
             unique Grand Vainqueur. Master Clash incarne la philosophie de NOVA :
             l'excellence dans la fête, l'institution dans le populaire.
           </p>
-          <a href="master-clash/index.html" class="nv-btn">Visiter le site Master Clash →</a>
+          <a href="projets/master-clash/index.html" class="nv-btn">Visiter le site Master Clash →</a>
         </div>
         <div class="nv-project-stats">
           <div class="nv-pstat">
@@ -217,7 +217,7 @@
     grid.innerHTML = items.map(p => {
       const types = (p.types || []).map(t => `<span style="display:inline-block;background:var(--cream-alt);color:var(--gold);padding:2px 8px;border-radius:10px;font-size:11px;letter-spacing:1px;font-variant:small-caps;margin-right:4px;">${escapeHtml(TYPES_LABELS_PUB[t] || t)}</span>`).join('');
       const link = p.siteUrl
-        ? `<a href="${escapeHtml(p.siteUrl)}" class="nv-doc-link" target="_blank" rel="noopener noreferrer"><span>Visiter</span></a>`
+        ? `<a href="${escapeHtml(p.siteUrl)}" class="nv-doc-link" rel="noopener noreferrer"><span>Visiter</span></a>`
         : `<div class="nv-doc-link"><span style="color:var(--muted);">Partenaire NOVA</span></div>`;
       return `
         <div class="nv-doc-card reveal">
