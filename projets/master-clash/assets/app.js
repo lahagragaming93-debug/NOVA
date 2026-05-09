@@ -1580,10 +1580,10 @@ function sendReply(){
   try {
     var u = getCurrentUser();
     if (!u){ console.warn('[MC] sendReply: pas de user'); return; }
-    if (!_currentThreadId){ console.warn('[MC] sendReply: pas de threadId'); window.alert('⚠ Aucune conversation active. Rouvrez la conversation.'); return; }
+    if (!_currentThreadId){ console.warn('[MC] sendReply: pas de threadId'); MC_DIALOG.alert('Aucune conversation active. Rouvrez la conversation.', { type: 'warning' }); return; }
     var bodyEl = document.getElementById('msg-reply-body');
     var err = document.getElementById('msg-reply-error');
-    if (!bodyEl){ console.error('[MC] sendReply: msg-reply-body introuvable'); window.alert('⚠ Erreur interne (champ introuvable). Rechargez la page.'); return; }
+    if (!bodyEl){ console.error('[MC] sendReply: msg-reply-body introuvable'); MC_DIALOG.alert('Erreur interne (champ introuvable). Rechargez la page.', { type: 'error' }); return; }
     var body = (bodyEl.value || '').trim();
     if (!body){ if (err) err.textContent = '⚠ Saisissez un message.'; return; }
     var list = getMessages();
@@ -1605,16 +1605,16 @@ function sendReply(){
     closeMsgViewModal();
     if (typeof renderInbox === 'function') renderInbox();
     if (typeof renderMessagesList === 'function') renderMessagesList();
-    // Feedback : essaie mcAlert, fallback alert natif
+    // Feedback : essaie mcAlert, fallback MC_DIALOG (compatible CEF FiveM)
     try {
       mcAlert('✓ Réponse envoyée.\n\nVotre interlocuteur recevra une notification.', { title: 'Message envoyé' });
     } catch(e){
       console.error('[MC] mcAlert a planté:', e);
-      window.alert('✓ Réponse envoyée.');
+      MC_DIALOG.alert('Réponse envoyée.', { type: 'success', title: 'Message envoyé' });
     }
   } catch(e){
     console.error('[MC] sendReply ERREUR:', e);
-    window.alert('⚠ Erreur lors de l\'envoi : ' + e.message);
+    MC_DIALOG.alert('Erreur lors de l\'envoi : ' + e.message, { type: 'error' });
   }
 }
 function closeMsgViewModal(){
@@ -3076,7 +3076,7 @@ function validateContract(type){
 function organizerSignAndValidate(id){
   var content = document.getElementById('view-modal-content');
   var docClone = content.querySelector('.contract-doc');
-  if (!docClone){ alert('Erreur : contrat introuvable.'); return; }
+  if (!docClone){ MC_DIALOG.alert('Erreur : contrat introuvable.', { type: 'error' }); return; }
 
   // Vérifier les champs Organisateur (non readonly) : ils doivent être remplis
   var orgSigCol = docClone.querySelector('.signature-block .signature-col:first-child');
